@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(caros_core)
+project(caros_common)
 
 ########################################################################
 #### Local Variables
@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 ########################################################################
 #### RobWork
 ########################################################################
-# RobWork is not directly required, as it's not linked with, but remains here due to core.hpp including rw/math.hpp
+# RobWork is not directly required, as it's not linked with, but remains here due to common.hpp including rw/math.hpp
 set(RW_ROOT "$ENV{RW_ROOT}")
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 
@@ -43,6 +43,6 @@ catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS message_runtime std_msgs
   DEPENDS RobWork
-# RobWork is required to use the convertion functions as core.hpp is including rw/math.hpp.
+# RobWork is required to use the convertion functions as common.hpp is including rw/math.hpp.
 # [ This will only work with catkin 0.5.81+ ]  EXPORTED_TARGETS ${PROJECT_NAME}_generate_messages ${PROJECT_NAME}_generate_messages_cpp
 )

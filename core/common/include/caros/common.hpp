@@ -1,5 +1,5 @@
-#ifndef CAROS_CORE_H_
-#define CAROS_CORE_H_
+#ifndef CAROS_COMMON_H_
+#define CAROS_COMMON_H_
 
 #include <rw/math.hpp>
 #include <caros/Q.h>
@@ -30,4 +30,4 @@ namespace caros {
   }
 }
 
-#endif /* CAROS_CORE_H_ */
+#endif /* CAROS_COMMON_H_ */
