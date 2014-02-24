@@ -3,7 +3,7 @@ geometry_msgs/Transform[] T_targets
 
 # if T_targets are defined then q_targets must be zero length
 # q is the list of target joint values.
-caros_core/Q[] q_targets
+caros_common/Q[] q_targets
 
 #Blends of individual targets in percentage, 0=no blend, 100=full blend 
 float64[] blends

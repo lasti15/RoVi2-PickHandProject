@@ -6,10 +6,10 @@ Header header
 
 #Joint configuration. 
 # Angles should be represented as radians and distances in meters.
-caros_core/Q q
+caros_common/Q q
 
 # velocities should be represented as radians per sec 
-caros_core/Q dq
+caros_common/Q dq
 
 #Is the robot moving
 bool isMoving
