@@ -1,4 +1,5 @@
 #include <caros/GripperServiceInterface.hpp>
+#include <caros/common.hpp>
 #include <ros/ros.h>
 #include <rw/common/Ptr.hpp>
 #include <string>
@@ -64,25 +65,25 @@ void GripperServiceInterface::initGripperService() {
 bool GripperServiceInterface::moveQHandle(caros_control::GripperMoveQ::Request& request,
 					  caros_control::GripperMoveQ::Response& response)
 {
-  return moveQ(caros_common::fromRos(request.q));
+  return moveQ(caros::fromRos(request.q));
 }
 
 bool GripperServiceInterface::gripQHandle(caros_control::GripperGripQ::Request& request,
 					  caros_control::GripperGripQ::Response& response)
 {
-  return gripQ(caros_common::fromRos(request.q));
+  return gripQ(caros::fromRos(request.q));
 }
 
 bool GripperServiceInterface::setForceQHandle(caros_control::GripperSetForceQ::Request& request,
 					      caros_control::GripperSetForceQ::Response& response)
 {
-  return setForceQ(caros_common::fromRos(request.force));
+  return setForceQ(caros::fromRos(request.force));
 }
 
 bool GripperServiceInterface::setVelocityQHandle(caros_control::GripperSetVelocityQ::Request& request,
 						 caros_control::GripperSetVelocityQ::Response& response)
 {
-  return setVelocityQ(caros_common::fromRos(request.velocity));
+  return setVelocityQ(caros::fromRos(request.velocity));
 }
 
 bool GripperServiceInterface::stopMovementHandle(caros_control::GripperStopMovement::Request& request,

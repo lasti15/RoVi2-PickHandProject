@@ -47,28 +47,28 @@ public:
    * @param q
    * @return
    */
-  virtual bool moveQ(rw::math::Q& q) = 0;
+  virtual bool moveQ(const rw::math::Q& q) = 0;
 
   /**
    * @brief signal the gripper to move into a specific configuration Q. The gripper will not show an error in its state if the configuration Q can not be reached.
    * @param q
    * @return
    */
-  virtual bool gripQ(rw::math::Q& q) = 0;
+  virtual bool gripQ(const rw::math::Q& q) = 0;
 
   /**
    * @brief set the desired force configuration that the gripper should use.
    * @param q
    * @return
    */
-  virtual bool setForceQ(rw::math::Q& q) = 0;
+  virtual bool setForceQ(const rw::math::Q& q) = 0;
 
   /**
    * @brief set the desired velocity configuration that the gripper should use.
    * @param q
    * @return
    */
-  virtual bool setVelocityQ(rw::math::Q& q) = 0;
+  virtual bool setVelocityQ(const rw::math::Q& q) = 0;
 
   /**
    * @brief signal the gripper to stop all its movements.
