@@ -55,11 +55,11 @@ void GripperServiceInterface::initGripperService() {
   _gripperStatePublisher = _nodeHnd->advertise<GripperState>("GripperState", QUEUE_SIZE);
 */
 
-  _srvMoveQ = _nodeHnd->advertiseService("moveQ", &GripperServiceInterface::moveQHandle, this);
-  _srvGripQ = _nodeHnd->advertiseService("gripQ", &GripperServiceInterface::gripQHandle, this);
-  _srvSetForceQ = _nodeHnd->advertiseService("setForceQ", &GripperServiceInterface::setForceQHandle, this);
-  _srvSetVelocityQ = _nodeHnd->advertiseService("setVelocityQ", &GripperServiceInterface::setVelocityQHandle, this);
-  _srvStopMovement = _nodeHnd->advertiseService("stopMovement", &GripperServiceInterface::stopMovementHandle, this);
+  _srvMoveQ = _nodeHnd->advertiseService("move_q", &GripperServiceInterface::moveQHandle, this);
+  _srvGripQ = _nodeHnd->advertiseService("grip_q", &GripperServiceInterface::gripQHandle, this);
+  _srvSetForceQ = _nodeHnd->advertiseService("set_force_q", &GripperServiceInterface::setForceQHandle, this);
+  _srvSetVelocityQ = _nodeHnd->advertiseService("set_velocity_q", &GripperServiceInterface::setVelocityQHandle, this);
+  _srvStopMovement = _nodeHnd->advertiseService("stop_movement", &GripperServiceInterface::stopMovementHandle, this);
 }
 
 bool GripperServiceInterface::moveQHandle(caros_control::GripperMoveQ::Request& request,
