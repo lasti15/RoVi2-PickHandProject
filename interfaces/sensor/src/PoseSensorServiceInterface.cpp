@@ -1,11 +1,7 @@
 /**/
-#include <marvin_common_rw/PoseSensorServiceInterface.hpp>
+#include <caros/PoseSensorServiceInterface.hpp>
+#include <caros_sensor/PoseSensorState.h>
 
-#include <marvin_common/MarvinUtils.hpp>
-#include <marvin_common_rw/RwRos.hpp>
-#include <marvin_common/PoseSensorState.h>
-
-using namespace marvin_common;
 using namespace rw::common;
 
 PoseSensorServiceInterface::PoseSensorServiceInterface(){

@@ -28,6 +28,13 @@ add_message_files(
   Q.msg
 )
 
+add_service_files(
+  FILES
+  Start.srv
+  Stop.srv
+  Pause.srv
+)
+
 generate_messages(
   DEPENDENCIES
   std_msgs

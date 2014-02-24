@@ -2,7 +2,7 @@
 <package>
   <name>caros_control</name>
   <version>0.0.1</version>
-  <description>Virtual platform for dynamic and kinematic simulation of different hardware components </description>
+  <description>CAROS control interfaces</description>
   <maintainer email="jimali@mmmi.sdu.dk">jimali</maintainer>
   <license>BSD</license>
   <url type="website">https://gitlab.com/caro-sdu/caros/wikis/home</url>
@@ -13,8 +13,8 @@
 
   <build_depend>message_generation</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>caros_common</build_depend>
   <build_depend>geometry_msgs</build_depend>
+  <build_depend>caros_common</build_depend>
 
   <run_depend>message_runtime</run_depend>
   <run_depend>std_msgs</run_depend>

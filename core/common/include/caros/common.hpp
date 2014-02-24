@@ -2,7 +2,7 @@
 #define CAROS_COMMON_H_
 
 #include <rw/math.hpp>
-#include <caros/Q.h>
+#include <caros_common/Q.h>
 
 /**
  * \brief This is documentation for the namespace caros

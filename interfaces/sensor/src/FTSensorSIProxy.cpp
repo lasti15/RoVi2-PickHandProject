@@ -5,8 +5,8 @@
  *      Author: thomas
  */
 
-#include <marvin_common_rw/FTSensorSIProxy.hpp>
-#include <marvin_common_rw/RwRos.hpp>
+#include <caros/FTSensorSIProxy.hpp>
+#include <caros/common.hpp>
 
 FTSensorSIProxy::FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle, const std::string& devname):
 	_nodeHnd(nhandle)

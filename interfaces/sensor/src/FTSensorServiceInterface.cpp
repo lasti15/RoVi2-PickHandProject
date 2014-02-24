@@ -1,12 +1,11 @@
 /**/
-#include <marvin_common_rw/FTSensorServiceInterface.hpp>
+#include <caros/FTSensorServiceInterface.hpp>
 
-#include <marvin_common_rw/RwRos.hpp>
+#include <caros/common.hpp>
 
-#include <marvin_common/WrenchData.h>
+#include <caros_sensor/WrenchData.h>
 #include <rw/math/Wrench6D.hpp>
 
-using namespace marvin_common;
 using namespace rw::common;
 
 FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)

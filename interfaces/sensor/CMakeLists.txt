@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sensor)
+project(caros_sensor)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -9,16 +9,18 @@ find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msg
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
-add_service_files(
-  FILES
-)
+#add_service_files(
+#  FILES
+#)
 
 add_message_files(
   FILES
   PoseSensorState.msg
   TactileArrayData.msg
   TactileArrayState.msg
+  ButtonSensorState.msg
   TrakStarPose.msg
+  WrenchData.msg
 )
 
 generate_messages(
@@ -31,6 +33,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
+  INCLUDE_DIRS include
   CATKIN_DEPENDS message_runtime std_msgs geometry_msgs caros_common
 )
 
@@ -45,7 +48,7 @@ set(RW_ROOT "$ENV{RW_ROOT}")
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
-include_directories(include ${ROBWORK_INCLUDE_DIR})
+include_directories(include ${ROBWORK_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
 #[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
 
@@ -54,8 +57,13 @@ include_directories(include ${ROBWORK_INCLUDE_DIR})
 #message("rw libraries" ${ROBWORK_LIBRARIES})
 #message("rw libs" ${ROBWORK_LIBS})
 
-# mband: link_directories is required until RobWork issue ## is solved
-######link_directories(${ROBWORK_LIBRARY_DIRS})
+add_library(control 
+	src/ButtonSensorSIProxy.cpp
+	src/FTSensorServiceInterface.cpp
+	src/FTSensorSIProxy.cpp
+	src/PoseSensorServiceInterface.cpp
+	src/PoseSensorSIProxy.cpp
+)
 
-#add_executable(caros_test src/Caros_Test.cpp)
-#target_link_libraries(caros_test ${conv_library} ${ROBWORK_LIBRARIES})
+#add_executable(virtual_platform src/Caros_Test.cpp)
+target_link_libraries(control ${conv_library} ${ROBWORK_LIBRARIES})
