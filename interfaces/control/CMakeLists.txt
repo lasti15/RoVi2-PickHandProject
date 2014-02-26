@@ -79,6 +79,8 @@ add_dependencies(${library_name}
 # OBS: But this will cause every target in a package to be required and thereby requiring that target to build code dependent on e.g. RobWork and CoViS.
 # OBS2: What happens once a third package wants to use the second package? (does the third package need to also depend on the first package and making it a very bad design solution to have msg,srv,action in the same package as the interfaces/other API?) or is it not required for msg,srv,action as their dependencies should be resolved through the generate_messages(DEPENDENCIES...)?
 #  ${catkin_EXPORTED_TARGETS}
+##
+# caros_common_EXPORTED_TARGETS can also be used
 # So use specific dependencies instead
   caros_common_generate_messages_cpp
 #####
