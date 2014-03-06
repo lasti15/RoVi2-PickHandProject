@@ -26,6 +26,7 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 add_message_files(
   FILES
   Q.msg
+  CarosNodeState.msg
 )
 
 add_service_files(
@@ -48,8 +49,19 @@ generate_messages(
 # End of workaround
 catkin_package(
   INCLUDE_DIRS include
+  LIBRARIES ${library_name}
   CATKIN_DEPENDS message_runtime std_msgs
   DEPENDS RobWork
 # RobWork is required to use the convertion functions as common.hpp is including rw/math.hpp.
 # [ This will only work with catkin 0.5.81+ ]  EXPORTED_TARGETS ${PROJECT_NAME}_generate_messages ${PROJECT_NAME}_generate_messages_cpp
 )
+
+include_directories(include ${ROBWORK_INCLUDE_DIRS})
+
+# Create one library for the whole package (don't split it into gripper, serialDevice, etc. - if this is wanted then this package should rather be split into gripper, serialDevice and similar packages) 
+add_library(${library_name}
+  src/CarosNodeServiceInterface.cpp
+)
+
+
+
