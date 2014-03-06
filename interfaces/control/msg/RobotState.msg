@@ -1,5 +1,4 @@
 #RobotState represents the state of one a single robot in the setup.
-#Currently RobotState is constrainted to 6 degrees of freedom devices
 
 #Header containing information about time and frameid
 Header header

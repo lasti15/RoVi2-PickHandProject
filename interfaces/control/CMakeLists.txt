@@ -41,6 +41,7 @@ add_service_files(
 add_message_files(
   FILES
   RobotState.msg
+  GripperState.msg
 )
 
 generate_messages(

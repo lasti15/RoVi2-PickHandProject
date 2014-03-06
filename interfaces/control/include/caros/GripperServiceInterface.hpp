@@ -43,6 +43,10 @@ namespace caros {
      */
     virtual ~GripperServiceInterface();
 
+
+    bool configureGripperService();
+    bool cleanupGripperService();
+
     /**
      * @brief signal the gripper to move into a specific configuration Q.
      * @param q
@@ -81,13 +85,18 @@ namespace caros {
   protected:
 
     /**
-     * @brief publish the state of the gripper
+     * @brief publish the state of the gripper. Uses GripperState messages
      * @param q [in] joint configuration
      * @param dq [in] joint velocity
      */
-    /*
-      void publishState(const rw::math::Q& q, const rw::math::Q& dq);
-    */
+    void publishState(const rw::math::Q& q,
+                        const rw::math::Q& dq,
+                        const rw::math::Q& jointforce,
+                        bool isMoving,
+                        bool isBlocked,
+                        bool isStopped,
+                        bool isEstopped);
+
 
   private:
     /**
@@ -122,9 +131,8 @@ namespace caros {
   private:
     rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 
-    /*
-      ros::Publisher _gripperStatePublisher;
-    */
+
+    ros::Publisher _gripperStatePublisher;
 
     ros::ServiceServer _srvMoveQ;
     ros::ServiceServer _srvGripQ;
@@ -133,6 +141,8 @@ namespace caros {
     ros::ServiceServer _srvStopMovement;
 
     std::string _gripperName;
+
+    bool _initialized;
 
   };
 } // namespace
