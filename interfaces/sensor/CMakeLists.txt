@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(caros_sensor)
 
+set(library_name "${PROJECT_NAME}")
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -20,7 +22,6 @@ add_message_files(
   TactileArrayState.msg
   ButtonSensorState.msg
   TrakStarPose.msg
-  WrenchData.msg
 )
 
 generate_messages(
@@ -34,7 +35,9 @@ generate_messages(
 ###################################
 catkin_package(
   INCLUDE_DIRS include
+  LIBRARIES ${library_name}
   CATKIN_DEPENDS message_runtime std_msgs geometry_msgs caros_common
+  DEPENDS RobWork
 )
 
 ########################################################################
@@ -48,7 +51,7 @@ set(RW_ROOT "$ENV{RW_ROOT}")
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
-include_directories(include ${ROBWORK_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+include_directories(include ${ROBWORK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
 #[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
 
@@ -57,7 +60,7 @@ include_directories(include ${ROBWORK_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 #message("rw libraries" ${ROBWORK_LIBRARIES})
 #message("rw libs" ${ROBWORK_LIBS})
 
-add_library(control 
+add_library(${library_name} 
 	src/ButtonSensorSIProxy.cpp
 	src/FTSensorServiceInterface.cpp
 	src/FTSensorSIProxy.cpp
@@ -65,5 +68,8 @@ add_library(control
 	src/PoseSensorSIProxy.cpp
 )
 
-#add_executable(virtual_platform src/Caros_Test.cpp)
-target_link_libraries(control ${conv_library} ${ROBWORK_LIBRARIES})
+target_link_libraries(${library_name}
+  ${catkin_LIBRARIES}
+  ${ROBWORK_LIBRARIES}
+)
+

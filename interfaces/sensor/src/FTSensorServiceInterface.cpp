@@ -3,24 +3,28 @@
 
 #include <caros/common.hpp>
 
-#include <caros_sensor/WrenchData.h>
 #include <rw/math/Wrench6D.hpp>
+
+#include <geometry_msgs/WrenchStamped.h>
 
 using namespace rw::common;
 
 FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)
 {
     _nodeHnd = ownedPtr( new ros::NodeHandle(service_name) );
-
-    _wrenchDataPublisher = _nodeHnd->advertise<marvin_common::WrenchData>("wrench", 5);
-    //_robotStatePublisher = _nodeHnd.advertise<SDHState>("SDHState", 5);
-    //_srvStop = _nodeHnd.advertiseService("stop", &SDHServiceInterface::stopHandle, this);
+    _wrenchDataPublisher = _nodeHnd->advertise<geometry_msgs::WrenchStamped>("wrench", 5);
 }
 
+FTSensorServiceInterface::FTSensorServiceInterface(rw::common::Ptr<ros::NodeHandle> nh)
+{
+    _nodeHnd = nh;
+    _wrenchDataPublisher = _nodeHnd->advertise<geometry_msgs::WrenchStamped>("wrench", 5);
+}
 
 void FTSensorServiceInterface::publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe)
 {
-	marvin_common::WrenchData wdata;
+    geometry_msgs::WrenchStamped wdata;
+	//caros_sensor::WrenchData wdata;
 	wdata.header.frame_id = refframe;
 	wdata.header.stamp = ros::Time::now();
 

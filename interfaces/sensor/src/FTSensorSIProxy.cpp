@@ -5,21 +5,30 @@
  *      Author: thomas
  */
 
-#include <caros/FTSensorSIProxy.hpp>
 #include <caros/common.hpp>
 
-FTSensorSIProxy::FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle, const std::string& devname):
+#include <caros/FTSensorSIProxy.hpp>
+
+using namespace caros;
+
+FTSensorSIProxy::FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle):
 	_nodeHnd(nhandle)
 {
 	_ftState = _nodeHnd->subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }
 
+FTSensorSIProxy::FTSensorSIProxy(const std::string& name):
+    _nodeHnd( rw::common::ownedPtr( new ros::NodeHandle(name)))
+{
+    _ftState = _nodeHnd->subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
+}
+
 FTSensorSIProxy::~FTSensorSIProxy() {
 }
 
-void FTSensorSIProxy::handleFTState(const marvin_common::WrenchData& state) {
+void FTSensorSIProxy::handleFTState(const geometry_msgs::WrenchStamped& state) {
 	boost::mutex::scoped_lock lock(_mutex);
-	_wrench = RwRos::toRw(state.wrench);
+	_wrench = caros::toRw(state.wrench);
 	_pFTState = state;
 }
 
