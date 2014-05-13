@@ -10,7 +10,9 @@ set(library_name "${PROJECT_NAME}")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  message_generation std_msgs
+  message_generation
+  std_msgs
+  roscpp
 )
 
 ########################################################################
@@ -50,7 +52,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs
+  CATKIN_DEPENDS message_runtime std_msgs roscpp
   DEPENDS RobWork
 # RobWork is required to use the convertion functions as common.hpp is including rw/math.hpp.
 # [ This will only work with catkin 0.5.81+ ]  EXPORTED_TARGETS ${PROJECT_NAME}_generate_messages ${PROJECT_NAME}_generate_messages_cpp
@@ -60,8 +62,10 @@ include_directories(include ${ROBWORK_INCLUDE_DIRS})
 
 # Create one library for the whole package (don't split it into gripper, serialDevice, etc. - if this is wanted then this package should rather be split into gripper, serialDevice and similar packages) 
 add_library(${library_name}
+  src/common.cpp
   src/CarosNodeServiceInterface.cpp
 )
 
-
-
+add_dependencies(${library_name}
+  ${PROJECT_NAME}_generate_messages_cpp
+)

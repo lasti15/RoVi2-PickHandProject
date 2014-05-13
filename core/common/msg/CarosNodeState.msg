@@ -3,6 +3,7 @@ string state
 
 bool inError
 string errorMsg
+int64 errorCode
 
 # true if 
 bool changedEvent

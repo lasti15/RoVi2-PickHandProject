@@ -55,7 +55,7 @@ protected:
     int _port;
     std::string _nodeName;
 private:
-	rw::common::Ptr<rwhw::Robotiq3> _robotiq;
+    rw::common::Ptr<rwhw::Robotiq3> _robotiq;
 };
 
 
