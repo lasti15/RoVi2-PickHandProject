@@ -138,22 +138,6 @@ namespace caros {
         return true;
     }
 
-    void CarosNodeServiceInterface::error(const std::string& msg) {
-        ROS_ERROR_STREAM("CarosNodeError: " << msg);
-        /* keep a copy of the error message so it can be published */
-        _errorMsg = msg;
-        _errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED;
-        changeState(INERROR);
-    }
-
-    void CarosNodeServiceInterface::fatalError(const std::string& msg) {
-        ROS_ERROR_STREAM("CarosNodeFatalError: " << msg);
-        /* keep a copy of the (fatal) error message so it can be published */
-        _errorMsg = msg;
-        _errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED;
-        changeState(INFATALERROR);
-    }
-
     void CarosNodeServiceInterface::error(const std::string& msg, const int64_t errorCode) {
         ROS_ERROR_STREAM("CarosNodeError: " << msg << "; error code: " << errorCode);
         /* keep a copy of the error message so it can be published */
