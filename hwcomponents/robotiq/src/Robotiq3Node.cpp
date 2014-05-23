@@ -92,6 +92,7 @@ void Robotiq3Node::runloopHook() {
     bool ismov = _robotiq->isGripperMoving();
     bool isblock = _robotiq->isGripperBlocked();
     bool isstop = _robotiq->isGripperStopped();
+    /* FIXME: hardcoded isEstop value */
     bool isEstop = false;
     publishState(q,dq,force,ismov,isblock,isstop,isEstop);
 

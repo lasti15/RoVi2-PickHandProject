@@ -9,7 +9,7 @@ set(library_name "${PROJECT_NAME}")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs caros_common)
+find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp geometry_msgs caros_common)
 
 ########################################################################
 #### RobWork
@@ -57,7 +57,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs caros_common
+  CATKIN_DEPENDS message_runtime std_msgs roscpp geometry_msgs caros_common
   DEPENDS RobWork
 )
 

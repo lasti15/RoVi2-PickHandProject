@@ -56,8 +56,13 @@ include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIR})
 MESSAGE(" caros_control_LIBRARIES : ${catkin_LIBRARIES}")
 add_executable(robotiq3 src/mainR3.cpp src/Robotiq3Node.cpp)
 target_link_libraries(robotiq3 ${conv_library} 
-    ${ROBWORK_LIBRARIES} 
-    ${ROBWORKHARDWARE_LIBRARIES} 
-    ${caros_common_LIBRARIES} 
-    ${caros_control_LIBRARIES} 
-    ${catkin_LIBRARIES})
+  ${ROBWORK_LIBRARIES} 
+  ${ROBWORKHARDWARE_LIBRARIES} 
+  ${caros_common_LIBRARIES} 
+  ${caros_control_LIBRARIES} 
+  ${catkin_LIBRARIES}
+)
+add_dependencies(robotiq3
+  caros_common
+  caros_control
+)
