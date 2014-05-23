@@ -91,10 +91,8 @@ namespace caros {
         virtual void errorLoopHook() = 0;
         virtual void fatalErrorLoopHook() = 0;
 
-        void error(const std::string& msg);
-        void fatalError(const std::string& msg);
-        void error(const std::string& msg, const int64_t errorCode);
-        void fatalError(const std::string& msg, const int64_t errorCode);
+        void error(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+        void fatalError(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
 
         NodeState getState() { return _nodeState; };
         bool isInRunning() { return _nodeState == RUNNING; }

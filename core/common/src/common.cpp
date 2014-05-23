@@ -58,13 +58,11 @@ namespace caros {
         return rw::math::Transform3D<>(p, q);
     }
 
-//! convert Wrench to Wrench6D
     rw::math::Wrench6D<> toRw(const geometry_msgs::Wrench& wrench) {
         rw::math::Wrench6D<> w(wrench.force.x, wrench.force.y, wrench.force.z, wrench.torque.x, wrench.torque.y, wrench.torque.z);
         return w;
     }
 
-//! convert Wrench6D to Wrench
     geometry_msgs::Wrench toRos(const rw::math::Wrench6D<>& w) {
         geometry_msgs::Wrench wrench;
         wrench.force.x = w.force()[0];
@@ -76,12 +74,11 @@ namespace caros {
         return wrench;
     }
 
-//! convert Twist to VelocitySrew6D
     rw::math::VelocityScrew6D<> toRw(const geometry_msgs::Twist& twist) {
         rw::math::VelocityScrew6D<> vs(twist.linear.x, twist.linear.y, twist.linear.z, twist.angular.x, twist.angular.y, twist.angular.z);
         return vs;
     }
-//! convert VelocitySrew6D to Twist
+
     geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs) {
         geometry_msgs::Twist twist;
         twist.linear.x = vs(0);
