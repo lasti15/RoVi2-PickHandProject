@@ -18,7 +18,7 @@ namespace caros {
  * \brief Convert the ROS message caros::Q to the RobWork type rw::math::Q
  * \param[in] q
  */
-inline rw::math::Q fromRos(const caros_common::Q& q)
+inline rw::math::Q toRw(const caros_common::Q& q)
 {
     rw::math::Q res(q.data.size());
     for (size_t i = 0; i < q.data.size(); ++i) {
