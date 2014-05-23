@@ -102,28 +102,28 @@ void GripperServiceInterface::publishState(
   bool GripperServiceInterface::moveQHandle(caros_control::GripperMoveQ::Request& request,
 					    caros_control::GripperMoveQ::Response& response)
   {
-      response.success = moveQ(caros::fromRos(request.q));
+      response.success = moveQ(caros::toRw(request.q));
       return true;
   }
 
   bool GripperServiceInterface::gripQHandle(caros_control::GripperGripQ::Request& request,
 					    caros_control::GripperGripQ::Response& response)
   {
-      response.success = gripQ(caros::fromRos(request.q));
+      response.success = gripQ(caros::toRw(request.q));
       return true;
   }
 
   bool GripperServiceInterface::setForceQHandle(caros_control::GripperSetForceQ::Request& request,
 						caros_control::GripperSetForceQ::Response& response)
   {
-      response.success = setForceQ(caros::fromRos(request.force));
+      response.success = setForceQ(caros::toRw(request.force));
     return true;
   }
 
   bool GripperServiceInterface::setVelocityQHandle(caros_control::GripperSetVelocityQ::Request& request,
 						   caros_control::GripperSetVelocityQ::Response& response)
   {
-      response.success = setVelocityQ(caros::fromRos(request.velocity));
+      response.success = setVelocityQ(caros::toRw(request.velocity));
       return true;
   }
 
