@@ -19,6 +19,39 @@
 
 //enum CAROS_NODE_ERRORCODE { CAROS_NODE_NO_ERROR_CODE_SUPPLIED = 0 }
 
+/**
+ * @brief Emit an caros node error. It will also be emitted to ROS_ERROR
+ *
+ * \b ostreamExpression is an expression that is fed to an output stream. Example:
+\code
+CAROS_ERROR("The value of x is " << x << ". x should be less than zero.", 2);
+\endcode
+ *
+ */
+#define CAROS_ERROR(ostreamExpression, errorCode) do { \
+    std::stringstream RW__stream;                                           \
+    RW__stream << ostreamExpression;                                        \
+    ROS_ERROR_STREAM("CarosNodeError: " << RW__stream.str() << "; error code: " << errorCode); \
+    error(RW__stream.str(), errorCode );                                     \
+    } while (0)
+
+/**
+ * @brief Emit an caros node fatal error. It will also be emitted to ROS_ERROR
+ *
+ * \b ostreamExpression is an expression that is fed to an output stream. Example:
+\code
+CAROS_ERROR("The value of x is " << x << ". x should be less than zero.", 2);
+\endcode
+ *
+ */
+#define CAROS_FATALERROR(ostreamExpression, errorCode) do { \
+    std::stringstream RW__stream;                                           \
+    RW__stream << ostreamExpression;                                        \
+    ROS_ERROR_STREAM("CarosNodeError: " << RW__stream.str() << "; error code: " << errorCode); \
+    fatalerror(RW__stream.str(), errorCode );                                     \
+    } while (0)
+
+
 namespace caros {
     enum CAROS_NODE_ERRORCODE { CAROS_NODE_NO_ERROR_CODE_SUPPLIED = 0 };
 
@@ -85,11 +118,12 @@ namespace caros {
         virtual bool stopHook() = 0;
         virtual bool recoverHook() = 0;
 
-        virtual void initLoopHook() = 0;
-        virtual void stoppedLoopHook() = 0;
         virtual void runLoopHook() = 0;
-        virtual void errorLoopHook() = 0;
-        virtual void fatalErrorLoopHook() = 0;
+
+        virtual void initLoopHook(){};
+        virtual void stoppedLoopHook(){};
+        virtual void errorLoopHook(){};
+        virtual void fatalErrorLoopHook(){};
 
         void error(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
         void fatalError(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
