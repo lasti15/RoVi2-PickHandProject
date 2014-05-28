@@ -18,7 +18,7 @@ Robotiq3Node::Robotiq3Node(const std::string& name):
     configureNode();
 }
 
-void Robotiq3Node::configureHook(){
+bool Robotiq3Node::configureHook(){
     ros::NodeHandle nh(_nodeName);
     nh.param("ip", _ip, std::string("192.168.100.21") );
     nh.param("port", _port, 502);
@@ -26,28 +26,34 @@ void Robotiq3Node::configureHook(){
 
     if(!configureGripperService() )
         RW_THROW("Could not configure gripper service!");
+    return true;
 }
 
-void Robotiq3Node::startHook(){
+bool Robotiq3Node::startHook(){
     // when starting the node we connect to the hand
     if( !_robotiq->connect(_ip,_port) ){
-        RW_THROW("Could not connect to robotiq hand using: " << _ip << " : " << _port);
+        CAROS_ERROR( "The robotiq hand was not able to connect to" << _ip << " : " << _port , CONNECTION_ERROR );
+        //error("The robotiq hand was not able to connect to" << _ip << " : " << _port , SDHNODE_INTERNAL_ERROR);
+        return false;
     }
+    return true;
 }
 
-void Robotiq3Node::stopHook(){
+bool Robotiq3Node::stopHook(){
     // when starting the node we connect to the hand
     _robotiq->disconnect();
+    return !_robotiq->isConnected();
 }
 
-void Robotiq3Node::recoverHook(){
+bool Robotiq3Node::recoverHook(){
     // weeeeeell depends on the error...
+    return true;
 }
 
-void Robotiq3Node::cleanupHook(){
+bool Robotiq3Node::cleanupHook(){
     // destruct the robotiq driver
     _robotiq = NULL;
-    cleanupGripperService();
+    return cleanupGripperService();
 }
 
 bool Robotiq3Node::moveQ(const rw::math::Q& q){
@@ -80,7 +86,7 @@ bool Robotiq3Node::stopMovement(void){
 }
 
 
-void Robotiq3Node::runloopHook() {
+void Robotiq3Node::runLoopHook() {
     ros::Time now = ros::Time::now();
     ros::Duration diff = now-_lastLoopTime;
 

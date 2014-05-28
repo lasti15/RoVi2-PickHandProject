@@ -73,6 +73,7 @@ include_directories(
 # Create one library for the whole package (don't split it into gripper, serialDevice, etc. - if this is wanted then this package should rather be split into gripper, serialDevice and similar packages) 
 add_library(${library_name}
   src/GripperServiceInterface.cpp
+  src/SerialDeviceServiceInterface.cpp
 )
 
 add_dependencies(${library_name}

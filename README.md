@@ -10,6 +10,3 @@ A package should contain the following files in the package root directory
  - rosdoc.yaml
  - mainpage.md
  - CMakeLists.txt
- 
-
- 

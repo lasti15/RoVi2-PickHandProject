@@ -16,6 +16,10 @@
 class Robotiq3Node: public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface{
 public:
 
+    enum ERRORCODE {
+        CONNECTION_ERROR = 1 //! Connection to robotiq hand was not possible
+    };
+
     //! constructor
     Robotiq3Node(const std::string& name);
 
@@ -39,12 +43,13 @@ public:
 
 protected:
     // hooks implemented from base class
-    void runloopHook();
-    void configureHook();
-    void cleanupHook();
-    void startHook();
-    void stopHook();
-    void recoverHook();
+
+    void runLoopHook();
+    bool configureHook();
+    bool cleanupHook();
+    bool startHook();
+    bool stopHook();
+    bool recoverHook();
 
 protected:
     typedef enum{MOVE,GRIP,STOP} CmdType;

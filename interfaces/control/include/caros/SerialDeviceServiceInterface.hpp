@@ -7,17 +7,14 @@
 #include <rw/math/VelocityScrew6D.hpp>
 #include <rw/common/Ptr.hpp>
 
-#include "marvin_common/RobotState.h"
-#include "marvin_common/MarvinUtils.hpp"
-#include <marvin_common/SerialDeviceMoveLin.h>
-#include <marvin_common/SerialDeviceMovePTP.h>
-#include <marvin_common/SerialDeviceMovePTP_T.h>
-#include <marvin_common/SerialDeviceMoveVelQ.h>
-#include <marvin_common/SerialDeviceMoveVelT.h>
-#include <marvin_common/SerialDeviceMoveLinFC.h>
-#include <marvin_common/ConfigBool.h>
-#include <marvin_common/Stop.h>
-#include <marvin_common/Pause.h>
+#include <caros_control/RobotState.h>
+#include <caros_control/SerialDeviceMoveLin.h>
+#include <caros_control/SerialDeviceMovePTP.h>
+#include <caros_control/SerialDeviceMovePTP_T.h>
+#include <caros_control/SerialDeviceMoveVelQ.h>
+#include <caros_control/SerialDeviceMoveVelT.h>
+#include <caros_control/SerialDeviceMoveLinFC.h>
+#include <caros_common/ConfigBool.h>
 #include <std_srvs/Empty.h>
 
 #include <ros/ros.h>
@@ -38,6 +35,7 @@ public:
 
 	SerialDeviceServiceInterface(ros::NodeHandle nodeHnd);
 
+	virtual ~SerialDeviceServiceInterface();
 protected:
 
 	//! initialize services in the node handle
@@ -45,55 +43,53 @@ protected:
 
 
 	//! @brief move robot in a linear Cartesian path
-	virtual bool moveLin(marvin_common::SerialDeviceMoveLin::Request& request,
-				  marvin_common::SerialDeviceMoveLin::Response& response){return false;};
+	virtual bool moveLin(caros_control::SerialDeviceMoveLin::Request& request,
+	                     caros_control::SerialDeviceMoveLin::Response& response) = 0;
 
 	//! @brief move robot from point to point
-	virtual bool movePTP(marvin_common::SerialDeviceMovePTP::Request& request,
-				  marvin_common::SerialDeviceMovePTP::Response& response){return false;};
+	virtual bool movePTP(caros_control::SerialDeviceMovePTP::Request& request,
+	                     caros_control::SerialDeviceMovePTP::Response& response) = 0;
 
 	//! @brief move robot from point to point but using a pose as target (require invkin)
-	virtual bool movePTP_T(marvin_common::SerialDeviceMovePTP_T::Request& request,
-				  marvin_common::SerialDeviceMovePTP_T::Response& response){return false;};
+	virtual bool movePTP_T(caros_control::SerialDeviceMovePTP_T::Request& request,
+	                       caros_control::SerialDeviceMovePTP_T::Response& response) = 0;
 
 	//! @brief move robot in a servoing fasion specifying joint velocity targets
-	virtual bool moveVelQ(marvin_common::SerialDeviceMoveVelQ::Request& request,
-				   marvin_common::SerialDeviceMoveVelQ::Response& response){return false;};
+	virtual bool moveVelQ(caros_control::SerialDeviceMoveVelQ::Request& request,
+	                      caros_control::SerialDeviceMoveVelQ::Response& response) = 0;
 
 	//! @brief move robot in a servoing fasion specifying a velocity screw in tool coordinates
-	virtual bool moveVelT(marvin_common::SerialDeviceMoveVelT::Request& request,
-				   marvin_common::SerialDeviceMoveVelT::Response& response){return false;};
+	virtual bool moveVelT(caros_control::SerialDeviceMoveVelT::Request& request,
+	                      caros_control::SerialDeviceMoveVelT::Response& response) = 0;
 
 	//! @brief move robot in a servoing fasion specifying joint velocity targets
-	virtual bool servoQ(marvin_common::SerialDeviceMovePTP::Request& request,
-				   marvin_common::SerialDeviceMovePTP::Response& response){return false;};
+	virtual bool servoQ(caros_control::SerialDeviceMovePTP::Request& request,
+	                    caros_control::SerialDeviceMovePTP::Response& response) = 0;
 
 	//! @brief move robot in a servoing fasion specifying a velocity screw in tool coordinates
-	virtual bool servoT(marvin_common::SerialDeviceMovePTP_T::Request& request,
-				   marvin_common::SerialDeviceMovePTP_T::Response& response){return false;};
+	virtual bool servoT(caros_control::SerialDeviceMovePTP_T::Request& request,
+	                    caros_control::SerialDeviceMovePTP_T::Response& response) = 0;
 
 
 	//! move robot with a hybrid position/force control
-	virtual bool moveLinFC(marvin_common::SerialDeviceMoveLinFC::Request& request,
-				     marvin_common::SerialDeviceMoveLinFC::Response& response){return false;};
+	virtual bool moveLinFC(caros_control::SerialDeviceMoveLinFC::Request& request,
+	                       caros_control::SerialDeviceMoveLinFC::Response& response) = 0;
 
 	//! hard stop the robot,
-	virtual bool start(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response){return false;};
+	virtual bool start(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) = 0;
 
 	//! hard stop the robot,
-	virtual bool stop(marvin_common::Stop::Request& request,
-						marvin_common::Stop::Response& response){return false;};
+	virtual bool stop(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) = 0;
 
 	//! pause the robot, should be able to continue trajectory
-	virtual bool pause(marvin_common::Pause::Request& request,
-						 marvin_common::Pause::Response& response){return false;};
+	virtual bool pause(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) = 0;
 
 	//! enable safe mode, so that robot stops when collisions are detected
-	virtual bool setSafeModeEnabled(marvin_common::ConfigBool::Request& request,
-									    marvin_common::ConfigBool::Request& response){return false;};
+	virtual bool setSafeModeEnabled(caros_common::ConfigBool::Request& request,
+	                                    caros_common::ConfigBool::Response& response) = 0;
 
 	//! publish robot state
-	void publish(const marvin_common::RobotState& state);
+	void publish(const caros_control::RobotState& state);
 
 protected:
 	std::string _service_name;
@@ -116,45 +112,6 @@ protected:
     ros::ServiceServer _srvSafe;
     ros::ServiceServer _srvStart;
 
-
-
-	// the interface that a robotarm should be able to extend
-	/*
-	// linear movements
-	void lin( const rw::math::Transform3D<>& ); // blend, speed
-
-	//void moveL( const rw::math::Transform3D<>& , const rw::math::VelocityScrew6D<>& );
-
-	// with blends in percentage [0-1]
-	void lin( const std::vector<rw::math::Transform3D<> >& targets, const std::vector<float>& blendValues);
-
-	// trajectory movements
-	void move( const rw::trajectory::Transform3DTrajectory& traj );
-
-	// joint movements
-	void pTp( const rw::math::Q& target ); // blend, speed,
-	void pTp( const rw::math::Transform3D<>& target ); // blend, speed,  default closest solution or elbow up/down
-
-	// with blends
-	void pTp( const std::vector<rw::math::Q>& targets, const std::vector<float>& blendValues );
-	// trajectory movements
-	void pTp( const rw::trajectory::QTrajectory& traj );
-	// force/torque based control
-	//void moveQ( const rw::math::Q& );
-	// hybrid position/force based control, setting wrench and selection matrix
-
-	void linFC( const rw::math::Transform3D<>& target,
-			      const rw::math::Wrench<>& ,
-			    	int selection[],
-			    	rw::math::Transform3D<> offset,
-			    	const std::string& name); // blend, speed
-    */
-
-
-
-    /*ros::Duration _syncTimeOffset;
-    ros::Duration _driverTimeOffset;
-*/
 };
 
 #endif //#ifndef URSERVICEINTERFACE_HPP

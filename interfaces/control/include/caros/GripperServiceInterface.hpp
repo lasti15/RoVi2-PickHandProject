@@ -18,6 +18,7 @@
 #define GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE "caros_gripper_service_interface"
 
 namespace caros {
+
     /**
      * @brief This is the gripper interface. It defines the
      * minimum interface that a configuration based robotic grasping device needs
@@ -29,7 +30,8 @@ namespace caros {
      */
     class GripperServiceInterface {
     public:
-
+        //!
+        typedef rw::common::Ptr<GripperServiceInterface> Ptr;
         /**
          * @brief constructor.
          * @param nodehandle [in] the nodehandle to use for services.

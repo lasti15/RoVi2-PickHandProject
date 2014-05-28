@@ -26,9 +26,16 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 # Using find_package module version due to finding a FindRobWorkHardware cmake file and the CMAKE_MODULE_PATH above.
 # Need to specify CMAKE_BUILD_TYPE=Release to be able to find the proper RobWorkHardware cmake files
 set(CMAKE_BUILD_TYPE Release)
-find_package(RobWorkHardware REQUIRED sdh serialport)
+find_package(RobWorkHardware COMPONENTS sdh serialport)
 # TODO: find RobWorkHardware - see the components/sdh/CMakeLists.txt file for more information on sdh, serialport, PEAK CAN and other things.
 # TODO: Keep as much as possible of the functionality from components/sdh/CMakeLists.txt due to not ending up with a broken SDH node.
+
+if ( NOT RobWorkHardware_FOUND )
+
+  MESSAGE(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
+
+ELSE()
+
 
 ########################################################################
 #### Old SDH CMake setup
@@ -184,3 +191,5 @@ add_dependencies(sdh_node
   caros_common
   caros_control
 )
+
+endif()

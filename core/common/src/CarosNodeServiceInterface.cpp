@@ -179,7 +179,7 @@ namespace caros {
     }
 
     void CarosNodeServiceInterface::error(const std::string& msg, const int64_t errorCode) {
-        ROS_ERROR_STREAM("CarosNodeError: " << msg << "; error code: " << errorCode);
+        ROS_DEBUG_STREAM("CarosNodeError: " << msg << "; error code: " << errorCode);
         /* keep a copy of the error message so it can be published */
         _errorMsg = msg;
         _errorCode = errorCode;
@@ -187,7 +187,7 @@ namespace caros {
     }
 
     void CarosNodeServiceInterface::fatalError(const std::string& msg, const int64_t errorCode) {
-        ROS_ERROR_STREAM("CarosNodeFatalError: " << msg << "; error code: " << errorCode);
+        ROS_DEBUG_STREAM("CarosNodeFatalError: " << msg << "; error code: " << errorCode);
         /* keep a copy of the (fatal) error message so it can be published */
         _errorMsg = msg;
         _errorCode = errorCode;

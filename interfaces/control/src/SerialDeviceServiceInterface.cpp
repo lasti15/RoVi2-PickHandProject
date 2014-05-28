@@ -1,15 +1,13 @@
 /**/
-#include <marvin_common_rw/SerialDeviceServiceInterface.hpp>
+#include <caros/SerialDeviceServiceInterface.hpp>
+#include <caros/common.hpp>
 
-#include <marvin_common/RobotState.h>
-#include <marvin_common_rw/RwRos.hpp>
+#include <caros_control/RobotState.h>
 
 #include <rw/math.hpp>
 #include <boost/foreach.hpp>
 
-
-using namespace marvin_common;
-
+using namespace caros_control;
 using namespace rw::common;
 using namespace rw::math;
 
@@ -24,6 +22,8 @@ SerialDeviceServiceInterface::SerialDeviceServiceInterface(ros::NodeHandle nodeH
 {
 	initNodeHandle();
 }
+
+SerialDeviceServiceInterface::~SerialDeviceServiceInterface(){}
 
 void SerialDeviceServiceInterface::initNodeHandle(){
     _deviceStatePublisher = _nodeHnd.advertise<RobotState>("RobotState", 10);
