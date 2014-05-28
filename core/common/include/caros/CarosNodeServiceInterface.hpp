@@ -55,8 +55,9 @@ namespace caros {
         /**
          * @brief constructor.
          * @param nodehandle [in] the nodehandle to use for services.
+         * @param[in] loopRateFrequency Optional parameter that specifies the frequency [Hz] of this ROS node - see setLoopRateFrequency() for more information.
          */
-        CarosNodeServiceInterface(const ros::NodeHandle& nodehandle);
+        CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency = 30);
 
         /**
          * @brief virtual destructor
@@ -101,6 +102,23 @@ namespace caros {
         bool isInError() { return _nodeState == INERROR; }
         bool isInFatalError() { return _nodeState == INFATALERROR; }
 
+        /**
+         * @brief Change the frequency of this ROS node.
+         *
+         * @param[in] loopRate The new frequency [Hz].
+         *
+         * Change how often this node is supposed to execute ROS service callbacks and publish CAROS node messages.
+         * A very small value or a negative value will (according to the current roscpp implementation) cause this ROS node to process the service callbacks and publishers as fast as possible.
+         */
+        void setLoopRateFrequency(const double frequency);
+
+        /**
+         * @brief Get the frequency of this ROS node.
+         *
+         * @returns The frequency [Hz].
+         */
+        double getLoopRateFrequency() { return _loopRateFrequency; }
+
     private:
         /**
          * @brief private default constructor.
@@ -140,6 +158,13 @@ namespace caros {
         ros::ServiceServer _srvRecover;
 
         NodeState _nodeState, _previousState;
+
+        /* TODO:
+         * Should the _loopRateFrequency be settable through the CarosNodeServiceInterface that is exposed as ROS services?
+         */
+        double _loopRateFrequency;
+        ros::Rate _loopRate;
+
         std::string _errorMsg;
         /* Using int64_t because it's highly related with the type specified in the caros_common::CarosNodeState message */
         int64_t _errorCode;

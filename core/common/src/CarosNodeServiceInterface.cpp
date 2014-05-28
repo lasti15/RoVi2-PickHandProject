@@ -19,9 +19,11 @@ namespace caros {
         static std::string CarosStateString[] = {"PREINIT","STOPPED","RUNNING","INERROR","INFATALERROR"};
     }
 
-    CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& nodehandle):
+    CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency):
         _nodeHandle(nodehandle, CAROS_NODE_SERVICE_INTERFACE_SUB_NAMESPACE),
-        _nodeState(PREINIT)
+        _nodeState(PREINIT),
+        _loopRateFrequency(loopRateFrequency),
+        _loopRate(_loopRateFrequency)
     {
         if (initCarosNode()) {
             /* TODO:
@@ -37,7 +39,6 @@ namespace caros {
 
     void CarosNodeServiceInterface::start() {
         caros_common::CarosNodeState state;
-        ros::Rate _loopRate(30);
         while (ros::ok()) {
             ros::spinOnce();
 
@@ -152,6 +153,12 @@ namespace caros {
         _errorMsg = msg;
         _errorCode = errorCode;
         changeState(INFATALERROR);
+    }
+
+    void CarosNodeServiceInterface::setLoopRateFrequency(const double frequency) {
+        ROS_DEBUG_STREAM("Changing the loop rate frequency from " << _loopRateFrequency << " to " << frequency);
+        _loopRateFrequency = frequency;
+        _loopRate = ros::Rate(_loopRateFrequency);
     }
 
     void CarosNodeServiceInterface::changeState(const NodeState newstate) {
