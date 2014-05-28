@@ -50,7 +50,7 @@ namespace caros {
                 initLoopHook();
             }
 
-            /* Process errors if any occured */
+            /* Process errors if any occurred */
             if (_nodeState == INERROR) {
                 errorLoopHook();
             }
@@ -63,18 +63,27 @@ namespace caros {
 
             /* Sleep to run approximately at the specified Hz */
             _loopRate.sleep();
+            /* TODO:
+             * Add debug statements regarding the return value of the sleep() - it should return true if the desired rate was met for this cycle, else false
+             */
         }
     }
 
     /* TODO: These methods can just be converted to void, as the return value will always be true (except for cleanupNode()) */
     bool CarosNodeServiceInterface::configureNode() {
         if (_nodeState != PREINIT) {
-            ROS_ERROR_STREAM("Configure can only be called from " << CarosStateString[PREINIT] << " state. The node was in " << CarosStateString[_nodeState] << ".");
+            ROS_ERROR_STREAM("Configure can only be called from the " << CarosStateString[PREINIT] << " state. The node was in " << CarosStateString[_nodeState] << ".");
             return false;
         }
 
         if (configureHook()) {
             changeState(STOPPED);
+        } else {
+            ROS_DEBUG_STREAM("configureHook() failed.");
+            /* TODO:
+             * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke fatalError() and possibly output a warning stating that the node/user should implement proper error handling code before returning false from the cleanupHook()
+             */
+            return false;
         }
 
         return true;
@@ -83,15 +92,26 @@ namespace caros {
     bool CarosNodeServiceInterface::cleanupNode() {
         if (_nodeState == PREINIT) {
             ROS_WARN_STREAM("It does not make much sense to invoke cleanupNode() when in the " << CarosStateString[_nodeState] << " state!");
-            return false;
+            return true;
         }
 
         if (_nodeState == RUNNING) {
-            stopNode();
+            ROS_DEBUG_STREAM("Node is in running state - stopping node.");
+            if (!stopNode()) {
+                ROS_ERROR_STREAM("Was not able to properly stop the node.");
+                fatalError("Something went wrong while stopping the node within the cleanup step.");
+                return false;
+            }
         }
 
         if (cleanupHook()) {
             changeState(PREINIT);
+        } else {
+            ROS_DEBUG_STREAM("cleanupHook() failed.");
+            /* TODO:
+             * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke fatalError() and possibly output a warning stating that the node/user should implement proper error handling code before returning false from the cleanupHook()
+             */
+            return false;
         }
 
         return true;
@@ -106,20 +126,31 @@ namespace caros {
 
         if (startHook()) {
             changeState(RUNNING);
+        } else {
+            ROS_DEBUG_STREAM("startHook() failed.");
+            /* TODO:
+             * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke error() and possibly output a warning stating that the node/user should implement proper error handling code before returning false from the startHook()
+             */
+            return false;
         }
 
         return true;
     }
 
     bool CarosNodeServiceInterface::stopNode() {
-        /* TODO: Should this be callable when in the error state? */
-        if (_nodeState != RUNNING) {
-            ROS_ERROR_STREAM("Stop can only be called from " << CarosStateString[RUNNING] << " state. The node was in " << CarosStateString[_nodeState] << ".");
+        if (_nodeState != RUNNING && _nodeState != INERROR ) {
+            ROS_ERROR_STREAM("Stop can only be called from the " << CarosStateString[RUNNING] << " or " << CarosStateString[INERROR] << " states. The node was in " << CarosStateString[_nodeState] << ".");
             return false;
         }
 
         if (stopHook()) {
             changeState(STOPPED);
+        } else {
+            ROS_DEBUG_STREAM("stopHook() failed.");
+            /* TODO:
+             * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke (fatal)error() and possibly output a warning stating that the node/user should implement proper error handling code before returning false from the stopHook()
+             */
+            return false;
         }
 
         return true;
@@ -128,12 +159,20 @@ namespace caros {
     bool CarosNodeServiceInterface::recoverNode() {
         // can only be called when in error state
         if(_nodeState != INERROR) {
-            ROS_ERROR_STREAM("Recover can only be called from " << CarosStateString[INERROR] << " state. The node was in " << CarosStateString[_nodeState] << ".");
+            ROS_WARN_STREAM("Recover can only be called from " << CarosStateString[INERROR] << " state. The node was in " << CarosStateString[_nodeState] << ".");
             return false;
         }
         
         if (recoverHook()) {
+            ROS_ERROR_STREAM_COND(_previousState == INFATALERROR, "A successful recovery brings the node back into the " << CarosStateString[INFATALERROR] << " state - This is a bug!");
             changeState(_previousState);
+        } else {
+            ROS_DEBUG_STREAM("recoverHook() failed.");
+            /* TODO:
+             * What to do if the recovery fails? Go into fatalError? or is that up to the node implementer to entirely decide?
+             * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke (fatal)error() and possibly output a warning stating that the node/user should implement proper error handling code before returning false from the recoverHook()
+             */
+            return false;
         }
 
         return true;
@@ -161,12 +200,15 @@ namespace caros {
         _loopRate = ros::Rate(_loopRateFrequency);
     }
 
-    void CarosNodeServiceInterface::changeState(const NodeState newstate) {
-        if (newstate != _nodeState) {
+    void CarosNodeServiceInterface::changeState(const NodeState newState) {
+        ROS_DEBUG_STREAM("Changing state from " << CarosStateString[_nodeState] << " to " << CarosStateString[newState]);
+        if (newState != _nodeState) {
             _previousState = _nodeState;
+            _nodeState = newState;
+            publishNodeState(true);
+        } else {
+            ROS_DEBUG_STREAM("Not changing state as the new state is the same as the current state!");
         }
-        _nodeState = newstate;
-        publishNodeState(true);
     }
 
     bool CarosNodeServiceInterface::initCarosNode(){
@@ -202,7 +244,6 @@ namespace caros {
         return true;
     }
 
-/* - these functions should be grouped together in the documentation to shortly describe that these are converting from ROS types to e.g. RobWork types according to what the interface expects - */
     bool CarosNodeServiceInterface::stopHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) {
         return stopNode();
     }
@@ -231,7 +272,7 @@ namespace caros {
             state.errorMsg = _errorMsg;
             state.errorCode = _errorCode;
         }
-        /* The errorMsg is not being cleared when the state nolonger is in error, this is intended to provide a minor error log / history of errors.
+        /* The errorMsg is not being cleared when the state no longer is in error, this is intended to provide a minor error log / history of errors.
          * TODO: Provide a history/log of the last N errors together with some info such as a timestamp (maybe how long the node was in the error state) and similar.
          */
 
