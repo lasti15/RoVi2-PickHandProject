@@ -14,6 +14,7 @@
 
 #include <string>
 #include <sstream>
+#include <utility>
 #include <cstddef> // Provides NULL
 
 /* Notes:
@@ -76,6 +77,22 @@ bool SDHNode::configureHook() {
         CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.", SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
         return false;
     }
+
+    /* Outputting information on supported value ranges */
+    /* TODO: This could be made part of the GripperServiceInterface - possibly as a message that is returned (or published) when a client asks for it.
+     * If the hardware is intelligent enough to provide new values/boundaries according to position or grasping mode, then it could make sense to publish that information when it changes
+     */
+    std::pair<rw::math::Q, rw::math::Q> positionLimits = _sdh->getPosLimits();
+    rw::math::Q velocityLimits = _sdh->getVelLimits();
+    /* There's also getAccLimits() */
+    rw::math::Q currentLimits = _sdh->getCurrentLimits();
+
+    ROS_ERROR_STREAM_COND(positionLimits.first.size() != positionLimits.second.size(), "The sizes of the Q's in the position limit pair are not equal; first contains " << positionLimits.first.size() << " and second contains " << positionLimits.second.size() << " elements.");
+
+    ROS_INFO_STREAM("Lower position limits: " << positionLimits.first);
+    ROS_INFO_STREAM("Upper position limits: " << positionLimits.second);
+    ROS_INFO_STREAM("Velocity limits: " << velocityLimits);
+    ROS_INFO_STREAM("Current limits: " << currentLimits);
 
     /* TODO: Debug information on what was configured accoringly to the parameter server? */
     return true;
