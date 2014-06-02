@@ -30,11 +30,13 @@ find_package(RobWorkHardware COMPONENTS sdh serialport)
 # TODO: find RobWorkHardware - see the components/sdh/CMakeLists.txt file for more information on sdh, serialport, PEAK CAN and other things.
 # TODO: Keep as much as possible of the functionality from components/sdh/CMakeLists.txt due to not ending up with a broken SDH node.
 
-if ( NOT RobWorkHardware_FOUND )
+if (NOT ROBWORKHARDWARE_FOUND)
 
-  MESSAGE(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
+  message(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
 
-ELSE()
+else()
+
+
 
 
 ########################################################################
