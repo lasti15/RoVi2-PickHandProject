@@ -46,6 +46,11 @@ SDHNode::SDHNode(const ros::NodeHandle& nodehandle):
 
 SDHNode::~SDHNode() {
     if (_sdh != 0) {
+        if (_sdh->isConnected()) {
+            ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
+            _sdh->stop();
+            _sdh->disconnect();
+        }
         delete _sdh;
         _sdh = 0;
     }
@@ -108,6 +113,11 @@ bool SDHNode::cleanupHook() {
 
     ROS_WARN_STREAM_COND(_sdh == 0, "cleanupHook() was called with the SDH device not being configured (i.e. no valid SDH-object)"); 
     if (_sdh != 0) {
+        if (_sdh->isConnected()) {
+            ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
+            _sdh->stop();
+            _sdh->disconnect();
+        }
         delete _sdh;
         _sdh = 0;
     }
