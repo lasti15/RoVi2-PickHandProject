@@ -19,13 +19,7 @@
 #define MAX_TIME_WAITING_FOR_MOVE_TO_FINISH_BEFORE_INTERVENING 2.0
 #define MINIMUM_VELOCITY_BEFORE_CONSIDERED_NOT_MOVING (5.0 * rw::math::Deg2Rad)
 
-#define SUPPORTED_Q_LENGTH 7
-
-/* TODO: Properly document the error codes */
-/* TODO: Consider better error codes for SDHNODE_INTERNAL_ERROR */
-/* The enum order should not be changed, as recorded ROS sessions would then be invalidated */ 
-/* TODO: Should this be place within the caros namespace or a subnamespace? */
-enum SDHNODE_ERRORCODE { SDHNODE_SDH_DEVICE_ALREADY_ACTIVE = 1, SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL, SDHNODE_UNSUPPORTED_INTERFACE_TYPE, SDHNODE_SDH_DEVICE_CONNECT_FAILED, SDHNODE_INTERNAL_ERROR, SDHNODE_SDH_DEVICE_NO_CONNECTION, SDHNODE_NO_SDH_DEVICE };
+#define SUPPORTED_Q_LENGTH_FOR_SDHNODE 7
 
 /**
  * @brief ROS node for controlling SDH.
@@ -48,6 +42,11 @@ public:
     bool setVelocityQ(const rw::math::Q& q);
     //! @copydoc caros::GripperServiceInterface::stopMovement
     bool stopMovement();
+
+    /* TODO: Properly document the error codes */
+    /* TODO: Consider better error codes for SDHNODE_INTERNAL_ERROR */
+    /* The enum order should not be changed, as recorded ROS sessions would then be invalidated */ 
+    enum SDHNODE_ERRORCODE { SDHNODE_SDH_DEVICE_ALREADY_ACTIVE = 1, SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL, SDHNODE_UNSUPPORTED_INTERFACE_TYPE, SDHNODE_SDH_DEVICE_CONNECT_FAILED, SDHNODE_INTERNAL_ERROR, SDHNODE_SDH_DEVICE_NO_CONNECTION, SDHNODE_NO_SDH_DEVICE, SDHNODE_UNSUPPORTED_Q_LENGTH };
 
 protected:
     // hooks implemented from CarosNodeServiceInterface base class

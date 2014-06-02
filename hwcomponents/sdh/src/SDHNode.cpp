@@ -1,5 +1,8 @@
 #include <caros/SDHNode.hpp>
 
+#include <caros/CarosNodeServiceInterface.hpp>
+#include <caros/GripperServiceInterface.hpp>
+
 #include <rw/math/Q.hpp>
 #include <rw/common/Timer.hpp>
 #include <rw/common/Exception.hpp>
@@ -49,7 +52,7 @@ SDHNode::~SDHNode() {
 
 bool SDHNode::configureHook() {
     if (_sdh != 0) {
-        fatalError("The SDH device is already active - please properly cleanup before trying to configure the SDH.", SDHNODE_SDH_DEVICE_ALREADY_ACTIVE);
+        CAROS_FATALERROR("The SDH device is already active - please properly cleanup before trying to configure the SDH.", SDHNODE_SDH_DEVICE_ALREADY_ACTIVE);
         return false;
     }
     _sdh = new rwhw::SDHDriver;
@@ -70,7 +73,7 @@ bool SDHNode::configureHook() {
 
     /* TODO: Could make the use of the gripper service, configurable through the parameter server. */
     if (!configureGripperService()) {
-        fatalError("The CAROS GripperService could not be configured correctly.", SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
+        CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.", SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
         return false;
     }
 
@@ -97,7 +100,7 @@ bool SDHNode::cleanupHook() {
 
 bool SDHNode::startHook() {
     if (_sdh == 0) {
-        fatalError("The SDH device was not configured when startHook() was invoked", SDHNODE_INTERNAL_ERROR);
+        CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
@@ -107,7 +110,7 @@ bool SDHNode::startHook() {
          * - A "misconfiguration" - some other node just invoking start on this node without verifying that this node is not currently running
          * - A race condition (multiple nodes trying to start this node - although highly unlikely when the callback queues are processed one by one)
          */
-        ROS_ERROR_STREAM("startHook() invoked even though a connection to the SDH device has already been established - this should be considered a bug!"); 
+        ROS_ERROR_STREAM("'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the SDH device has already been established - this should be considered a bug!"); 
         return false;
     }
 
@@ -121,16 +124,14 @@ bool SDHNode::startHook() {
     } else if (_interfaceType == "CAN") {
         _sdh->connect(_canDevice, _canBaudRate, _canTimeout);
     } else {
-        std::ostringstream ss;
-        ss << "The specified interface '" << _interfaceType << "' is not supported.";
-        fatalError(ss.str(), SDHNODE_UNSUPPORTED_INTERFACE_TYPE);
+        CAROS_FATALERROR("The specified interface '" << _interfaceType << "' is not supported.", SDHNODE_UNSUPPORTED_INTERFACE_TYPE);
         return false;
     }
 
     /* Verify that the connection to the SDH has been established - this eliminates the need for verifying the _sdh->connect() function calls actually succeeded */
     if (! _sdh->isConnected()) {
         /* Something went wrong when connecting */
-        fatalError("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
+        CAROS_FATALERROR("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
         return false;
     }
 
@@ -139,7 +140,7 @@ bool SDHNode::startHook() {
 
 bool SDHNode::stopHook() {
     if (_sdh == 0) {
-        fatalError("The SDH device was not configured when stopHook() was invoked", SDHNODE_INTERNAL_ERROR);
+        CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
         return false;
     } else {
         if (_sdh->isConnected()) {
@@ -147,7 +148,7 @@ bool SDHNode::stopHook() {
             _sdh->stop();
             _sdh->disconnect();
         } else {
-            ROS_WARN_STREAM("There was no established connection to the SDH device when stopHook() was invoked! - Consider this a bug!");
+            ROS_WARN_STREAM("There was no established connection to the SDH device when '" << __PRETTY_FUNCTION__ << "' was invoked! - Consider this a bug!");
         }
     }
 
@@ -177,12 +178,12 @@ void SDHNode::stoppedLoopHook() {
 void SDHNode::runLoopHook() {
     try {
         if (_sdh == 0) {
-            fatalError("The SDH device was not configured when runLoopHook() was invoked", SDHNODE_INTERNAL_ERROR);
+            CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
             return;
         }
 
         if (! _sdh->isConnected()) {
-            error("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+            CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
             return;
         }
 
@@ -269,12 +270,12 @@ void SDHNode::runLoopHook() {
         default:
             ROS_FATAL_STREAM("Unknown state in the SDH state machine '" << _currentState << "' (a value is expected due to enum implementation) - This is a bug!");
             /* This is considered a fatal error, but should never happen. */
-            fatalError("Unknown state in the SDH state machine", SDHNODE_INTERNAL_ERROR);
+            CAROS_FATALERROR("Unknown state in the SDH state machine", SDHNODE_INTERNAL_ERROR);
             break;
         }
     } catch(const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return;
     }
 }
@@ -282,11 +283,10 @@ void SDHNode::runLoopHook() {
 void SDHNode::errorLoopHook() {
     /* Stop the SDH's current action(s) */
     if (_sdh == 0) {
-        ROS_DEBUG_STREAM("The SDH device was not configured when errorLoopHook() was invoked!");
+        ROS_DEBUG_STREAM("The SDH device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
         if (_sdh->isConnected()) {
             _sdh->stop();
-            /* TODO: Should an error also cause a disconnect to the SDH device? i.e. _sdh->disconnect() */
         }
     }
 }
@@ -294,7 +294,7 @@ void SDHNode::errorLoopHook() {
 void SDHNode::fatalErrorLoopHook() {
     /* Stop the SDH's current action(s) */
     if (_sdh == 0) {
-        ROS_DEBUG_STREAM("The SDH device was not configured when fatalErrorLoopHook() was invoked!");
+        ROS_DEBUG_STREAM("The SDH device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
         if (_sdh->isConnected()) {
             _sdh->stop();
@@ -316,11 +316,18 @@ bool SDHNode::moveQ(const rw::math::Q& q)
         return false;
     }
 
-    if (!verifyQLength(q, "moveQ")) {
+    if (_sdh == 0) {
+        CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (!verifyWorkingSDHDevice("moveQ")) {
+    if (! _sdh->isConnected()) {
+        CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+        return false;
+    }
+
+    if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE) {
+        CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE, SDHNODE_UNSUPPORTED_Q_LENGTH);
         return false;
     }
 
@@ -332,7 +339,7 @@ bool SDHNode::moveQ(const rw::math::Q& q)
         _nextState = MOVE_WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
@@ -348,11 +355,18 @@ bool SDHNode::gripQ(const rw::math::Q& q)
         return false;
     }
 
-    if (!verifyQLength(q, "gripQ")) {
+    if (_sdh == 0) {
+        CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (!verifyWorkingSDHDevice("gripQ")) {
+    if (! _sdh->isConnected()) {
+        CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+        return false;
+    }
+
+    if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE) {
+        CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE, SDHNODE_UNSUPPORTED_Q_LENGTH);
         return false;
     }
 
@@ -362,7 +376,7 @@ bool SDHNode::gripQ(const rw::math::Q& q)
         _nextState = WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
@@ -379,11 +393,18 @@ bool SDHNode::setForceQ(const rw::math::Q& q)
         return false;
     }
 
-    if (!verifyQLength(q, "setForceQ")) {
+    if (_sdh == 0) {
+        CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (!verifyWorkingSDHDevice("setForceQ")) {
+    if (! _sdh->isConnected()) {
+        CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+        return false;
+    }
+
+    if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE) {
+        CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE, SDHNODE_UNSUPPORTED_Q_LENGTH);
         return false;
     }
 
@@ -391,7 +412,7 @@ bool SDHNode::setForceQ(const rw::math::Q& q)
         _sdh->setTargetQCurrent(q);
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
@@ -407,11 +428,18 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
         return false;
     }
 
-    if (!verifyQLength(q, "setVelocityQ")) {
+    if (_sdh == 0) {
+        CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (!verifyWorkingSDHDevice("setVelocityQ")) {
+    if (! _sdh->isConnected()) {
+        CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+        return false;
+    }
+
+    if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE) {
+        CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE, SDHNODE_UNSUPPORTED_Q_LENGTH);
         return false;
     }
 
@@ -419,7 +447,7 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
         _sdh->setTargetQVel(q);
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
@@ -433,7 +461,13 @@ bool SDHNode::stopMovement()
         return false;
     }
 
-    if (!verifyWorkingSDHDevice("stopMovement")) {
+    if (_sdh == 0) {
+        CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
+        return false;
+    }
+
+    if (! _sdh->isConnected()) {
+        CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
 
@@ -442,27 +476,9 @@ bool SDHNode::stopMovement()
         _nextState = WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
-        error(exp.what(), SDHNODE_INTERNAL_ERROR);
+        CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
-    return true;
-}
-
-bool SDHNode::verifyWorkingSDHDevice(const std::string& functionName) {
-    if (_sdh == 0) {
-        std::ostringstream ss;
-        ss << "The SDH device was not configured when '" << functionName << "()' was invoked.";
-        fatalError(ss.str(), SDHNODE_NO_SDH_DEVICE);
-        return false;
-    }
-    return true;
-}
-
-bool SDHNode::verifyQLength(const rw::math::Q& q, const std::string& functionName) {
-    if (q.size() != SUPPORTED_Q_LENGTH) {
-        ROS_WARN_STREAM("The supplied length of Q for '" << functionName << "' was '" << q.size() << "' but should be '" << SUPPORTED_Q_LENGTH << "'.");
-        return false;
-    }
     return true;
 }

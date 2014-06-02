@@ -46,7 +46,7 @@ CAROS_FATALERROR("The value of x is " << x << ". x must not be less than zero.",
     std::stringstream FATALERROR__stream;                                           \
     FATALERROR__stream << ostreamExpression;                                        \
     ROS_ERROR_STREAM("CarosNodeFatalError: " << FATALERROR__stream.str() << "; error code: " << errorCode); \
-    fatalerror(FATALERROR__stream.str(), errorCode );                                     \
+    fatalError(FATALERROR__stream.str(), errorCode );                                     \
     } while (0)
 
 
