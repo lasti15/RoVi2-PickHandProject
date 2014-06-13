@@ -34,7 +34,7 @@ namespace caros {
         typedef rw::common::Ptr<GripperServiceInterface> Ptr;
         /**
          * @brief constructor.
-         * @param nodehandle [in] the nodehandle to use for services.
+         * @param[in] nodehandle the nodehandle to use for services.
          */
         GripperServiceInterface(const ros::NodeHandle& nodehandle);
 
@@ -87,8 +87,9 @@ namespace caros {
 
         /**
          * @brief publish the state of the gripper. Uses GripperState messages
-         * @param q [in] joint configuration
-         * @param dq [in] joint velocity
+         * @param[in] q joint configuration
+         * @param[in] dq joint velocity
+         * TODO: Add documentation for the rest of the parameters
          */
         void publishState(const rw::math::Q& q,
                           const rw::math::Q& dq,

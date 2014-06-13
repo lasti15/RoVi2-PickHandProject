@@ -22,15 +22,15 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 ################################################
 add_service_files(
   FILES
-   SerialDeviceForceControlStart.srv
-   SerialDeviceForceControlStop.srv
-   SerialDeviceForceControlUpdate.srv
-   SerialDeviceMoveLin.srv
-   SerialDeviceMoveLinFC.srv
-   SerialDeviceMovePTP_T.srv
-   SerialDeviceMovePTP.srv
-   SerialDeviceMoveVelQ.srv
-   SerialDeviceMoveVelT.srv
+  SerialDeviceForceControlStart.srv
+  SerialDeviceForceControlStop.srv
+  SerialDeviceForceControlUpdate.srv
+  SerialDeviceMoveLin.srv
+  SerialDeviceMoveLinFC.srv
+  SerialDeviceMovePTP_T.srv
+  SerialDeviceMovePTP.srv
+  SerialDeviceMoveVelQ.srv
+  SerialDeviceMoveVelT.srv
   GripperMoveQ.srv
   GripperGripQ.srv
   GripperSetForceQ.srv
@@ -77,15 +77,8 @@ add_library(${library_name}
 )
 
 add_dependencies(${library_name}
-# catkin_EXPORTED_TARGETS should be used if this target depends on things (e.g. message or service headers) that are imported from other catkin packages. (see http://docs.ros.org/hydro/api/catkin/html/howto/building_msgs.html)
-# OBS: But this will cause every target in a package to be required and thereby requiring that target to build code dependent on e.g. RobWork and CoViS.
-# OBS2: What happens once a third package wants to use the second package? (does the third package need to also depend on the first package and making it a very bad design solution to have msg,srv,action in the same package as the interfaces/other API?) or is it not required for msg,srv,action as their dependencies should be resolved through the generate_messages(DEPENDENCIES...)?
-#  ${catkin_EXPORTED_TARGETS}
-##
-# caros_common_EXPORTED_TARGETS can also be used
-# So use specific dependencies instead
+# ${catkin_EXPORTED_TARGETS} should be used if this target depends on things (e.g. message or service headers) that are imported from other catkin packages. (see http://docs.ros.org/hydro/api/catkin/html/howto/building_msgs.html)
   caros_common_generate_messages_cpp
-#####
   ${PROJECT_NAME}_generate_messages_cpp
 )
 

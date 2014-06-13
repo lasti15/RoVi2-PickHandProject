@@ -1,4 +1,4 @@
-# GripperState represents the state of one a single gripper in the setup.
+# GripperState represents the state of a single gripper in the setup.
 
 # Header containing information about time and frameid
 Header header
