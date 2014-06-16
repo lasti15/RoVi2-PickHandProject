@@ -15,7 +15,8 @@ Robotiq3Node::Robotiq3Node(const std::string& name):
 	_port(502),
 	_nodeName(name)
 {
-    configureNode();
+//    configureNode();
+// configureNode() is private - a rewrite/redesign of CarosNodeServiceInterface is planned - removing the need to call this step
 }
 
 bool Robotiq3Node::configureHook(){
