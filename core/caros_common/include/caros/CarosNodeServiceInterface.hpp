@@ -15,6 +15,8 @@
  * - Error codes: Make use of a "singleton counter" and the parameter
  *                server to handle the distribution of error codes and
  *                their corresponding human-friendly description.
+ * - [IMPORTANT] Update the documentation according to the new simplified
+ *   statemachine.
  ************************************************************************/
 
 /**
@@ -53,9 +55,12 @@ CAROS_FATALERROR("The value of x is " << x << ". x must not be less than zero.",
 namespace caros {
     enum CAROS_NODE_ERRORCODE { CAROS_NODE_NO_ERROR_CODE_SUPPLIED = 0 };
 
+    /* FIXME: the description below is now outdated */
     /**
      * @brief A node service interface that defines a simple statemachine from which
      * the node can be controlled.
+     *
+     * [ FIXME This information is outdated FIXME ]
      *
      * There are 5 states: init, stopped, running, error, fatalerror
      *
@@ -106,7 +111,7 @@ namespace caros {
         /**
          * @brief The states that the CAROS node can be in
          */
-        typedef enum {PREINIT,STOPPED,RUNNING,INERROR,INFATALERROR} NodeState;
+        typedef enum {PREINIT = 0,RUNNING,INERROR,INFATALERROR} NodeState;
 
     protected:
 
@@ -120,34 +125,14 @@ namespace caros {
          */
         /** @{ */
         /**
-         * @brief This is called as part of the configuration step that is invoked through the ROS service "configure".
-         *
-         * This hook should be used to initialise interfaces (e.g. the CAROS interface GripperServiceInterface) and advertise ROS services and publishers that are specific to the node.
-         * If an error occurs, then fatalError() should be called with an appropriate error message and error code, and false returned.
-         */
-        virtual bool configureHook() = 0;
-
-        /**
-         * @brief This is called as part of the cleanup step that is invoked through the ROS service "cleanup".
-         *
-         * This hook should be used to properly cleanup interfaces (e.g. the CAROS interface GripperServiceInterface) and shut down ROS services and publishers that are specific to the node.
-         */
-        virtual bool cleanupHook() = 0;
-
-        /**
-         * @brief This is called when the node is transitioning to the RUNNING state, invoked through the ROS service "start".
+         * @brief This is called when the node is transitioning to the RUNNING state, which will happen automatically when invoking start()
          *
          * This hook should be used to establish connections to the hardware and activate the hardware.
+         * It is also here that other interfaces should be initialised (e.g. the CAROS GripperServiceInterface), together with advertising ROS services and publishers that are specific to the node.
+         * If an error occurs, then either error() or fatalError() should be called depending on the severity of the error, and false returned.
          */
-        virtual bool startHook() = 0;
+        virtual bool activateHook() = 0;
     
-        /**
-         * @brief This is called when stopping the node, invoked through the ROS service "stop".
-         *
-         * This hook should be used to deactivate the hardware and shut down any established connections.
-         */
-        virtual bool stopHook() = 0;
-
         /**
          * @brief This is called as part of a recovery process that is invoked through the ROS service "recover".
          *
@@ -164,9 +149,6 @@ namespace caros {
          */
         /** @{ */
         virtual void runLoopHook() = 0;
-
-        virtual void initLoopHook() { /* Empty */ };
-        virtual void stoppedLoopHook() { /* Empty */ };
         virtual void errorLoopHook() { /* Empty */ };
         virtual void fatalErrorLoopHook() { /* Empty */ };
         /** @} */
@@ -179,8 +161,6 @@ namespace caros {
 
         /** @{ */
         bool isInRunning() { return _nodeState == RUNNING; }
-        bool isInStopped() { return _nodeState == STOPPED; }
-        bool isInInit() { return _nodeState == PREINIT; }
         bool isInError() { return _nodeState == INERROR; }
         bool isInFatalError() { return _nodeState == INFATALERROR; }
         /** @} */
@@ -211,55 +191,20 @@ namespace caros {
 
         /** @{ */
         /**
-         * @brief Configure the CAROS node.
+         * @brief Activate the CAROS node.
          *
-         * This initialises the ROS services and advertise them, bringing the node into a working state.
+         * This transitions the node into the RUNNING state. This should have the node establish connections to the hardware and activate it, together with advertising the ROS services and publishers for the node.
          *
          * @pre In PREINIT state
-         * @post Success: in STOPPED state
-         * @post Failure: in INFATALERROR state
-         */
-        bool configureNode();
-
-        /**
-         * @brief Clean up the CAROS node.
-         *
-         * This shuts down the ROS services and cleans up allocated resources, bringing the node into the PREINIT state.
-         * 
-         * If the node is in RUNNING state then stopNode() will be invoked first.
-         *
-         * @pre In any state
-         * @post Success: in PREINIT state
-         * @post Failure: in INFATALERROR state
-         */
-        bool cleanupNode();
-
-        /**
-         * @brief Start the CAROS node.
-         *
-         * This puts the node in a running state, where connections to the hardware have been established and the hardware activated.
-         *
-         * @pre In STOPPED state
          * @post Success: in RUNNING state
          * @post Failure: in one of the error states, depending on the severity of the failure
          */
-        bool startNode();
-
-        /**
-         * @brief Stop the CAROS node.
-         *
-         * This stops the node (e.g. leaving the running state), which should deactivate the hardware and shut down the previously established connections.
-         *
-         * @pre In RUNNING or INERROR state
-         * @post Success: in STOPPED state
-         * @post Failure: in one of the error states, depending on the severity of the failure
-         */
-        bool stopNode();
+        bool activateNode();
 
         /**
          * @brief Recover from an error.
          *
-         * If it's possible to recover then the node will go into the state that the node was in before entering the error state.
+         * If it's possible to recover then the node will transition back into the state that the node was in before entering the INERROR state.
          *
          * @pre In INERROR state
          * @post Success: in the previous state
@@ -277,22 +222,6 @@ namespace caros {
 
         /** @{ */
         /**
-         * @brief ROS service wrapper for stopNode().
-         */
-        bool stopHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
-        /**
-         * @brief ROS service wrapper for startNode().
-         */
-        bool startHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
-        /**
-         * @brief ROS service wrapper for configureNode().
-         */
-        bool configureHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
-        /**
-         * @brief ROS service wrapper for cleanupNode().
-         */
-        bool cleanupHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
-        /**
          * @brief ROS service wrapper for recoverNode().
          */
         bool recoverHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
@@ -307,10 +236,6 @@ namespace caros {
 
         ros::Publisher _nodeStatePublisher;
 
-        ros::ServiceServer _srvStop;
-        ros::ServiceServer _srvStart;
-        ros::ServiceServer _srvConfigure;
-        ros::ServiceServer _srvCleanup;
         ros::ServiceServer _srvRecover;
 
         NodeState _nodeState;
