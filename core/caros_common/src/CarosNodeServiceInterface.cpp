@@ -59,7 +59,7 @@ namespace caros {
             if (_nodeState == INERROR) {
                 errorLoopHook();
             }
-            /* Also process fatal error state (if an error become a fatal error) */
+            /* Also process fatal error state (if an error becomes a fatal error, then it will also be processed in the same ROS cycle) */
             if (_nodeState == INFATALERROR) {
                 fatalErrorLoopHook();
             }
