@@ -19,7 +19,7 @@
 
 /* Notes:
  * This node is designed to be run in a single thread that doesn't allow concurrently processing of the set-commands and/or the runLoopHook - eliminating the possibility of race conditions.
- * The GripperServiceInterface commands (and other services that are configured/advertised in the configureHook()) can be called even when the CarosNode is in a non-running state. This is due to the design choice that all the services and publishers should be broadcasted/available once the CarosNode has been configured. This will avoid hiding (some of) the capabilities/interface of the node when it's not in certain states. However this requires more defensive programming on the interface methods, to make sure that they will only work when the CarosNode has been put in the running state (and connections to the hardware/device has been established or similar).
+ * [ FIXME: invalidated by removal of configureHook() ] The GripperServiceInterface commands (and other services that are configured/advertised in the configureHook()) can be called even when the CarosNode is in a non-running state. This is due to the design choice that all the services and publishers should be broadcasted/available once the CarosNode has been configured. This will avoid hiding (some of) the capabilities/interface of the node when it's not in certain states. However this requires more defensive programming on the interface methods, to make sure that they will only work when the CarosNode has been put in the running state (and connections to the hardware/device has been established or similar).
  */
 
 /* TODO:
@@ -45,6 +45,10 @@ SDHNode::SDHNode(const ros::NodeHandle& nodehandle):
 }
 
 SDHNode::~SDHNode() {
+    if (!cleanupGripperService()) {
+        ROS_ERROR_STREAM("cleanupGripperService() failed.");
+    }
+
     if (_sdh != 0) {
         if (_sdh->isConnected()) {
             ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
@@ -53,12 +57,27 @@ SDHNode::~SDHNode() {
         }
         delete _sdh;
         _sdh = 0;
+    } else {
+        ROS_DEBUG_STREAM("There was no SDH device to destroy before deallocating/destroying the SDHNode object.");
     }
 }
 
-bool SDHNode::configureHook() {
+bool SDHNode::activateHook() {
+    if (!configureSDHDevice()) {
+        return false;
+    }
+
+    if (!connectToSDHDevice()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool SDHNode::configureSDHDevice() {
     if (_sdh != 0) {
-        CAROS_FATALERROR("The SDH device is already active - please properly cleanup before trying to configure the SDH.", SDHNODE_SDH_DEVICE_ALREADY_ACTIVE);
+        /* Could also just silently return true or false and ignore the error that configure is being invoked twice... */
+        CAROS_FATALERROR("The SDH device is already active - trying to configure an already configured SDH node is a bug!", SDHNODE_SDH_DEVICE_ALREADY_ACTIVE);
         return false;
     }
     _sdh = new rwhw::SDHDriver;
@@ -75,7 +94,7 @@ bool SDHNode::configureHook() {
     _nodeHandle.param("can_baudrate", _canBaudRate, 1000000);
     _nodeHandle.param("can_timeout", _canTimeout, 0.5);
 
-    /* TODO: Verify that the chosen interfaceType is valid? or just let it fail when start is invoked? */
+    /* TODO: Verify that the chosen interfaceType is valid? or just let it fail when the parameters are being set? */
 
     /* TODO: Could make the use of the gripper service, configurable through the parameter server. */
     if (!configureGripperService()) {
@@ -103,41 +122,14 @@ bool SDHNode::configureHook() {
     return true;
 }
 
-bool SDHNode::cleanupHook() {
-    /* Keep cleaning up even if the gripper service can't be cleaned up properly */
-    bool retVal = true;
-    if (!cleanupGripperService()) {
-        retVal = false;
-        ROS_ERROR_STREAM("cleanupGripperService() failed.");
-    }
-
-    ROS_WARN_STREAM_COND(_sdh == 0, "cleanupHook() was called with the SDH device not being configured (i.e. no valid SDH-object)"); 
-    if (_sdh != 0) {
-        if (_sdh->isConnected()) {
-            ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
-            _sdh->stop();
-            _sdh->disconnect();
-        }
-        delete _sdh;
-        _sdh = 0;
-    }
-
-    return retVal;
-}
-
-bool SDHNode::startHook() {
+bool SDHNode::connectToSDHDevice() {
     if (_sdh == 0) {
         CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
     if (_sdh->isConnected()) {
-        /* Not jumping to an error state, thus allowing further use after having startHook() mistakenly invoked.
-         * This can happen for a variety of reasons, of which some are:
-         * - A "misconfiguration" - some other node just invoking start on this node without verifying that this node is not currently running
-         * - A race condition (multiple nodes trying to start this node - although highly unlikely when the callback queues are processed one by one)
-         */
-        ROS_ERROR_STREAM("'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the SDH device has already been established - this should be considered a bug!"); 
+        ROS_ERROR_STREAM("'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the SDH device has already been established - this is a bug!"); 
         return false;
     }
 
@@ -155,28 +147,11 @@ bool SDHNode::startHook() {
         return false;
     }
 
-    /* Verify that the connection to the SDH has been established - this eliminates the need for verifying the _sdh->connect() function calls actually succeeded */
+    /* Verify that the connection to the SDH device has been established - this eliminates the need for verifying that the _sdh->connect() function calls actually succeed */
     if (! _sdh->isConnected()) {
         /* Something went wrong when connecting */
         CAROS_FATALERROR("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
         return false;
-    }
-
-    return true;
-}
-
-bool SDHNode::stopHook() {
-    if (_sdh == 0) {
-        CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
-        return false;
-    } else {
-        if (_sdh->isConnected()) {
-            /* TODO: calling stop() is probably unnecessary */
-            _sdh->stop();
-            _sdh->disconnect();
-        } else {
-            ROS_WARN_STREAM("There was no established connection to the SDH device when '" << __PRETTY_FUNCTION__ << "' was invoked! - Consider this a bug!");
-        }
     }
 
     return true;
@@ -192,14 +167,6 @@ bool SDHNode::recoverHook() {
     ROS_ERROR_STREAM("The recoverHook() has not been implemented yet!");
 
     return false;
-}
-
-void SDHNode::initLoopHook() {
-/* Empty */
-}
-
-void SDHNode::stoppedLoopHook() {
-/* Empty */
 }
 
 void SDHNode::runLoopHook() {
@@ -334,8 +301,11 @@ void SDHNode::fatalErrorLoopHook() {
 /************************************************************************
  * GripperServiceInterface
  ************************************************************************/
-bool SDHNode::moveQ(const rw::math::Q& q)
-{
+/* Note:
+ * The checks isInRunning(), (_sdh == 0) and (! _sdh->isConnected()) are not placed in one common function, because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty" function.
+ * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A preprocessor code generating macro is not exactly a nice and easily maintainable solution)
+ */
+bool SDHNode::moveQ(const rw::math::Q& q) {
     ROS_DEBUG_STREAM_NAMED("received_q", "moveQ: " << q);
 
     if (!isInRunning()) {
@@ -373,8 +343,7 @@ bool SDHNode::moveQ(const rw::math::Q& q)
     return true;
 }
 
-bool SDHNode::gripQ(const rw::math::Q& q)
-{
+bool SDHNode::gripQ(const rw::math::Q& q) {
     ROS_DEBUG_STREAM_NAMED("received_q", "gripQ: " << q);
 
     if (!isInRunning()) {
@@ -411,8 +380,7 @@ bool SDHNode::gripQ(const rw::math::Q& q)
 }
 
 
-bool SDHNode::setForceQ(const rw::math::Q& q)
-{
+bool SDHNode::setForceQ(const rw::math::Q& q) {
     ROS_DEBUG_STREAM_NAMED("received_q", "setForceQ: " << q);
 
     if (!isInRunning()) {
@@ -446,8 +414,7 @@ bool SDHNode::setForceQ(const rw::math::Q& q)
     return true;
 }
 
-bool SDHNode::setVelocityQ(const rw::math::Q& q)
-{
+bool SDHNode::setVelocityQ(const rw::math::Q& q) {
     ROS_DEBUG_STREAM_NAMED("received_q", "setVelocityQ: " << q);
 
     if (!isInRunning()) {
@@ -481,8 +448,7 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
     return true;
 }
 
-bool SDHNode::stopMovement()
-{
+bool SDHNode::stopMovement() {
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;

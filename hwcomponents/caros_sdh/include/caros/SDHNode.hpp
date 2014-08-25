@@ -50,17 +50,16 @@ public:
 
 protected:
     // hooks implemented from CarosNodeServiceInterface base class
-    bool configureHook();
-    bool cleanupHook();
-    bool startHook();
-    bool stopHook();
+    bool activateHook();
     bool recoverHook();
 
-    void initLoopHook();
-    void stoppedLoopHook();
     void runLoopHook();
     void errorLoopHook();
     void fatalErrorLoopHook();
+
+    // Utility functions to configure and connect to the SDH device
+    bool configureSDHDevice();
+    bool connectToSDHDevice();
 
 private:
     bool verifyWorkingSDHDevice(const std::string& functionName);
