@@ -20,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
 #### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}" "${RW_ROOT}/cmake")
 
 ########################################################################
 #### Declare ROS Messages, Services and Actions

@@ -39,7 +39,7 @@ message("RW_ROOT: ${RWHW_ROOT}/build")
 SET(CMAKE_BUILD_TYPE Release)
 
 #Include default settings for constructing a robwork dependent project
-find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
+find_package(RobWork REQUIRED PATHS "${RW_ROOT};${RW_ROOT}/cmake")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
 include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
