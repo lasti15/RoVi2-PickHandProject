@@ -2,6 +2,7 @@
 #define CAROS_COMMON_H_
 
 #include <rw/math.hpp>
+#include <rw/models/WorkCell.hpp>
 
 #include <caros_common_msgs/Q.h>
 
@@ -50,6 +51,27 @@ namespace caros {
     /**
      * @} end of group
      */
+
+    /**
+     * @brief gets the workcell from parameter server.
+     *
+     * The workcell should be placed in /caros/workcell on the
+     * parameter server.
+     *
+     * @note requires that ROS is initialized
+     * @return the WorkCell or NULL
+     */
+    rw::models::WorkCell::Ptr getWorkCell();
+
+    /**
+     * @brief gets the workcell from parameter server.
+     *
+     * @note requires that ROS is initialized
+     * @param paramname [in] the name of the variable on the parameter server
+     * @return the WorkCell or NULL
+     */
+    rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname);
+
 } // namespace
 
 #endif /* CAROS_COMMON_H_ */

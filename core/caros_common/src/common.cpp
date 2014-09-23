@@ -1,6 +1,7 @@
 #include <caros/common.hpp>
 
 #include <rw/math.hpp>
+#include <rw/loaders/WorkCellFactory.hpp>
 
 #include <caros_common_msgs/Q.h>
 
@@ -8,6 +9,8 @@
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
+
+#include <ros/ros.h>
 
 namespace caros {
 
@@ -89,4 +92,26 @@ namespace caros {
         twist.angular.z = vs(5);
         return twist;
     }
+
+    rw::models::WorkCell::Ptr getWorkCell() {
+        return getWorkCell("/caros/workcell");
+    }
+
+    rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname) {
+        ros::NodeHandle node("~");
+        std::string workcellFile;
+        bool paramFound;
+        paramFound = node.getParam(paramname, workcellFile);
+        if (!paramFound) {
+            ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
+            return NULL;
+        } else if (workcellFile.empty()){
+            ROS_ERROR_STREAM("The value of the parameter is empty!");
+            return NULL;
+        }
+        ROS_DEBUG_STREAM("loading file: " << workcellFile );
+        rw::models::WorkCell::Ptr wc = rw::loaders::WorkCellFactory::load(workcellFile);
+        return wc;
+    }
+
 } // namespace
