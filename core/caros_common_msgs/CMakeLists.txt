@@ -20,6 +20,7 @@ add_message_files(
   FILES
   Q.msg
   CarosNodeState.msg
+  RWState.msg
 )
 
 add_service_files(
@@ -29,6 +30,7 @@ add_service_files(
   Pause.srv
   ConfigBool.srv
   ConfigInt.srv
+  GetRWState.srv
 )
 
 generate_messages(
