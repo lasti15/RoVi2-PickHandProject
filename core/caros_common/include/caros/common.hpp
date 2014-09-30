@@ -3,8 +3,10 @@
 
 #include <rw/math.hpp>
 #include <rw/models/WorkCell.hpp>
+#include <rw/kinematics/State.hpp>
 
 #include <caros_common_msgs/Q.h>
+#include <caros_common_msgs/RWState.h>
 
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Transform.h>
@@ -48,6 +50,14 @@ namespace caros {
     //! convert VelocityScrew6D to Twist
     geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs);
 
+    void toRos(const rw::math::Transform3D<>& transform, geometry_msgs::Pose& pose);
+
+    //! convert VelocityScrew6D to Twist
+    caros_common_msgs::RWState toRos(const rw::kinematics::State& state);
+    void toRw(const caros_common_msgs::RWState& state, rw::kinematics::State& state_dst);
+    rw::kinematics::State toRw(const caros_common_msgs::RWState& state, rw::models::WorkCell::Ptr wc);
+
+
     /**
      * @} end of group
      */
@@ -71,6 +81,12 @@ namespace caros {
      * @return the WorkCell or NULL
      */
     rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname);
+
+    /**
+     * @brief get current stateinformation of the workcell
+     * @return
+     */
+    rw::common::Ptr< rw::kinematics::State > getState( );
 
 } // namespace
 
