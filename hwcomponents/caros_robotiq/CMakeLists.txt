@@ -41,6 +41,14 @@ SET(CMAKE_BUILD_TYPE Release)
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork REQUIRED PATHS "${RW_ROOT};${RW_ROOT}/cmake")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
+
+if (NOT ROBWORKHARDWARE_FOUND)
+
+  message(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
+
+else()
+
+
 include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
 #[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
@@ -66,3 +74,5 @@ add_dependencies(robotiq3
   caros_common
   caros_control
 )
+
+endif()
