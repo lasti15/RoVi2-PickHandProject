@@ -12,6 +12,11 @@
 		<param name="UR_6_85_5_A" value="/joint_states"/>
 	</node>
 
-	
+	<!-- start the robworkcell nodes -->
+	<node name="grasp_selector" pkg="caros_grasp_selection" type="grasp_selection" respawn="false" output="screen">
+		<param name="gripper" value="Robotiq-3"/>
+		<param name="arm" value="UR-6-85-5-A"/>
+		<param name="graspdb" value="/home/jimali/db"/>
+	</node>
   </group>
 </launch>
