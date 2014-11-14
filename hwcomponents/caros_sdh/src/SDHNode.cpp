@@ -223,9 +223,18 @@ void SDHNode::runLoopHook() {
         bool isMoving = (compare != dq) ? true : false;
         bool isBlocked = false;
         /* FIXME: This can possibly give a wrong report in the situation where a new moveQ has just been initiated - so the calculated distance between current position and target is greater than the threshold, but the measured/calculated velocity is still zero */
+	/* MBAND DEBUG */
+	ROS_INFO_STREAM("mband: _currentQ: " << _currentQ);
+	ROS_INFO_STREAM("mband: _moveQ: " << _moveQ);
+	/* TODO: FIXME:
+	 * Design flaw, that _moveQ is 0 (size() == 0) when no move has been initiated... so the distance can be anything depending on initialisation...
+	 */
+	/* MBAND END DEBUG */
+#if 0
         if (!isMoving && (rw::math::MetricUtil::dist2(_currentQ, _moveQ) >= MOVE_DISTANCE_STOPPED_THRESHOLD)) {
             isBlocked = true;
         }
+#endif
         bool isStopped = true;
         /* If not moving nor blocked, then it must be stopped (i.e. reached the target (see GripperState.msg specification)) */
         if (isMoving || isBlocked) {

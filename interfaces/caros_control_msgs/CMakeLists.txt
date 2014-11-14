@@ -24,6 +24,8 @@ add_service_files(
   SerialDeviceMovePTP.srv
   SerialDeviceMoveVelQ.srv
   SerialDeviceMoveVelT.srv
+  SerialDeviceMoveServoQ.srv
+  SerialDeviceMoveServoT.srv
   GripperMoveQ.srv
   GripperGripQ.srv
   GripperSetForceQ.srv

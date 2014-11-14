@@ -7,7 +7,7 @@ Header header
 # Angles should be represented as radians and distances in meters.
 caros_common_msgs/Q q
 
-# velocities should be represented as radians per sec 
+#Velocities should be represented as radians per sec 
 caros_common_msgs/Q dq
 
 #Is the robot moving
@@ -18,4 +18,3 @@ bool isColliding
 
 #Is Emergency Stopped
 bool estopped
-

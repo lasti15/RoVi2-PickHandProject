@@ -1,185 +1,140 @@
-/**/
-#include "URServiceInterface.hpp"
+#include <caros_universalrobot/URServiceInterface.hpp>
 
-#include "marvin_common/RobotState.h"
-#include <marvin_common_rw/RwRos.hpp>
+#include <caros/common.hpp>
 
-#include <rw/math.hpp>
-#include <boost/foreach.hpp>
+#include <rw/math/Q.hpp>
+#include <rw/math/Transform3D.hpp>
 
+#include <ros/ros.h>
 
-using namespace marvin_common;
+#include <algorithm>
 
-using namespace rw::common;
-using namespace rw::math;
-
-
-URServiceInterface::URServiceInterface(const std::string& service_name, double loopRate, bool supportSafeMotions):
-	_service_name(service_name),
-	_loopRate(loopRate),
-	_nodeHnd(service_name)
+URServiceInterface::URServiceInterface(const ros::NodeHandle& nodehandle):
+    _nodehandle(nodehandle)
 {
-    //_sensor_data_publisher = _nodeHnd.advertise<sensor_data>("sensor_data", 1000);
+    /* Do nothing for now */
+    /* No way to verify that this object is properly configured or just a zombie object, since RAII is not being used */
+}
 
-    _deviceStatePublisher = _nodeHnd.advertise<RobotState>("RobotState", 1000);
-   // _wrenchDataPublisher = _nodeHnd.advertise<WrenchData>("URWrenchData", 1000);
+URServiceInterface::~URServiceInterface() {
+    /* Currently no special things to clean up */
+}
 
-    _srvMoveQ = _nodeHnd.advertiseService("moveQ", &URServiceInterface::moveQHandle, this);
-    _srvMoveL = _nodeHnd.advertiseService("moveL", &URServiceInterface::moveLHandle, this);
-    _srvServo = _nodeHnd.advertiseService("servo", &URServiceInterface::servoHandle, this);
-    _srvServoQ = _nodeHnd.advertiseService("servoq", &URServiceInterface::servoQHandle, this);
-    _srvStop = _nodeHnd.advertiseService("stop", &URServiceInterface::stopHandle, this);
-
-    if (supportSafeMotions) {
-    	_srvSafeMoveQ = _nodeHnd.advertiseService("safeMoveQ", &URServiceInterface::safeMoveQHandle, this);
-    	_srvSafeMoveL = _nodeHnd.advertiseService("safeMoveL", &URServiceInterface::safeMoveLHandle, this);
+bool URServiceInterface::configureURService() {
+    if (_srvServoT || _srvServoQ || _srvForceModeStart || _srvForceModeUpdate || _srvForceModeStop) {
+        ROS_WARN_STREAM("Reinitialising one or more URServiceInterface services. If this is not fully intended then this should be considered a bug!");
     }
 
+    _srvServoT = _nodehandle.advertiseService("servo_t", &URServiceInterface::servoTHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvServoT, "The servo_t service is empty!");
 
- //   _marvinTime.initialize(_nodeHnd);
+    _srvServoQ = _nodehandle.advertiseService("servo_q", &URServiceInterface::servoQHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvServoQ, "The servo_q service is empty!");
+
+    _srvForceModeStart = _nodehandle.advertiseService("force_mode_start", &URServiceInterface::forceModeStartHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvForceModeStart, "The force_mode_start service is empty!");
+
+    _srvForceModeUpdate = _nodehandle.advertiseService("force_mode_update", &URServiceInterface::forceModeUpdateHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvForceModeUpdate, "The force_mode_update service is empty!");
+
+    _srvForceModeStop = _nodehandle.advertiseService("force_mode_stop", &URServiceInterface::forceModeStopHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvForceModeStop, "The force_mode_stop service is empty!");
+
+    if (_srvServoT && _srvServoQ && _srvForceModeStart && _srvForceModeUpdate && _srvForceModeStop) {
+        /* Everything seems to have been properly initialised */
+    } else {
+        ROS_ERROR_STREAM("The URService could not be properly initialised - one or more ros services may not be up and running or working as intended!");
+        return false;
+    }
+
+    return true;
 }
 
+bool URServiceInterface::cleanupURService() {
+    if (_srvServoT) {
+        _srvServoT.shutdown();
+    } else {
+        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvServoT was empty!");
+    }
+    if (_srvServoQ) {
+        _srvServoQ.shutdown();
+    } else {
+        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvServoQ was empty!");
+    }
+    if (_srvForceModeStart) {
+        _srvForceModeStart.shutdown();
+    } else {
+        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeStart was empty!");
+    }
+    if (_srvForceModeUpdate) {
+        _srvForceModeUpdate.shutdown();
+    } else {
+        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeUpdate was empty!");
+    }
+    if (_srvForceModeStop) {
+        _srvForceModeStop.shutdown();
+    } else {
+        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeStop was empty!");
+    }
 
-bool URServiceInterface::safeMoveLHandle(URMoveL::Request& request, URMoveL::Response& response) {
-
-	std::vector<Transform3D<> > targets;
-	BOOST_FOREACH(geometry_msgs::Transform& target, request.path) {
-		targets.push_back(RwRos::toRw(target));
-	}
-
-	std::vector<float> blends;
-	BOOST_FOREACH(float f, request.blends) {
-		blends.push_back(f);
-	}
-
-	return safeMoveL(targets, blends, request.speed);
-
+    return true;
 }
 
-
-bool URServiceInterface::moveLHandle(URMoveL::Request& request, URMoveL::Response& response) {
-
-	std::vector<Transform3D<> > targets;
-	BOOST_FOREACH(geometry_msgs::Transform& target, request.path) {
-		targets.push_back(RwRos::toRw(target));
-	}
-
-	std::vector<float> blends;
-	BOOST_FOREACH(float f, request.blends) {
-		blends.push_back(f);
-	}
-
-	return moveL(targets, blends, request.speed);
+bool URServiceInterface::servoTHandle(caros_universalrobot::URServiceServoT::Request& request, caros_universalrobot::URServiceServoT::Response& response) {
+    rw::math::Transform3D<> target = caros::toRw(request.target);
+    response.success = servoT(target);
+    return true;
 }
 
-bool URServiceInterface::safeMoveQHandle(URMoveQ::Request& request, URMoveQ::Response& response)
-{
-
-	std::vector<Q> targets;
-	BOOST_FOREACH(marvin_common::Q6 qs, request.path) {
-		targets.push_back(RwRos::toRw(qs));
-	}
-	std::vector<float> blends;
-	BOOST_FOREACH(float f, request.blends) {
-		blends.push_back(f);
-	}
-
-	return safeMoveQ(targets, blends, request.speed);
+bool URServiceInterface::servoQHandle(caros_universalrobot::URServiceServoQ::Request& request, caros_universalrobot::URServiceServoQ::Response& response) {
+    rw::math::Q target = caros::toRw(request.target);
+    response.success = servoQ(target);
+    return true;
 }
 
+bool URServiceInterface::forceModeStartHandle(caros_universalrobot::URServiceForceModeStart::Request& request, caros_universalrobot::URServiceForceModeStart::Response& response) {
+    rw::math::Transform3D<> refToffset = caros::toRw(request.base2forceFrame);
+    rw::math::Wrench6D<> wrenchTarget;
+    wrenchTarget(0) = request.wrench.force.x;
+    wrenchTarget(1) = request.wrench.force.y;
+    wrenchTarget(2) = request.wrench.force.z;
 
-bool URServiceInterface::moveQHandle(URMoveQ::Request& request, URMoveQ::Response& response)
-{
+    wrenchTarget(3) = request.wrench.torque.x;
+    wrenchTarget(4) = request.wrench.torque.y;
+    wrenchTarget(5) = request.wrench.torque.z;
 
-	std::vector<Q> targets;
-	BOOST_FOREACH(marvin_common::Q6 qs, request.path) {
-		targets.push_back(RwRos::toRw(qs));
-	}
-	std::vector<float> blends;
-	BOOST_FOREACH(float f, request.blends) {
-		blends.push_back(f);
-	}
+    std::size_t index;
+    rw::math::Q selection(request.selection.size());
+    index = 0;
+    for (const auto item : request.selection) {
+        selection(index++) = static_cast<double>(item);
+    }
 
-	return moveQ(targets, blends, request.speed);
+    rw::math::Q limits(request.limits.size());
+    index = 0;
+    for (const auto item : request.limits) {
+        limits(index++) = static_cast<double>(item);
+    }
+
+    response.success = forceModeStart(refToffset, selection, wrenchTarget, limits);
+    return true;
 }
 
+bool URServiceInterface::forceModeUpdateHandle(caros_universalrobot::URServiceForceModeUpdate::Request& request, caros_universalrobot::URServiceForceModeUpdate::Response& response) {
+    rw::math::Wrench6D<> wrenchTarget;
+    wrenchTarget(0) = request.wrench.force.x;
+    wrenchTarget(1) = request.wrench.force.y;
+    wrenchTarget(2) = request.wrench.force.z;
 
-bool URServiceInterface::servoHandle(URServo::Request& request, URServo::Response& response) {
-//	ROS_INFO("URServiceInterface::servoHandle");
-    std::cout<<"Delay = "<<ros::Time::now() - request.stamp<<std::endl;
-	Transform3D<> target = RwRos::toRw(request.target);
-	VelocityScrew6D<> vel = RwRos::toRw(request.velocity);
+    wrenchTarget(3) = request.wrench.torque.x;
+    wrenchTarget(4) = request.wrench.torque.y;
+    wrenchTarget(5) = request.wrench.torque.z;
 
-	//std::cout<<"URServiceInterface::servoHandle:"<<target<<" and "<<vel<<std::endl;
-	return servoT(target, vel);
+    response.success = forceModeUpdate(wrenchTarget);
+    return true;
 }
 
-bool URServiceInterface::servoQHandle(URServoQ::Request& request, URServoQ::Response& response) {
-	std::cout<<"URServiceInterface::servoQHandle"<<std::endl;
-	Q qtarget = RwRos::toRw(request.qtarget);
-
-	//std::cout<<"URServiceInterface::servoHandle:"<<target<<" and "<<vel<<std::endl;
-	return servoQ(qtarget);
-
-}
-
-
-bool URServiceInterface::stopHandle(URStop::Request& request, URStop::Response& response)
-{
-//	ROS_INFO("URServiceInterface::stopHandle");
-	stop();
-	return true;
-}
-
-bool URServiceInterface::pauseHandle() {
-	return true;
-}
-
-bool URServiceInterface::startHandle() {
-	return true;
-}
-
-bool URServiceInterface::waitHandle() {
-	return true;
-}
-
-
-void URServiceInterface::publish(const RobotState& state) {
-	_deviceStatePublisher.publish(state);
-}
-
-//void URServiceInterface::publish(const WrenchData& state) {
-	//_wrenchDataPublisher.publish(state);
-//}
-
-void URServiceInterface::publish(const rw::math::Q& q) {
-
-
-    std::stringstream ss;
-    ss <<_service_name<<" "<<q;
-
-    RobotState state;
-    state.header.frame_id = _service_name;
-	state.q = RwRos::toRosQ6(q);
-    state.header.stamp = ros::Time::now();
-
-    publish(state);
-
-
-}
-
-bool URServiceInterface::run() {
-
-	  while (ros::ok())
-	  {
-		  loop();
-		  ros::spinOnce();
-		  _loopRate.sleep();
-	  }
-	  stopDriver();
-	  return true;
-}
-
-double URServiceInterface::getLoopRate() {
-	return _loopRate.expectedCycleTime ().toSec();
+bool URServiceInterface::forceModeStopHandle(caros_universalrobot::URServiceForceModeStop::Request& request, caros_universalrobot::URServiceForceModeStop::Response& response) {
+    response.success = forceModeStop();
+    return true;
 }

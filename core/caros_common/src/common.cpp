@@ -15,52 +15,52 @@
 
 namespace caros {
 
-	caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
-	{
-		caros_common_msgs::RWState res;
+    caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
+    {
+        caros_common_msgs::RWState res;
         BOOST_FOREACH( boost::shared_ptr<rw::kinematics::StateData> data, state.getStateStructure()->getStateData()){
-        	std::string name = data->getName();
-        	int size = data->size()*sizeof(double);
+            std::string name = data->getName();
+            int size = data->size()*sizeof(double);
 
-        	res.statedata_names.push_back(name);
-        	res.statedata_sizes.push_back(size);
-        	for(int i=0;i<size;i++){
-        		res.statedata_q.push_back( ((const boost::uint8_t*)data->getData(state))[i] );
-        	}
+            res.statedata_names.push_back(name);
+            res.statedata_sizes.push_back(size);
+            for(int i=0;i<size;i++){
+                res.statedata_q.push_back( ((const boost::uint8_t*)data->getData(state))[i] );
+            }
         }
 
         return res;
-	}
+    }
 
-	void toRw(const caros_common_msgs::RWState& state_ros, rw::kinematics::State& state){
-		int idx=0;
-		for(size_t i=0;i<state_ros.statedata_names.size();i++){
+    void toRw(const caros_common_msgs::RWState& state_ros, rw::kinematics::State& state){
+        int idx=0;
+        for(size_t i=0;i<state_ros.statedata_names.size();i++){
 
-			std::string name = state_ros.statedata_names[i];
-			int size = state_ros.statedata_sizes[i];
-			boost::shared_ptr<rw::kinematics::StateData> data = state.getStateStructure()->findData(name);
-			// todo: verify that data
-			if( data->size()*sizeof(double) == size ){
-				for(int i=0;i<size;i++){
-					data->setData( state, (double *) (&state_ros.statedata_q[idx]));
-				}
-			} else {
-				ROS_ERROR_STREAM("Mismatch in statedata lengths between current state and serialized state! For " << name << " " << data->size()*4 << "==" << size);
-			}
+            std::string name = state_ros.statedata_names[i];
+            int size = state_ros.statedata_sizes[i];
+            boost::shared_ptr<rw::kinematics::StateData> data = state.getStateStructure()->findData(name);
+            // todo: verify that data
+            if( data->size()*sizeof(double) == size ){
+                for(int i=0;i<size;i++){
+                    data->setData( state, (double *) (&state_ros.statedata_q[idx]));
+                }
+            } else {
+                ROS_ERROR_STREAM("Mismatch in statedata lengths between current state and serialized state! For " << name << " " << data->size()*4 << "==" << size);
+            }
 
-			idx += size;
-		}
+            idx += size;
+        }
 
-	}
+    }
 
-	rw::kinematics::State toRw(const caros_common_msgs::RWState& state_ros, rw::models::WorkCell::Ptr wc)
-	{
-		rw::kinematics::State state = wc->getDefaultState();
+    rw::kinematics::State toRw(const caros_common_msgs::RWState& state_ros, rw::models::WorkCell::Ptr wc)
+    {
+        rw::kinematics::State state = wc->getDefaultState();
 
-		toRw(state_ros, state);
+        toRw(state_ros, state);
 
-		return state;
-	}
+        return state;
+    }
 
 
     rw::math::Q toRw(const caros_common_msgs::Q& q)
@@ -156,6 +156,14 @@ namespace caros {
         return twist;
     }
 
+    float toRos(const float value) {
+        return value;
+    }
+
+    bool toRos(const bool value) {
+        return value;
+    }
+
     rw::models::WorkCell::Ptr getWorkCell() {
         return getWorkCell("/caros/workcell");
     }
@@ -163,25 +171,25 @@ namespace caros {
     rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname) {
     	static rw::models::WorkCell::Ptr wc;
     	if(wc==NULL){
-			ros::NodeHandle node("~");
-			std::string workcellFile;
-			bool paramFound;
-			paramFound = node.getParam(paramname, workcellFile);
-			if (!paramFound) {
-				ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
-				return NULL;
-			} else if (workcellFile.empty()){
-				ROS_ERROR_STREAM("The value of the parameter is empty!");
-				return NULL;
-			}
-			ROS_DEBUG_STREAM("loading file: " << workcellFile );
-			try {
-				wc = rw::loaders::WorkCellFactory::load(workcellFile);
-			} catch (const std::exception& exp) {
-			    ROS_ERROR_STREAM("Unable to open workcell file ");
-			    ROS_ERROR_STREAM("Error: "<<exp.what());
-				return NULL;
-			}
+            ros::NodeHandle node("~");
+            std::string workcellFile;
+            bool paramFound;
+            paramFound = node.getParam(paramname, workcellFile);
+            if (!paramFound) {
+                ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
+                return NULL;
+            } else if (workcellFile.empty()){
+                ROS_ERROR_STREAM("The value of the parameter is empty!");
+                return NULL;
+            }
+            ROS_DEBUG_STREAM("loading file: " << workcellFile );
+            try {
+                wc = rw::loaders::WorkCellFactory::load(workcellFile);
+            } catch (const std::exception& exp) {
+                ROS_ERROR_STREAM("Unable to open workcell file ");
+                ROS_ERROR_STREAM("Error: "<<exp.what());
+                return NULL;
+            }
     	}
         return wc;
     }
@@ -190,8 +198,8 @@ namespace caros {
     	// currently we always get the state from a service and not a topic
     	ros::NodeHandle node("~");
     	if( !ros::service::exists("/caros/getworkcellstate", true) ){
-    		ROS_ERROR_STREAM("There are no registered state sources! Using default state.");
-    		return NULL;
+            ROS_ERROR_STREAM("There are no registered state sources! Using default state.");
+            return NULL;
     	}
 
     	rw::models::WorkCell::Ptr wc = getWorkCell();

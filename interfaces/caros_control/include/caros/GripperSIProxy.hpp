@@ -7,6 +7,9 @@
 
 #include <ros/ros.h>
 
+/* TODO:
+ * Is boost mutex required? 
+ */
 #include <boost/thread/mutex.hpp>
 
 namespace caros {
