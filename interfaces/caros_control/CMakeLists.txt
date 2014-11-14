@@ -7,6 +7,12 @@ project(caros_control)
 set(library_name "${PROJECT_NAME}")
 
 ########################################################################
+#### Make use of c++11
+########################################################################
+# See: http://answers.ros.org/question/173947/export-gcc-flags-though-catkin-cfg_extras/
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+
+########################################################################
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_control_msgs)

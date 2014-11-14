@@ -30,8 +30,6 @@ namespace caros {
      */
     class GripperServiceInterface {
     public:
-        //!
-        typedef rw::common::Ptr<GripperServiceInterface> Ptr;
         /**
          * @brief constructor.
          * @param[in] nodehandle the nodehandle to use for services.

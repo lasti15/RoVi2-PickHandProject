@@ -1,6 +1,5 @@
 # Speed in percentage of max speed(might depend on robot state), 0=no speed, 100=full speed
-caros_common_msgs/Q q_vel
+caros_common_msgs/Q vel
 
 ---
 bool success
- 

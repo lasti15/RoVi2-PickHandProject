@@ -24,15 +24,14 @@ set(CMAKE_MODULE_PATH ${RWHW_ROOT}/build ${CMAKE_MODULE_PATH})
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 #find_package(RobWorkHardware REQUIRED sdh serialport PATHS "{RWHW_ROOT}")
 # Using find_package module version due to finding a FindRobWorkHardware cmake file and the CMAKE_MODULE_PATH above.
-# Need to specify CMAKE_BUILD_TYPE=Release to be able to find the proper RobWorkHardware cmake files
-set(CMAKE_BUILD_TYPE Release)
+# The CMAKE_BUILD_TYPE has to match what e.g. RobWorkHardware was compiled with ::: set(CMAKE_BUILD_TYPE Release)
 find_package(RobWorkHardware COMPONENTS sdh serialport)
 # TODO: find RobWorkHardware - see the components/sdh/CMakeLists.txt file for more information on sdh, serialport, PEAK CAN and other things.
 # TODO: Keep as much as possible of the functionality from components/sdh/CMakeLists.txt due to not ending up with a broken SDH node.
 
 if (NOT ROBWORKHARDWARE_FOUND)
 
-  message(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
+  message(WARNING "Skipping ${PROJECT_NAME}. Requires both SDH and Serialport components of RobWorkHardware!")
 
 else()
 
@@ -104,6 +103,7 @@ catkin_package(
   # - rosconsole is not used in the header files, so should not be added to the list here.
   CATKIN_DEPENDS roscpp caros_common caros_control
   DEPENDS RobWork
+  # FIXME: Should the DEPENDS also list RobWorkHardware?
 )
 
 ########################################################################
