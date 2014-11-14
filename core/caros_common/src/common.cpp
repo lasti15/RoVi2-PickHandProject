@@ -93,6 +93,14 @@ namespace caros {
         return twist;
     }
 
+    float toRos(const float value) {
+        return value;
+    }
+
+    bool toRos(const bool value) {
+        return value;
+    }
+
     rw::models::WorkCell::Ptr getWorkCell() {
         return getWorkCell("/caros/workcell");
     }
@@ -110,6 +118,10 @@ namespace caros {
             return NULL;
         }
         ROS_DEBUG_STREAM("loading file: " << workcellFile );
+        /* TODO:
+         * The following load() function could potentially throw an exception, that should probably be caught here to make the code using this function not care about catching the exception and handle it nicely - throw it into a ROS_WARN or similar.
+         * ^- "An exception is thrown if the file can't be loaded." : http://www.robwork.dk/apidoc/nightly/rw/classrw_1_1loaders_1_1WorkCellLoader_1_1Factory.html
+         */
         rw::models::WorkCell::Ptr wc = rw::loaders::WorkCellFactory::load(workcellFile);
         return wc;
     }

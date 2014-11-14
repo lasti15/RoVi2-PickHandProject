@@ -21,6 +21,10 @@ namespace caros {
      * @{
      */
 
+    /* TODO:
+     * Better conversion descriptions? But it also is bad to hardcode the exact types in the documentation, so it has to be changed if e.g. the ROS/CAROS package is changed.
+     */
+
     //! convert Q to Q
     rw::math::Q toRw(const caros_common_msgs::Q& q);
 
@@ -47,6 +51,12 @@ namespace caros {
 
     //! convert VelocityScrew6D to Twist
     geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs);
+
+    //! convert float to float
+    float toRos(const float value);
+
+    //! convert bool to bool
+    bool toRos(const bool value);
 
     /**
      * @} end of group
