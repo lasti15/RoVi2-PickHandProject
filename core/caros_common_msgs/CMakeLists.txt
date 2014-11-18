@@ -32,6 +32,7 @@ add_service_files(
   Pause.srv
   ConfigBool.srv
   ConfigInt.srv
+  EmptySrv.srv
   GetRWState.srv
 )
 
