@@ -1,0 +1,16 @@
+<!-- Parameters for the caros_universalrobot node -->
+<launch>
+  <!-- Define the parameterisation of the ROS parameters -->
+  <arg name="deviceName" default="UR1" />
+  <arg name="FTFrame" default="WORLD" />
+  <arg name="IP" default="192.168.100.4" />
+  <arg name="PORT" default="33333" />
+  <arg name="WrenchTopic" default="wrenchData" />
+
+  <!-- Set the ROS parameters -->
+  <param name="deviceName" value="$(arg deviceName)" />
+  <param name="FTFrame" value="$(arg FTFrame)"/>
+  <param name="IP" value="$(arg IP)"/>
+  <param name="PORT" type="str" value="$(arg PORT)"/>
+  <param name="WrenchTopic" value="$(arg WrenchTopic)"/>
+</launch>
