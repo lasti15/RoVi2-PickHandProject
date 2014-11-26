@@ -1,0 +1,17 @@
+<launch>
+  <!-- Hackish solution to let the user easily spawn a "standalone" caros_universalrobot node -->
+  <!-- use something like set_workcell:=0 or workcell_path:=/path/to/the/workcell on the roslaunch commandline -->
+  <arg name="set_workcell" default="1" />
+  <group if="$(arg set_workcell)">
+    <arg name="workcell_path" />
+    <param name="/caros/workcell" value="$(arg workcell_path)" />
+  </group>
+
+  <group>
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="UR">
+      <!-- no parameters have to be set - relying on default values, but they are highly dependent on the workcell that is being used -->
+    </include>
+    <node pkg="caros_universalrobot" type="ur_node" name="UR">
+    </node>
+  </group>
+</launch>
