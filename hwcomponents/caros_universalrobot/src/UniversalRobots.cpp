@@ -5,11 +5,6 @@
 #include <rw/invkin/IKMetaSolver.hpp>
 #include <rw/math/MetricFactory.hpp>
 
-#include <rw/pathplanning/QEdgeConstraint.hpp>
-#include <rw/pathplanning/QConstraint.hpp>
-#include <rw/proximity/CollisionDetector.hpp>
-#include <rw/proximity/rwstrategy/ProximityStrategyRW.hpp>
-
 #include <ros/assert.h>
 
 #include <string>
@@ -258,39 +253,6 @@ void UniversalRobots::addFTData(const caros_common_msgs::WrenchData::ConstPtr st
     _wrenchDataQueue.push(wrench);
 }
 
-bool UniversalRobots::isPathCollisionFree(const rw::math::Q &endConfiguration) {
-    ROS_DEBUG_STREAM("Doing path collision checking...");
-    /* TODO:
-     * The check of whether collision is enabled or disabled can be done within this function, but then the user would have to globally disable and enable collision checking even if just a single function invocation should run with or without collision checking.
-     *
-     * [ IMPORTANT ] Has to know the state of the other UR (UR2 also) in its live configuration, and not the configuration that was hardcoded within the scene/workcell.
-     */
-    auto strategy = rw::common::ownedPtr(new rw::proximity::ProximityStrategyRW());
-    auto detector = rw::common::ownedPtr(new rw::proximity::CollisionDetector(_workcell, strategy));
-    auto collisionConfigurationDetector = rw::pathplanning::QConstraint::make(detector, _device, _state);
-
-    // start configuration
-    auto startConfiguration = _device->getQ(_state);
-    if (collisionConfigurationDetector->inCollision(startConfiguration)) {
-        ROS_DEBUG_STREAM("The start configuration '" << startConfiguration << "' is in collision!");
-        return false;
-    }
-    // end configuration
-    if (collisionConfigurationDetector->inCollision(endConfiguration)) {
-        ROS_DEBUG_STREAM("The end configuration '" << endConfiguration << "' is in collision!");
-        return false;
-    }
-
-    auto collisionPathDetector = rw::pathplanning::QEdgeConstraint::makeDefault(collisionConfigurationDetector, _device);
-    if (collisionPathDetector->inCollision(startConfiguration, endConfiguration)) {
-        ROS_DEBUG_STREAM("The path between the start configuration '" << startConfiguration << "' and the end configuration '" << endConfiguration << "' is not collision free!");
-        return false;
-    }
-
-    ROS_DEBUG_STREAM("The path appears to be collision free.");
-    return true;
-}
-
 /************************************************************************
  * URServiceInterface functions
  ************************************************************************/
@@ -314,16 +276,6 @@ bool UniversalRobots::servoT(const rw::math::Transform3D<>& target) {
 
 bool UniversalRobots::servoQ(const rw::math::Q& q) {
     ROS_DEBUG_STREAM("ServoQ: " << q);
-
-    /* TODO:
-     * Make the collision check a parameter that can easily be disabled/enabled.
-     * ^- Should this be for each function that it takes an extra optional parameter, or can it be done in another smart way without having to update all the declarations?
-     */
-
-    // Test the collision part by actually disabling the _ur.servo(q) call - or make it a parameter to instrument this node (or the underlying robot hardware code) to not really execute the actions...?
-    if (!isPathCollisionFree(q)) {
-        return false;
-    }
 
     _ur.servo(q);
     /* There is no (immediate) feedback from the _ur.servo() function call, so just returning true. */
