@@ -32,7 +32,7 @@ bool SerialDeviceServiceInterface::configureInterface() {
 }
 
 bool SerialDeviceServiceInterface::initService(){
-    if (_srvMoveLin || _srvMovePTP || _srvMovePTP_T || _srvMoveVelQ || _srvMoveVelT || _srvMoveServoQ || _srvMoveServoT || _srvMoveLinFC || _srvMoveStart || _srvMoveStop || _srvMovePause || _srvMoveSafe || _deviceStatePublisher) {
+    if (_srvMoveLin || _srvMovePTP || _srvMovePTP_T || _srvMoveVelQ || _srvMoveVelT || _srvMoveServoQ || _srvMoveServoT || _srvMoveLinFC || _srvMoveStart || _srvMoveStop || _srvMovePause || _srvSetSafeModeEnabled || _deviceStatePublisher) {
         ROS_WARN_STREAM("Reinitialising one or more SerialDeviceServiceInterface services or publishers. If this is not fully intended then this should be considered a bug!");
     }
 
@@ -76,10 +76,10 @@ bool SerialDeviceServiceInterface::initService(){
     _srvMovePause = _nodehandle.advertiseService("move_pause", &SerialDeviceServiceInterface::movePauseHandle, this);
     ROS_ERROR_STREAM_COND(!_srvMovePause, "The move_pause service is empty!");
 
-    _srvMoveSafe = _nodehandle.advertiseService("set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvMoveSafe, "The set_safe_mode_enabled service is empty!");
+    _srvSetSafeModeEnabled = _nodehandle.advertiseService("set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
+    ROS_ERROR_STREAM_COND(!_srvSetSafeModeEnabled, "The set_safe_mode_enabled service is empty!");
 
-    if (_srvMoveLin && _srvMovePTP && _srvMovePTP_T && _srvMoveVelQ && _srvMoveVelT && _srvMoveServoQ && _srvMoveServoT && _srvMoveLinFC && _srvMoveStart && _srvMoveStop && _srvMovePause && _srvMoveSafe && _deviceStatePublisher) {
+    if (_srvMoveLin && _srvMovePTP && _srvMovePTP_T && _srvMoveVelQ && _srvMoveVelT && _srvMoveServoQ && _srvMoveServoT && _srvMoveLinFC && _srvMoveStart && _srvMoveStop && _srvMovePause && _srvSetSafeModeEnabled && _deviceStatePublisher) {
         /* Everything seems to be properly initialised */
         ROS_DEBUG_STREAM("All SerialDeviceServiceInterface publishers and services appear to have been properly initialised");
     } else {

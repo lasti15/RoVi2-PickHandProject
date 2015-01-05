@@ -62,6 +62,7 @@ add_library(${library_name}
   src/GripperServiceInterface.cpp
   src/SerialDeviceServiceInterface.cpp
   src/GripperSIProxy.cpp
+  src/SerialDeviceSIProxy.cpp
 )
 
 add_dependencies(${library_name}
