@@ -167,7 +167,7 @@ namespace caros {
         ros::ServiceServer _srvMoveStart;
         ros::ServiceServer _srvMoveStop;
         ros::ServiceServer _srvMovePause;
-        ros::ServiceServer _srvMoveSafe;
+        ros::ServiceServer _srvSetSafeModeEnabled;
     };
 }
 #endif //#ifndef URSERVICEINTERFACE_HPP
