@@ -80,7 +80,6 @@ add_executable(ur_node src/ur_main.cpp src/UniversalRobots.cpp src/URServiceInte
 target_link_libraries(ur_node
   ${ROBWORK_LIBRARIES}
   ${ROBWORKHARDWARE_LIBRARIES}
-#  ${COVIS_LIBRARIES}
   ${caros_control_LIBRARIES}
   ${caros_common_LIBRARIES}
   ${catkin_LIBRARIES}
@@ -90,5 +89,13 @@ add_dependencies(ur_node
   caros_common
   caros_control
 )
+
+########################################################################
+#### Testing
+########################################################################
+if(CATKIN_ENABLE_TESTING)
+  add_executable(simple_demo_using_SerialDeviceSIP test/simple_demo_using_SerialDeviceSIP.cpp)
+  target_link_libraries(simple_demo_using_SerialDeviceSIP ${catkin_LIBRARIES})
+endif()
 
 endif()

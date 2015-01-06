@@ -4,13 +4,15 @@
   <arg name="deviceName" default="UR1" />
   <arg name="FTFrame" default="WORLD" />
   <arg name="IP" default="192.168.100.4" />
-  <arg name="PORT" default="33333" />
+  <arg name="callbackPort" default="33333" />
+  <arg name="callbackIP" default="192.168.100.1" />
   <arg name="WrenchTopic" default="wrenchData" />
 
   <!-- Set the ROS parameters -->
-  <param name="deviceName" value="$(arg deviceName)" />
-  <param name="FTFrame" value="$(arg FTFrame)"/>
-  <param name="IP" value="$(arg IP)"/>
-  <param name="PORT" type="str" value="$(arg PORT)"/>
-  <param name="WrenchTopic" value="$(arg WrenchTopic)"/>
+  <param name="deviceName" type="str" value="$(arg deviceName)" />
+  <param name="FTFrame" type="str" value="$(arg FTFrame)"/>
+  <param name="IP" type="str" value="$(arg IP)"/>
+  <param name="callbackPort" type="str" value="$(arg callbackPort)"/>
+  <param name="callbackIP" type="str" value="$(arg callbackIP)"/>
+  <param name="WrenchTopic" type="str" value="$(arg WrenchTopic)"/>
 </launch>

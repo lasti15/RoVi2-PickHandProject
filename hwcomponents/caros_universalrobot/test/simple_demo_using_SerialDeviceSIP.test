@@ -1,0 +1,24 @@
+<launch>
+  <!-- Hardcoded workcell path... This should not be hardcoded, else the test should be CARO/MARVIN specific - the hardcoded q-configuration is also sort of scene specific... -->
+  <param name="/caros/workcell" value="/data/mband/shared_resources/marvin/apps/marvin/scene/Marvin.model.wc.xml" />
+
+  <group>
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="ur_simple_demo_node">
+      <arg name="deviceName" value="UR1" />
+    </include>
+    <node pkg="caros_universalrobot" type="ur_node" name="ur_simple_demo_node" required="true">
+      <!-- Nothing -->
+    </node>
+  </group>
+
+  <group>
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo_using_SerialDeviceSIP">
+      <arg name="deviceName" value="UR1" />
+    </include>
+    <node pkg="caros_universalrobot" type="simple_demo_using_SerialDeviceSIP" name="caros_universalrobot_simple_demo_using_SerialDeviceSIP" required="true">
+      <param name="qChange" type="double" value="0.3" /> <!-- This could be split into each joint -->
+      <param name="steps" type="int" value="20" />
+      <param name="movements" type="int" value="5" />
+    </node>
+  </group>
+</launch>

@@ -44,7 +44,7 @@ bool UniversalRobots::activateHook() {
      ************************************************************************/
     std::string deviceName;
     if (! _nodehandle.getParam("deviceName", deviceName)) {
-        CAROS_FATALERROR("The parameter 'deviceName' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
+        CAROS_FATALERROR("The parameter '" << _nodehandle.getNamespace() << "/deviceName' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
         return false;
     }
     /* TODO:
@@ -55,12 +55,19 @@ bool UniversalRobots::activateHook() {
     _nodehandle.param("FTFrame", ftFrameName, std::string("WORLD"));
     std::string ip;
     if (! _nodehandle.getParam("IP", ip)) {
-        CAROS_FATALERROR("The parameter 'IP' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
+        CAROS_FATALERROR("The parameter '" << _nodehandle.getNamespace() << "/IP' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
         return false;
     }
-    std::string port;
-    if (! _nodehandle.getParam("PORT", port)) {
-        CAROS_FATALERROR("The parameter 'PORT' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
+
+    std::string callbackIP;
+    if (! _nodehandle.getParam("callbackIP", callbackIP)) {
+        CAROS_FATALERROR("The parameter '" << _nodehandle.getNamespace() << "/callbackIP' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
+        return false;
+    }
+
+    std::string callbackPort;
+    if (! _nodehandle.getParam("callbackPort", callbackPort)) {
+        CAROS_FATALERROR("The parameter '" << _nodehandle.getNamespace() << "/callbackPORT' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
         return false;
     }
 
@@ -107,9 +114,9 @@ bool UniversalRobots::activateHook() {
     _urrt.connect(ip, URRT_PORT);
     _ur.connect(ip, UR_PORT);
     
-    unsigned int numericPort;
+    unsigned int numericCallbackPort = 0;
     try {
-        numericPort = std::stoul(port);
+        numericCallbackPort = std::stoul(callbackPort);
     } catch (std::invalid_argument& e) {
         /* The conversion could not be performed */
         /* TODO:
@@ -123,7 +130,7 @@ bool UniversalRobots::activateHook() {
     /* TODO:
      * Does the ordering of these two start[Interface](...) functions actually matter?
      */
-    _ur.startCommunication(ip, numericPort);
+    _ur.startCommunication(callbackIP, numericCallbackPort);
     _urrt.start();
     
     /* TODO:
