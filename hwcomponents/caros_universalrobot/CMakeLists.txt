@@ -90,4 +90,12 @@ add_dependencies(ur_node
   caros_control
 )
 
+########################################################################
+#### Testing
+########################################################################
+if(CATKIN_ENABLE_TESTING)
+  add_executable(simple_demo_using_SerialDeviceSIP test/simple_demo_using_SerialDeviceSIP.cpp)
+  target_link_libraries(simple_demo_using_SerialDeviceSIP ${catkin_LIBRARIES})
+endif()
+
 endif()
