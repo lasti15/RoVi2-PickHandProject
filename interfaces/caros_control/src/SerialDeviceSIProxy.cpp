@@ -1,10 +1,13 @@
 #include <caros/SerialDeviceSIProxy.hpp>
 
-//#include <fstream>
-
 #include <caros/SerialDeviceServiceInterface.hpp>
+#include <caros/common.hpp>
+#include <caros_common_msgs/Stop.h>
+#include <caros_common_msgs/Pause.h>
+#include <caros_common_msgs/ConfigBool.h>
 
-using namespace carso;
+
+using namespace caros;
 
 SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname):
     _nodehandle(nodehandle)
@@ -23,10 +26,10 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
     _srvMoveServoQ = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveServoQ> (rosNamespace.str() + "/move_servo_q");
     _srvMoveServoT = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveServoT> (rosNamespace.str() + "/move_servo_t");
     _srvMoveLinFC = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveLinFC> (rosNamespace.str() + "/move_lin_fc");
-    _srvMoveStart = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_start");
-    _srvMoveStop = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_stop");
-    _srvMovePause = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_pause");
-    _srvMoveSafe = _nodehandle.serviceClient<caros_common_msgs::ConfigBool> (rosNamespace.str() + "/set_safe_mode_enabled");
+    _srvStart = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_start");
+    _srvStop = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_stop");
+    _srvPause = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_pause");
+    _srvSetSafeModeEnabled = _nodehandle.serviceClient<caros_common_msgs::ConfigBool> (rosNamespace.str() + "/set_safe_mode_enabled");
 
     // states
     _subRobotState = _nodehandle.subscribe(rosNamespace.str() + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
@@ -41,7 +44,7 @@ bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, float s
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    return _srvMovePTP_T.call(srv);
+    return _srvMoveLin.call(srv);
 }
 
 bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, float speed, float blend)
@@ -62,26 +65,26 @@ bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, float
     return _srvMovePTP_T.call(srv);
 }
 
-bool SerialDeviceSIProxy::servoQ(const rw::math::Q& target, float speed)
+bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, float speed)
 {
-    caros_control_msgs::SerialDeviceMovePTP srv;
+    caros_control_msgs::SerialDeviceMoveServoQ srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    return _srvServoQ.call(srv);
+    return _srvMoveServoQ.call(srv);
 }
 
-bool SerialDeviceSIProxy::servoT(const rw::math::Transform3D<>& target, float speed)
+bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, float speed)
 {
-    caros_control_msgs::SerialDeviceMovePTP_T srv;
+    caros_control_msgs::SerialDeviceMoveServoT srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    return _srvServoT.call(srv);
+    return _srvMoveServoT.call(srv);
 }
 
 bool SerialDeviceSIProxy::moveVelQ(const rw::math::Q& target)
 {
     caros_control_msgs::SerialDeviceMoveVelQ srv;
-    srv.request.q_vel =  caros::toRos(target) ;
+    srv.request.vel =  caros::toRos(target) ;
     return _srvMoveVelQ.call(srv);
 }
 
@@ -106,44 +109,37 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& target,
 }
 
 bool SerialDeviceSIProxy::stop(){
-    caros_control_msgs::Stop srv;
+    caros_common_msgs::Stop srv;
     return _srvStop.call(srv);
 }
 
 bool SerialDeviceSIProxy::pause(){
-    caros_control_msgs::Pause srv;
+    caros_common_msgs::Pause srv;
     return _srvPause.call(srv);
 }
 
 bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable){
-    caros_control_msgs::ConfigBool srv;
+    caros_common_msgs::ConfigBool srv;
     srv.request.value = caros::toRos(enable);
-    return _srvStop.call(srv);
+    return _srvSetSafeModeEnabled.call(srv);
 }
 
 void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::RobotState& state) {
-    boost::mutex::scoped_lock lock(_mutex);
-    _q = caros::toRw(state.q);
-    _dq = caros::toRw(state.dq);
     _pRobotState = state;
 }
 
 rw::math::Q SerialDeviceSIProxy::getQ() {
-    boost::mutex::scoped_lock lock(_mutex);
-    return _q;
+    return caros::toRw(_pRobotState.q);
 }
 
 rw::math::Q SerialDeviceSIProxy::getQd() {
-    boost::mutex::scoped_lock lock(_mutex);
-    return _dq;
+    return caros::toRw(_pRobotState.dq);
 }
 
 bool SerialDeviceSIProxy::isMoving() {
-    boost::mutex::scoped_lock lock(_mutex);
     return _pRobotState.isMoving;
 }
 
 ros::Time SerialDeviceSIProxy::getTimeStamp() {
-    boost::mutex::scoped_lock lock(_mutex);
     return _pRobotState.header.stamp;
 }

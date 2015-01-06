@@ -3,14 +3,21 @@
 
 #include <caros_control_msgs/RobotState.h>
 
-//#include <rw/math.hpp>
-//#include <rw/trajectory/Path.hpp>
-
-//#include <boost/thread.hpp>
+#include <rw/math.hpp>
 
 #include <ros/ros.h>
 
-//#include <queue>
+/* TODO:
+ * Make the handleRobotState update/subscribed callback function be called asynchronously - see http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
+ * Make sure to use c++11 mutex for synchronising the access to the variables that are updated asynchronously.
+ *
+ * ^- When having to supply the constructor with a ROS nodehandle, then it's up to the user to make a "proper" ros node and just use this wrapper as a convenience library for accessing SerialDeviceServices. It's not a complete standalone encapsulation of the ROS middleware layer, where the user don't need to know anything about ROS... That could probably be provided with one more layer on top of this SIProxy...
+ *
+ *
+ * How to properly handle the cases where the _q, _dq, etc. variables havn't been updated yet?
+ * ^- The user should look at the timestamp (i.e. getTimeStamp())
+ * There could be possible inconsistency when some of the data is pulled from class variables and the timestamp is fetched from the _pRobotState.
+ */
 
 namespace caros {
 /**
@@ -26,87 +33,86 @@ namespace caros {
          * @param[in] nodehandle
          * @param[in] devname The name of the CAROS serialdevice node
          */
-	SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname);
+        SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname);
 
-	//! destructor
-	virtual ~SerialDeviceSIProxy();
+        //! destructor
+        virtual ~SerialDeviceSIProxy();
 
-	//! @brief move robot in a linear Cartesian path
-	bool moveLin(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
+        //! @brief move robot in a linear Cartesian path
+        bool moveLin(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
 
-	//! @brief move robot from point to point
-	bool movePTP(const rw::math::Q& target, float speed = 100, float blend = 0);
+        //! @brief move robot from point to point
+        bool movePTP(const rw::math::Q& target, float speed = 100, float blend = 0);
 
-	//! @brief move robot from point to point but using a pose as target (require invkin)
-	bool movePTP_T(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
+        //! @brief move robot from point to point but using a pose as target (requires invkin)
+        bool movePTP_T(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
 
-	//! @brief move robot in a servoing fasion
-	bool moveVelQ(const rw::math::Q& target);
+        //! @brief TODO Missing
+        bool moveVelQ(const rw::math::Q& target);
 
-	bool moveVelT(const rw::math::VelocityScrew6D<>& target);
+        //! @brief TODO Missing
+        bool moveVelT(const rw::math::VelocityScrew6D<>& target);
 
-	//! @brief move robot in a servoing fasion
-	bool moveServoQ(const rw::math::Q& target, float speed = 100);
+        //! @brief move robot in a servoing fasion using joint configurations
+        /* There is no blend parameter, as it is irrelevent when doing servoing. */
+        bool moveServoQ(const rw::math::Q& target, float speed = 100);
 
-	bool moveServoT(const rw::math::Transform3D<>& target, float speed = 100);
+        //! @brief move robot in a servoing fasion using pose configurations
+        /* There is no blend parameter, as it is irrelevent when doing servoing. */
+        bool moveServoT(const rw::math::Transform3D<>& target, float speed = 100);
 
-	//! move robot with a hybrid position/force control
-	bool moveLinFC(const rw::math::Transform3D<>& target,
-                               rw::math::Wrench6D<>& wtarget,
-                               float selection[6],
-                               std::string refframe,
-                               rw::math::Transform3D<> offset,
-                               float speed = 100,
-                               float blend = 0);
+        //! @brief move robot with a hybrid position/force control
+        bool moveLinFC(const rw::math::Transform3D<>& target,
+                       rw::math::Wrench6D<>& wtarget,
+                       float selection[6],
+                       std::string refframe,
+                       rw::math::Transform3D<> offset,
+                       float speed = 100,
+                       float blend = 0);
 
-	//! hard stop the robot,
-	bool stop();
+        //! @brief hard stop the robot,
+        bool stop();
 
-	//! pause the robot, should be able to continue trajectory
-	bool pause();
+        //! @brief pause the robot, should be able to continue trajectory
+        bool pause();
 
-	//! enable safe mode, so that robot stops when collisions are detected
-	bool setSafeModeEnabled(bool enable);
+        //! @brief enable safe mode, so that robot stops when collisions are detected
+        bool setSafeModeEnabled(bool enable);
 
-	rw::math::Q getQ();
-	rw::math::Q getQd();
+        rw::math::Q getQ();
+        rw::math::Q getQd();
 
-	ros::Time getTimeStamp();
+        ros::Time getTimeStamp();
 
-	bool isMoving();
+        bool isMoving();
 
     protected:
-	ros::NodeHandle _nodeHnd;
-	ros::ServiceClient _servoService;
+        ros::NodeHandle _nodehandle;
+        ros::ServiceClient _servoService;
 
-	// services
-	ros::ServiceClient _srvStop;
-	ros::ServiceClient _srvStart;
-	ros::ServiceClient _srvPause;
+        // services
+        ros::ServiceClient _srvStop;
+        ros::ServiceClient _srvStart;
+        ros::ServiceClient _srvPause;
 
-	ros::ServiceClient _srvMovePTP;
-	ros::ServiceClient _srvMovePTP_T;
-	ros::ServiceClient _srvMoveLin;
-	ros::ServiceClient _srvMoveLinFC;
-	ros::ServiceClient _srvMoveVelQ;
-	ros::ServiceClient _srvMoveVelT;
-	ros::ServiceClient _srvServoQ;
-	ros::ServiceClient _srvServoT;
+        ros::ServiceClient _srvMovePTP;
+        ros::ServiceClient _srvMovePTP_T;
+        ros::ServiceClient _srvMoveLin;
+        ros::ServiceClient _srvMoveLinFC;
+        ros::ServiceClient _srvMoveVelQ;
+        ros::ServiceClient _srvMoveVelT;
+        ros::ServiceClient _srvMoveServoQ;
+        ros::ServiceClient _srvMoveServoT;
 
-	// states
-	ros::Subscriber _subRobotState;
+        ros::ServiceClient _srvSetSafeModeEnabled;
+
+        // states
+        ros::Subscriber _subRobotState;
 
     private:
-	boost::mutex _mutex;
+        void handleRobotState(const caros_control_msgs::RobotState& state);
 
-	// state variables
-	rw::math::Q _q, _dq;
-	bool _isRunning;
-	bool _stopRobot;
-
-	void handleRobotState(const caros_control_msgs::RobotState& state);
-	caros_control_msgs::RobotState _pRobotState;
-	double _zeroTime;
+        caros_control_msgs::RobotState _pRobotState;
     };
 
 }
