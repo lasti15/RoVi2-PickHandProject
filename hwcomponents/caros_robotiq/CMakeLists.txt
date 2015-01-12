@@ -41,11 +41,12 @@ SET(CMAKE_BUILD_TYPE Release)
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork REQUIRED PATHS "${RW_ROOT};${RW_ROOT}/cmake")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
+# The following CMAKE_MODULE_PATH configuration is required due to RobWorkHardware placing the things in build instead of cmake as RobWork is doing.
+set(CMAKE_MODULE_PATH ${RWHW_ROOT}/build ${CMAKE_MODULE_PATH})
+find_package(RobWorkHardware REQUIRED COMPONENTS robotiq)
 
 if (NOT ROBWORKHARDWARE_FOUND)
-
-  message(WARNING "Skipping ${PROJECT_NAME}. Require both SDH and Serialport components of RobWorkHardware!!!")
-
+  message(WARNING "Skipping ${PROJECT_NAME}. Requires the robotiq component of RobWorkHardware!!!")
 else()
 
 
