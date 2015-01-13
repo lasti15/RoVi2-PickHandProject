@@ -52,8 +52,7 @@ else()
 include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
 #[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
-SET(CMAKE_MODULE_PATH ${RWHW_ROOT}/build ${CMAKE_MODULE_PATH})
-find_package(RobWorkHardware REQUIRED COMPONENTS robotiq)
+find_package(RobWorkHardware REQUIRED COMPONENTS robotiq PATHS "${RWHW_ROOT}")
 include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIR})
 
 # mband: link_directories is required until RobWork issue ## is solved
