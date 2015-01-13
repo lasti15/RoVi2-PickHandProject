@@ -53,10 +53,10 @@ set(RW_ROOT "$ENV{RW_ROOT}")
 set(RWHW_ROOT "$ENV{RWHW_ROOT}")
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 # The following CMAKE_MODULE_PATH configuration is required due to RobWorkHardware placing the things in build instead of cmake as RobWork is doing.
-set(CMAKE_MODULE_PATH ${RWHW_ROOT}/build ${CMAKE_MODULE_PATH})
+#set(CMAKE_MODULE_PATH ${RWHW_ROOT}/b ${CMAKE_MODULE_PATH})
 # FIXME: Verify if replacing COMPONENTS with REQUIRED will make this node fail building properly?
 # FIXME: How to properly ensure that this caros node/component will just not compile if the RobWork and RobWorkHardware packages are not found?
-find_package(RobWorkHardware REQUIRED COMPONENTS universalrobots)
+find_package(RobWorkHardware REQUIRED COMPONENTS universalrobots PATHS "${RWHW_ROOT}")
 # FIXME: is 'netft' as a RobWorkHardware component required for this ROS node?
 
 # FIXME: Verify if this if-thing can be removed and replaced with a REQUIRED instead of COMPONENTS in the find_package(RobWorkHardware) cmake function.
