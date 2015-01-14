@@ -42,19 +42,16 @@ SET(CMAKE_BUILD_TYPE Release)
 find_package(RobWork REQUIRED PATHS "${RW_ROOT};${RW_ROOT}/cmake")
 #message("robwork libraries: ${ROBWORK_LIBRARIES}")
 # The following CMAKE_MODULE_PATH configuration is required due to RobWorkHardware placing the things in build instead of cmake as RobWork is doing.
-set(CMAKE_MODULE_PATH ${RWHW_ROOT}/build ${CMAKE_MODULE_PATH})
-find_package(RobWorkHardware REQUIRED COMPONENTS robotiq)
-
-if (NOT ROBWORKHARDWARE_FOUND)
-  message(WARNING "Skipping ${PROJECT_NAME}. Requires the robotiq component of RobWorkHardware!!!")
-else()
-
-
 include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
 #link_directories(${ROBWORK_LIBRARY_DIRS})
 #[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
 find_package(RobWorkHardware REQUIRED COMPONENTS robotiq PATHS "${RWHW_ROOT}")
 include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIR})
+
+if (NOT ROBWORKHARDWARE_FOUND)
+  message(WARNING "Skipping ${PROJECT_NAME}. Requires the robotiq component of RobWorkHardware!!!")
+else()
+
 
 # mband: link_directories is required until RobWork issue ## is solved
 #link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
