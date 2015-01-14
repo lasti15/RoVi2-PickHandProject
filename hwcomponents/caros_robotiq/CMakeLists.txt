@@ -29,36 +29,34 @@ catkin_package(
 ########################################################################
 #### Extra temporary - can contain information that can be useful for setting up this CMakeLists.txt
 ########################################################################
+
 ########################################################################
-#### RobWork and RobWorkSim
+#### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-set(RWHW_ROOT "$ENV{RWHW_ROOT}")
-message("RW_ROOT: ${RWHW_ROOT}/build")
 
 SET(CMAKE_BUILD_TYPE Release)
 
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork REQUIRED PATHS "${RW_ROOT};${RW_ROOT}/cmake")
-#message("robwork libraries: ${ROBWORK_LIBRARIES}")
-# The following CMAKE_MODULE_PATH configuration is required due to RobWorkHardware placing the things in build instead of cmake as RobWork is doing.
 include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
-#link_directories(${ROBWORK_LIBRARY_DIRS})
-#[ mband: This is not recommended ] - link_directories( ${ROBWORK_LIBRARY_DIRS})
-find_package(RobWorkHardware REQUIRED COMPONENTS robotiq PATHS "${RWHW_ROOT}")
-include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIR})
 
+
+########################################################################
+#### RobWorkHardware
+########################################################################
+
+set(RWHW_ROOT "$ENV{RWHW_ROOT}")
+find_package(RobWorkHardware REQUIRED COMPONENTS robotiq PATHS "${RWHW_ROOT}/cmake")
 if (NOT ROBWORKHARDWARE_FOUND)
   message(WARNING "Skipping ${PROJECT_NAME}. Requires the robotiq component of RobWorkHardware!!!")
 else()
+include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIRS})
+link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
 
-
-# mband: link_directories is required until RobWork issue ## is solved
-#link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
-
-#MESSAGE("ROBWORKHARDWARE_LIBRARY_DIRS ${ROBWORKHARDWARE_LIBRARY_DIRS}")
-#MESSAGE("ROBWORKHARDWARE_LIBRARIES ${ROBWORKHARDWARE_LIBRARIES}")
-MESSAGE(" caros_control_LIBRARIES : ${catkin_LIBRARIES}")
+########################################################################
+#### Executables
+########################################################################
 add_executable(robotiq3 src/mainR3.cpp src/Robotiq3Node.cpp)
 target_link_libraries(robotiq3 ${conv_library} 
   ${ROBWORK_LIBRARIES} 
