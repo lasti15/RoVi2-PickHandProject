@@ -6,9 +6,11 @@ set -o errexit
 # Where to place the generated documentation and associated files
 documentation_output_dir="$(pwd)/generated"
 [ -d "${documentation_output_dir}" ] || mkdir "${documentation_output_dir}"
+documentation_utils_output_dir="$(pwd)/generated-utils"
+[ -d "${documentation_utils_output_dir}" ] || mkdir "${documentation_utils_output_dir}"
 
-yaml_collection_of_tagfiles="${documentation_output_dir}/collection_of_tagfiles.yaml"
-yaml_collection_of_tagfiles_excluding_current_package="${documentation_output_dir}/collection_of_tagfiles_excluding_current_package.yaml"
+yaml_collection_of_tagfiles="${documentation_utils_output_dir}/collection_of_tagfiles.yaml"
+yaml_collection_of_tagfiles_excluding_current_package="${documentation_utils_output_dir}/collection_of_tagfiles_excluding_current_package.yaml"
 # Clean out the collection of tagfiles
 [ -f "${yaml_collection_of_tagfiles}" ] && rm "${yaml_collection_of_tagfiles}"
 [ -f "${yaml_collection_of_tagfiles_excluding_current_package}" ] && rm "${yaml_collection_of_tagfiles_excluding_current_package}"
@@ -32,7 +34,7 @@ EOF
 function generate_documentation_and_tagfile () {
     absolute_path_to_package="$(rospack find ${1})"
     package_documentation_output_dir="${documentation_output_dir}/${1}"
-    package_tagfile="${documentation_output_dir}/${1}.tag"
+    package_tagfile="${documentation_utils_output_dir}/${1}.tag"
     [ -d "${package_documentation_output_dir}" ] && rm -r "${package_documentation_output_dir}"
     if [ "${2}" = "yes" ]; then
         rosdoc_lite -o "${package_documentation_output_dir}" --tagfile="${yaml_collection_of_tagfiles_excluding_current_package}" --generate_tagfile="${package_tagfile}" "${absolute_path_to_package}"
@@ -64,7 +66,7 @@ for package_name in ${package_names}; do
     echo "------------------------------------------------------------------------"
     echo "Generating documentation and tagfile for ${package_name}"
     echo "------------------------------------------------------------------------"
-    generate_documentation_and_tagfile "${package_name}" "no" > "${documentation_output_dir}/${package_name}.log" 2>&1
+    generate_documentation_and_tagfile "${package_name}" "no" > "${documentation_utils_output_dir}/${package_name}.log" 2>&1
 done
 
 # Generate documentation using tagfiles
@@ -72,8 +74,38 @@ for package_name in ${package_names}; do
     echo "########################################################################"
     echo "Generating documentation using tagfiles for ${package_name}"
     echo "########################################################################"
-    generate_documentation_using_tagfiles "${package_name}" > "${documentation_output_dir}/${package_name}_with_tagfiles.log" 2>&1
+    generate_documentation_using_tagfiles "${package_name}" > "${documentation_utils_output_dir}/${package_name}_with_tagfiles.log" 2>&1
 done
+
+########################################################################
+#### Index
+########################################################################
+echo "########################################################################"
+echo "Generating index"
+echo "########################################################################"
+index_file="${documentation_output_dir}/index.html"
+[ -f "${index_file}" ] && rm "${index_file}"
+
+cat >> "${index_file}" <<EOF
+<html>
+<head>
+<title>CAROS Documentation Index</title>
+</head>
+<body>
+EOF
+
+# Either run throug the package names, or through the directories found in ${documentation_output_dir}
+for package_name in ${package_names}; do
+    cat >> "${index_file}" <<EOF
+<a href="${package_name}/html/index-msg.html">${package_name}</a><br />
+EOF
+done
+
+cat >> "${index_file}" <<EOF
+</body>
+</html>
+EOF
+
 
 exit 0
 
