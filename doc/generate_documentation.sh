@@ -77,6 +77,36 @@ for package_name in ${package_names}; do
     generate_documentation_using_tagfiles "${package_name}" > "${documentation_utils_output_dir}/${package_name}_with_tagfiles.log" 2>&1
 done
 
+########################################################################
+#### Index
+########################################################################
+echo "########################################################################"
+echo "Generating index"
+echo "########################################################################"
+index_file="${documentation_output_dir}/index.html"
+[ -f "${index_file}" ] && rm "${index_file}"
+
+cat >> "${index_file}" <<EOF
+<html>
+<head>
+<title>CAROS Documentation Index</title>
+</head>
+<body>
+EOF
+
+# Either run throug the package names, or through the directories found in ${documentation_output_dir}
+for package_name in ${package_names}; do
+    cat >> "${index_file}" <<EOF
+<a href="${package_name}/html/index-msg.html">${package_name}</a><br />
+EOF
+done
+
+cat >> "${index_file}" <<EOF
+</body>
+</html>
+EOF
+
+
 exit 0
 
 # sort and unique, to remove old entries in the tagfiles.yaml or simply remove it (make a backup) before each run/invocation of this script or similar
