@@ -174,6 +174,7 @@ message("-------------------------------------------")
 #   ${catkin_LIBRARIES}
 #   ${ROBWORK_LIBRARIES}
 # )
+link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
 
 ########################################################################
 #### SDH Node
@@ -182,6 +183,7 @@ add_executable(sdh_node src/main_SDH.cpp src/SDHNode.cpp)
 target_link_libraries(sdh_node
   ${ROBWORK_LIBRARIES}
   ${ROBWORKHARDWARE_LIBRARIES}
+  ${SDH_LIBRARY}
   ${PEAKCAN_LIBRARIES}
   ${caros_common_LIBRARIES}
   ${caros_control_LIBRARIES}
