@@ -69,12 +69,14 @@ else()
 include_directories(
   include 
   ${ROBWORK_INCLUDE_DIR}
-  ${ROBWORKHARDWARE_INCLUDE_DIR}
+  ${ROBWORKHARDWARE_INCLUDE_DIRS}
 #  ${COVIS_INCLUDE_DIR}
 #  ${caros_control_INCLUDE_DIRS}
 #  ${caros_common_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
+
+link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
 
 add_executable(ur_node src/ur_main.cpp src/UniversalRobots.cpp src/URServiceInterface.cpp)
 target_link_libraries(ur_node

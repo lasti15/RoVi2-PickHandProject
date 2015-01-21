@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>caros_universalrobot</name>
   <version>0.0.1</version>
   <description>CAROS Universal Robot node</description>
@@ -12,24 +12,22 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>message_generation</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>caros_control_msgs</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rosconsole</build_depend>
-  <build_depend>caros_common</build_depend>
-  <build_depend>caros_control</build_depend>
 
-  <run_depend>message_runtime</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>caros_control_msgs</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rosconsole</run_depend>
-  <run_depend>caros_common</run_depend>
-  <run_depend>caros_control</run_depend>
+  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rosconsole</depend>
+  <depend>geometry_msgs</depend>
+  <depend>caros_control_msgs</depend>
+  <depend>caros_common</depend>
+  <depend>caros_control</depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
+  <doc_depend>doxygen</doc_depend>
+  <doc_depend>rosdoc_lite</doc_depend>
 
   <export>
     <rosdoc config="rosdoc.yaml" />
   </export>
+
 </package>
