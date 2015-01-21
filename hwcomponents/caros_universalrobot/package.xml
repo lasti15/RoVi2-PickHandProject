@@ -18,6 +18,7 @@
   <depend>rosconsole</depend>
   <depend>geometry_msgs</depend>
   <depend>caros_control_msgs</depend>
+  <depend>caros_common_msgs</depend>
   <depend>caros_common</depend>
   <depend>caros_control</depend>
 
