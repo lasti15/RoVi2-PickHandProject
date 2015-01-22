@@ -1,12 +1,22 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(caros_sensor)
 
+########################################################################
+#### Local Variables
+########################################################################
 set(library_name "${PROJECT_NAME}")
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
+########################################################################
+#### Catkin Packages
+########################################################################
 find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs caros_common_msgs caros_common caros_sensor_msgs)
+
+########################################################################
+#### RobWork
+########################################################################
+set(RW_ROOT "$ENV{RW_ROOT}")
+#Include default settings for constructing a robwork dependent project
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -34,13 +44,13 @@ catkin_package(
 )
 
 ########################################################################
-#### RobWork and RobWorkSim
+#### Build
 ########################################################################
-set(RW_ROOT "$ENV{RW_ROOT}")
-#Include default settings for constructing a robwork dependent project
-find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
-
-include_directories(include ${ROBWORK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+include_directories(
+  include
+  ${ROBWORK_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+)
 
 add_library(${library_name} 
   src/ButtonSensorSIProxy.cpp

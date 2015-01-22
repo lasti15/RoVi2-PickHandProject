@@ -16,6 +16,8 @@
   <depend>caros_common</depend>
   <depend>caros_control</depend>
 
+  <test_depend>rostest</test_depend>
+
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
 
