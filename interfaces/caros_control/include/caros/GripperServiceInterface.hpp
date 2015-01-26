@@ -87,7 +87,11 @@ namespace caros {
          * @brief publish the state of the gripper. Uses GripperState messages
          * @param[in] q joint configuration
          * @param[in] dq joint velocity
-         * TODO: Add documentation for the rest of the parameters
+         * @param[in] jointforce joint force
+         * @param[in] isMoving is moving
+         * @param[in] isBlocked is blocked
+         * @param[in] isStopped is stopped
+         * @param[in] isEstopped is emergency stopped
          */
         void publishState(const rw::math::Q& q,
                           const rw::math::Q& dq,
