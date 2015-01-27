@@ -45,14 +45,12 @@ include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS}
 ########################################################################
 #### RobWorkHardware
 ########################################################################
-
 set(RWHW_ROOT "$ENV{RWHW_ROOT}")
 find_package(RobWorkHardware REQUIRED COMPONENTS robotiq PATHS "${RWHW_ROOT}/cmake")
 if (NOT ROBWORKHARDWARE_FOUND)
   message(WARNING "Skipping ${PROJECT_NAME}. Requires the robotiq component of RobWorkHardware!!!")
 else()
 include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIRS})
-link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
 
 ########################################################################
 #### Executables

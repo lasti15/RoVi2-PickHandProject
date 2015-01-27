@@ -72,8 +72,6 @@ else()
     ${catkin_INCLUDE_DIRS}
     )
 
-  link_directories(${ROBWORKHARDWARE_LIBRARY_DIRS})
-
   add_executable(${node_name} src/ur_main.cpp src/UniversalRobots.cpp src/URServiceInterface.cpp)
   target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
