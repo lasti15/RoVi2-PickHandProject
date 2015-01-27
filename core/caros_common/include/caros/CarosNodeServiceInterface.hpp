@@ -168,7 +168,7 @@ namespace caros {
         /**
          * @brief Change the frequency of this ROS node.
          *
-         * @param[in] loopRate The new frequency [Hz].
+         * @param[in] frequency The new frequency [Hz].
          *
          * Change how often this node is supposed to execute ROS service callbacks and publish CAROS node messages.
          * A very small value or a negative value will (according to the current roscpp implementation) cause this ROS node to process the service callbacks and publishers as fast as possible.
