@@ -25,7 +25,7 @@ find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msg
 set(RW_ROOT "$ENV{RW_ROOT}")
 set(RWHW_ROOT "$ENV{RWHW_ROOT}")
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
-find_package(RobWorkHardware REQUIRED COMPONENTS universalrobots PATHS "${RWHW_ROOT}")
+find_package(RobWorkHardware COMPONENTS universalrobots PATHS "${RWHW_ROOT}")
 
 if (NOT ROBWORKHARDWARE_FOUND)
   message(WARNING "Skipping ${PROJECT_NAME}. Requires the universalrobots component of RobWorkHardware!")
