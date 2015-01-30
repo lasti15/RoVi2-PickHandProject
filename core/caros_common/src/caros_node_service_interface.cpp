@@ -1,4 +1,4 @@
-#include <caros/CarosNodeServiceInterface.hpp>
+#include <caros/caros_node_service_interface.h>
 #include <caros_common_msgs/CarosNodeState.h>
 
 #include <ros/ros.h>

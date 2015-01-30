@@ -5,7 +5,7 @@
  *      Author: thomas
  */
 
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <caros/FTSensorSIProxy.hpp>
 

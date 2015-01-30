@@ -4,7 +4,7 @@
 
 #include <caros_universalrobot/URServiceInterface.hpp>
 
-#include <caros/CarosNodeServiceInterface.hpp>
+#include <caros/caros_node_service_interface.h>
 #include <caros/SerialDeviceServiceInterface.hpp>
 
 #include <caros_common_msgs/WrenchData.h>

@@ -2,7 +2,7 @@
 #ifndef CAROS_ROBOTIQ3NODE_HPP
 #define CAROS_ROBOTIQ3NODE_HPP
 
-#include <caros/CarosNodeServiceInterface.hpp>
+#include <caros/caros_node_service_interface.h>
 #include <caros/GripperServiceInterface.hpp>
 
 #include <rwhw/robotiq/Robotiq3.hpp>

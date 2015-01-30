@@ -1,6 +1,6 @@
 #include <caros_universalrobot/URServiceInterface.hpp>
 
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>

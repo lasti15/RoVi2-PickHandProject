@@ -1,6 +1,6 @@
 #include <caros_universalrobot/UniversalRobots.hpp>
 
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <rw/invkin/IKMetaSolver.hpp>
 #include <rw/math/MetricFactory.hpp>

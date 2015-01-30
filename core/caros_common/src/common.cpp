@@ -1,4 +1,4 @@
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <rw/math.hpp>
 #include <rw/loaders/WorkCellFactory.hpp>

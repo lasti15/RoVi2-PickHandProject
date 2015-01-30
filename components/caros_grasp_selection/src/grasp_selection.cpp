@@ -4,7 +4,7 @@
 
 //#include <caros_grasp_selection/SelectGrasps.hpp>
 #include "GraspDBRepository.hpp"
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <caros_grasp_selection/SelectGrasps.h>
 

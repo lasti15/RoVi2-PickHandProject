@@ -1,7 +1,7 @@
 /**/
 #include <caros/ButtonSensorSIProxy.hpp>
 
-#include <caros/common.hpp>
+#include <caros/common.h>
 #include <rw/common/Ptr.hpp>
 #include <boost/foreach.hpp>
 #include <fstream>
