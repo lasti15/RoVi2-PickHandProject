@@ -110,6 +110,7 @@ void Robotiq3Node::errorLoopHook(){
         ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
         _robotiq->stopCmd();
+        _robotiq->disconnect();
     }
 }
 
