@@ -28,7 +28,6 @@ Robotiq3Node::~Robotiq3Node() {
     if (_robotiq != 0) {
         if (_robotiq->isConnected()) {
             ROS_DEBUG_STREAM("Still connected to the Robotiq device - going to stop the device and disconnect.");
-            _robotiq->stop();
             _robotiq->disconnect();
         }
         _robotiq = NULL;
@@ -111,7 +110,6 @@ void Robotiq3Node::errorLoopHook(){
         ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
         _robotiq->stopCmd();
-        _robotiq->stop();
     }
 }
 
