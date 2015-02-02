@@ -57,10 +57,14 @@ CAROS_FATALERROR("The value of x is " << x << ". x must not be less than zero.",
 
 namespace caros
 {
+namespace CAROS_NODE_ERRORCODES
+{
 enum CAROS_NODE_ERRORCODE
 {
   CAROS_NODE_NO_ERROR_CODE_SUPPLIED = 0
 };
+}
+typedef CAROS_NODE_ERRORCODES::CAROS_NODE_ERRORCODE CAROS_NODE_ERRORCODE;
 
 /* FIXME: the description below is now outdated */
 /**
@@ -176,8 +180,8 @@ class CarosNodeServiceInterface
   virtual void fatalErrorLoopHook() {/* Empty */};
   /** @} */
 
-  void error(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
-  void fatalError(const std::string& msg, const int64_t errorCode = CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+  void error(const std::string& msg, const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+  void fatalError(const std::string& msg, const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
 
   NodeState getState()
   {
