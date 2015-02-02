@@ -198,8 +198,8 @@ bool CarosNodeServiceInterface::initCarosNode()
         "then this should be considered a bug!");
   }
 
-  _nodeStatePublisher = _nodeHandle.advertise<caros_common_msgs::CarosNodeState>("CarosNodeState", 1);
-  ROS_ERROR_STREAM_COND(!_nodeStatePublisher, "The CarosNodeState publisher is empty!");
+  _nodeStatePublisher = _nodeHandle.advertise<caros_common_msgs::CarosNodeState>("caros_node_state", 1);
+  ROS_ERROR_STREAM_COND(!_nodeStatePublisher, "The caros_node_state publisher is empty!");
 
   _srvRecover = _nodeHandle.advertiseService("recover", &CarosNodeServiceInterface::recoverHandle, this);
   ROS_ERROR_STREAM_COND(!_srvRecover, "The recover service is empty!");
