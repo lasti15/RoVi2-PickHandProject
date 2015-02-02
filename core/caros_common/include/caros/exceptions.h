@@ -1,5 +1,5 @@
-#ifndef CAROS_EXCEPTIONS_HPP__
-#define CAROS_EXCEPTIONS_HPP__
+#ifndef CAROS_COMMON_EXCEPTIONS_H
+#define CAROS_COMMON_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -77,4 +77,4 @@ class badServiceCall : public std::runtime_error
 };
 }
 
-#endif /* CAROS_EXCEPTIONS_HPP__ */
+#endif /* CAROS_COMMON_EXCEPTIONS_H */

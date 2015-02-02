@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_H_
-#define CAROS_COMMON_H_
+#ifndef CAROS_COMMON_COMMON_H
+#define CAROS_COMMON_COMMON_H
 
 #include <rw/math.hpp>
 #include <rw/models/WorkCell.hpp>
@@ -105,4 +105,4 @@ rw::common::Ptr<rw::kinematics::State> getState();
 
 }  // namespace
 
-#endif /* CAROS_COMMON_H_ */
+#endif /* CAROS_COMMON_COMMON_H */
