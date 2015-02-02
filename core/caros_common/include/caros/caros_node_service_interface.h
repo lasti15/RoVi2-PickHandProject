@@ -120,13 +120,13 @@ class CarosNodeServiceInterface
   /**
    * @brief The states that the CAROS node can be in
    */
-  typedef enum
+  enum NodeState
   {
     PREINIT = 0,
     RUNNING,
     INERROR,
     INFATALERROR
-  } NodeState;
+  };
 
  protected:
   /* TODO:
