@@ -185,25 +185,25 @@ class CarosNodeServiceInterface
 
   NodeState getState()
   {
-    return _nodeState;
+    return nodeState_;
   }
   NodeState getPreviousState()
   {
-    return _previousState;
+    return previousState_;
   }
 
   /** @{ */
   bool isInRunning()
   {
-    return _nodeState == RUNNING;
+    return nodeState_ == RUNNING;
   }
   bool isInError()
   {
-    return _nodeState == INERROR;
+    return nodeState_ == INERROR;
   }
   bool isInFatalError()
   {
-    return _nodeState == INFATALERROR;
+    return nodeState_ == INFATALERROR;
   }
   /** @} */
 
@@ -225,7 +225,7 @@ class CarosNodeServiceInterface
    */
   double getLoopRateFrequency()
   {
-    return _loopRateFrequency;
+    return loopRateFrequency_;
   }
 
  private:
@@ -282,25 +282,25 @@ class CarosNodeServiceInterface
   void publishNodeState(const bool stateChanged = false);
 
  private:
-  ros::NodeHandle _nodeHandle;
+  ros::NodeHandle nodeHandle_;
 
-  ros::Publisher _nodeStatePublisher;
+  ros::Publisher nodeStatePublisher_;
 
-  ros::ServiceServer _srvRecover;
+  ros::ServiceServer srvRecover_;
 
-  NodeState _nodeState;
-  NodeState _previousState;
+  NodeState nodeState_;
+  NodeState previousState_;
 
   /* TODO:
-   * Should the _loopRateFrequency be settable through the CarosNodeServiceInterface that is exposed as ROS services?
+   * Should the loopRateFrequency_ be settable through the CarosNodeServiceInterface that is exposed as ROS services?
    */
-  double _loopRateFrequency;
-  ros::Rate _loopRate;
+  double loopRateFrequency_;
+  ros::Rate loopRate_;
 
-  std::string _errorMsg;
+  std::string errorMsg_;
   /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::CarosNodeState message
    */
-  int64_t _errorCode;
+  int64_t errorCode_;
 };
 }  // namespace
 #endif

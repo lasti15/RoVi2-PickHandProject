@@ -9,7 +9,7 @@
  * TODO:
  * - Should the publish rate on the NodeState be lowered to maybe 1 or
  *   2 Hz when in an error state?
- * - Make it possible to configure the _loopRate through the parameter
+ * - Make it possible to configure the loopRate_ through the parameter
  *   server.
  ************************************************************************/
 
@@ -23,10 +23,10 @@ static std::string CarosStateString[] = {"PREINIT", "RUNNING", "INERROR", "INFAT
 }
 
 CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency)
-    : _nodeHandle(nodehandle, CAROS_NODE_SERVICE_INTERFACE_SUB_NAMESPACE),
-      _nodeState(PREINIT),
-      _loopRateFrequency(loopRateFrequency),
-      _loopRate(_loopRateFrequency)
+    : nodeHandle_(nodehandle, CAROS_NODE_SERVICE_INTERFACE_SUB_NAMESPACE),
+      nodeState_(PREINIT),
+      loopRateFrequency_(loopRateFrequency),
+      loopRate_(loopRateFrequency_)
 {
   if (initCarosNode())
   {
@@ -55,25 +55,25 @@ void CarosNodeServiceInterface::start()
   {
     ros::spinOnce();
 
-    ROS_FATAL_STREAM_COND(_nodeState == PREINIT, "The CAROS node is not supposed to be in the state '"
+    ROS_FATAL_STREAM_COND(nodeState_ == PREINIT, "The CAROS node is not supposed to be in the state '"
                                                      << CarosStateString[PREINIT]
                                                      << "' at this point - this is a bug!");
-    ROS_ASSERT(_nodeState != PREINIT);
+    ROS_ASSERT(nodeState_ != PREINIT);
 
     /* Transitions to the error states will be handled right away in the same ROS cycle */
 
-    if (_nodeState == RUNNING)
+    if (nodeState_ == RUNNING)
     {
       runLoopHook();
     }
     /* Process errors if any occurred */
-    if (_nodeState == INERROR)
+    if (nodeState_ == INERROR)
     {
       errorLoopHook();
     }
     /* Also process fatal error state (if an error becomes a fatal error, then it will also be processed in the same ROS
      * cycle) */
-    if (_nodeState == INFATALERROR)
+    if (nodeState_ == INFATALERROR)
     {
       fatalErrorLoopHook();
     }
@@ -81,7 +81,7 @@ void CarosNodeServiceInterface::start()
     publishNodeState();
 
     /* Sleep in order to run approximately at the specified frequency */
-    _loopRate.sleep();
+    loopRate_.sleep();
     /* TODO:
      * Add debug statements regarding the return value of the sleep() - it should return true if the desired rate was
      * met for this cycle, else false
@@ -92,10 +92,10 @@ void CarosNodeServiceInterface::start()
 bool CarosNodeServiceInterface::activateNode()
 {
   // can only be called when in PREINIT state
-  if (_nodeState != PREINIT)
+  if (nodeState_ != PREINIT)
   {
     ROS_ERROR_STREAM("Activate can only be called when in " << CarosStateString[PREINIT] << " state. The node was in "
-                                                            << CarosStateString[_nodeState] << ".");
+                                                            << CarosStateString[nodeState_] << ".");
     return false;
   }
 
@@ -120,19 +120,19 @@ bool CarosNodeServiceInterface::activateNode()
 bool CarosNodeServiceInterface::recoverNode()
 {
   // can only be called when in INERROR state
-  if (_nodeState != INERROR)
+  if (nodeState_ != INERROR)
   {
     ROS_WARN_STREAM("Recover can only be called from " << CarosStateString[INERROR] << " state. The node was in "
-                                                       << CarosStateString[_nodeState] << ".");
+                                                       << CarosStateString[nodeState_] << ".");
     return false;
   }
 
   if (recoverHook())
   {
-    ROS_ERROR_STREAM_COND(_previousState == INFATALERROR, "A successful recovery brings the node back into the "
+    ROS_ERROR_STREAM_COND(previousState_ == INFATALERROR, "A successful recovery brings the node back into the "
                                                               << CarosStateString[INFATALERROR]
                                                               << " state - This is a bug!");
-    changeState(_previousState);
+    changeState(previousState_);
   }
   else
   {
@@ -153,8 +153,8 @@ void CarosNodeServiceInterface::error(const std::string& msg, const int64_t erro
 {
   ROS_DEBUG_STREAM("CarosNodeError: " << msg << "; error code: " << errorCode);
   /* keep a copy of the error message so it can be published */
-  _errorMsg = msg;
-  _errorCode = errorCode;
+  errorMsg_ = msg;
+  errorCode_ = errorCode;
   changeState(INERROR);
 }
 
@@ -162,25 +162,25 @@ void CarosNodeServiceInterface::fatalError(const std::string& msg, const int64_t
 {
   ROS_DEBUG_STREAM("CarosNodeFatalError: " << msg << "; error code: " << errorCode);
   /* keep a copy of the (fatal) error message so it can be published */
-  _errorMsg = msg;
-  _errorCode = errorCode;
+  errorMsg_ = msg;
+  errorCode_ = errorCode;
   changeState(INFATALERROR);
 }
 
 void CarosNodeServiceInterface::setLoopRateFrequency(const double frequency)
 {
-  ROS_DEBUG_STREAM("Changing the loop rate frequency from " << _loopRateFrequency << " to " << frequency);
-  _loopRateFrequency = frequency;
-  _loopRate = ros::Rate(_loopRateFrequency);
+  ROS_DEBUG_STREAM("Changing the loop rate frequency from " << loopRateFrequency_ << " to " << frequency);
+  loopRateFrequency_ = frequency;
+  loopRate_ = ros::Rate(loopRateFrequency_);
 }
 
 void CarosNodeServiceInterface::changeState(const NodeState newState)
 {
-  ROS_DEBUG_STREAM("Changing state from " << CarosStateString[_nodeState] << " to " << CarosStateString[newState]);
-  if (newState != _nodeState)
+  ROS_DEBUG_STREAM("Changing state from " << CarosStateString[nodeState_] << " to " << CarosStateString[newState]);
+  if (newState != nodeState_)
   {
-    _previousState = _nodeState;
-    _nodeState = newState;
+    previousState_ = nodeState_;
+    nodeState_ = newState;
     publishNodeState(true);
   }
   else
@@ -191,20 +191,20 @@ void CarosNodeServiceInterface::changeState(const NodeState newState)
 
 bool CarosNodeServiceInterface::initCarosNode()
 {
-  if (_nodeStatePublisher || _srvRecover)
+  if (nodeStatePublisher_ || srvRecover_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more CarosNodeServiceInterface services or publishers. If this is not fully intended "
         "then this should be considered a bug!");
   }
 
-  _nodeStatePublisher = _nodeHandle.advertise<caros_common_msgs::CarosNodeState>("caros_node_state", 1);
-  ROS_ERROR_STREAM_COND(!_nodeStatePublisher, "The caros_node_state publisher is empty!");
+  nodeStatePublisher_ = nodeHandle_.advertise<caros_common_msgs::CarosNodeState>("caros_node_state", 1);
+  ROS_ERROR_STREAM_COND(!nodeStatePublisher_, "The caros_node_state publisher is empty!");
 
-  _srvRecover = _nodeHandle.advertiseService("recover", &CarosNodeServiceInterface::recoverHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvRecover, "The recover service is empty!");
+  srvRecover_ = nodeHandle_.advertiseService("recover", &CarosNodeServiceInterface::recoverHandle, this);
+  ROS_ERROR_STREAM_COND(!srvRecover_, "The recover service is empty!");
 
-  if (_nodeStatePublisher && _srvRecover)
+  if (nodeStatePublisher_ && srvRecover_)
   {
     /* Everything seems to be properly initialised */
   }
@@ -225,12 +225,12 @@ bool CarosNodeServiceInterface::recoverHandle(std_srvs::Empty::Request& request,
 void CarosNodeServiceInterface::publishNodeState(const bool stateChanged)
 {
   caros_common_msgs::CarosNodeState state;
-  state.state = CarosStateString[_nodeState];
-  state.inError = _nodeState == INERROR || _nodeState == INFATALERROR;
+  state.state = CarosStateString[nodeState_];
+  state.inError = nodeState_ == INERROR || nodeState_ == INFATALERROR;
   if (state.inError)
   {
-    state.errorMsg = _errorMsg;
-    state.errorCode = _errorCode;
+    state.errorMsg = errorMsg_;
+    state.errorCode = errorCode_;
   }
   /* The errorMsg is not being cleared when the state no longer is in error, this is intended to provide a minor error
    * log / history of errors.
@@ -240,6 +240,6 @@ void CarosNodeServiceInterface::publishNodeState(const bool stateChanged)
 
   state.changedEvent = stateChanged;
 
-  _nodeStatePublisher.publish(state);
+  nodeStatePublisher_.publish(state);
 }
 }  // namespace caros
