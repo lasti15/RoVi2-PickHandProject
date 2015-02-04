@@ -7,6 +7,14 @@ project(caros_common)
 set(library_name "${PROJECT_NAME}")
 
 ########################################################################
+#### Make use of c++11
+########################################################################
+# See: http://answers.ros.org/question/173947/export-gcc-flags-though-catkin-cfg_extras/
+# Should automatically use c++11 due to using caros_control
+# Using hardcoded path-strings instead of a variable substitution for the use-c++11.cmake path-name, as catkin_lint doesn't properly do variable substitution (at least in this particular situation)
+include("cmake/use-c++11.cmake")
+
+########################################################################
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
@@ -45,6 +53,7 @@ catkin_package(
   LIBRARIES ${library_name}
   CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common_msgs
   DEPENDS RobWork
+  CFG_EXTRAS "use-c++11.cmake"
 )
 
 include_directories(

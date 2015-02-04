@@ -13,13 +13,15 @@
 
 #include <ros/ros.h>
 
+#include <cstdint>
+
 namespace caros
 {
 
 caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
 {
   caros_common_msgs::RWState res;
-  BOOST_FOREACH(boost::shared_ptr<rw::kinematics::StateData> data, state.getStateStructure()->getStateData())
+  for (const auto& data : state.getStateStructure()->getStateData())
   {
     std::string name = data->getName();
     int size = data->size() * sizeof(double);
@@ -28,7 +30,7 @@ caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
     res.statedata_sizes.push_back(size);
     for (int i = 0; i < size; i++)
     {
-      res.statedata_q.push_back(((const boost::uint8_t*)data->getData(state))[i]);
+      res.statedata_q.push_back(reinterpret_cast<const std::uint8_t*>(data->getData(state))[i]);
     }
   }
 

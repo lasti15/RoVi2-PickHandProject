@@ -21,6 +21,8 @@ namespace caros
 /**
  * \addtogroup TypeConversion CAROS Type Conversion
  * Overloaded utility functions for converting between the different system types (e.g. from ROS to RobWork)
+ * If a type can be converted to more types, then the most obvious/direct type conversion is having the toRos or toRw
+ * signature, while the alternative types will be toRosType and toRwType.
  * @{
  */
 
