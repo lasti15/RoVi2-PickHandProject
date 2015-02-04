@@ -1,4 +1,4 @@
-#include <caros_universalrobot/URServiceInterface.hpp>
+#include <caros/URServiceInterface.hpp>
 
 #include <caros/common.hpp>
 
