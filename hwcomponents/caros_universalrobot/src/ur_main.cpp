@@ -1,7 +1,7 @@
 /* TODO:
  * Properly document the parameters that this node supports/uses.
  */
-#include <caros_universalrobot/UniversalRobots.hpp>
+#include <caros/UniversalRobots.hpp>
 
 #include <caros/common.hpp>
 
