@@ -48,13 +48,13 @@ else()
 ########################################################################
 #### Executables
 ########################################################################
-  add_executable(robotiq3 src/mainR3.cpp src/Robotiq3Node.cpp)
-  target_link_libraries(robotiq3 ${conv_library}
+  add_executable(caros_robotiq3_node src/mainR3.cpp src/Robotiq3Node.cpp)
+  target_link_libraries(caros_robotiq3_node ${conv_library}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
   )
-  add_dependencies(robotiq3
+  add_dependencies(caros_robotiq3_node
     caros_common
     caros_control
   )
