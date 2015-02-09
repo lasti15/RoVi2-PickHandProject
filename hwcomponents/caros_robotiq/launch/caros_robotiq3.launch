@@ -1,6 +1,4 @@
 <launch>
-  <!-- Hackish solution to let the user easily spawn a "standalone" caros_robotiq3 node -->
-
   <group>
     <include file="$(find caros_robotiq)/launch/caros_robotiq3_param.xml">
       <!-- no parameters have to be set - relying on default values -->
