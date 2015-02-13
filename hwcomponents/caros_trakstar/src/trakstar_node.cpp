@@ -22,14 +22,15 @@ using namespace caros;
 // Register this plugin with pluginlib.  Names must match nodelet_velodyne.xml.
 //
 // parameters are: package, class name, class type, base class type
-PLUGINLIB_DECLARE_CLASS(caros_trakstar, caros::TrakstarNode, caros::TrakstarNode, nodelet::Nodelet)
+PLUGINLIB_EXPORT_CLASS(caros::TrakstarNode, nodelet::Nodelet)
 
 TrakstarNode::TrakstarNode():Nodelet(),
-CarosNodeServiceInterface(getPrivateNodeHandle(), 240), ButtonSensorServiceInterface(getPrivateNodeHandle()), PoseSensorServiceInterface(
-    getPrivateNodeHandle()), nodehandle_(getPrivateNodeHandle())
+CarosNodeServiceInterface(ros::NodeHandle(""), 240),
+ButtonSensorServiceInterface(ros::NodeHandle("")), PoseSensorServiceInterface(
+    ros::NodeHandle("")), nodehandle_(ros::NodeHandle(""))
 
 {
-
+  t_driver_ = new caros::Trakstar();
 }
 
 TrakstarNode::TrakstarNode(const ros::NodeHandle& nodehandle) :
@@ -37,6 +38,7 @@ TrakstarNode::TrakstarNode(const ros::NodeHandle& nodehandle) :
         nodehandle), nodehandle_(nodehandle)
 {
   // create a new Trakstar driver
+
   t_driver_ = new caros::Trakstar();
   /* Currently nothing specific should happen */
   //_stop = false;

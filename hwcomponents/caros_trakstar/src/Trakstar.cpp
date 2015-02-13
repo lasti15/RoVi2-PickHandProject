@@ -197,8 +197,10 @@ void Trakstar::initialize(bool block)
  */
 int Trakstar::initializeSystem()
 {
+  ROS_DEBUG("Setting status!");
   TrakstarStatus initStatusLocal = TRAKSTAR_STATUS_STOPPED;
 
+  ROS_DEBUG("Creating ATC3DG handle!");
   // first initialize variables
   ATC3DG_ = new tagSYSTEM_CONFIGURATION();
 
@@ -444,6 +446,10 @@ int Trakstar::initializeSystem()
 Trakstar::TrakstarStatus Trakstar::getInitStatus()
 {
   return init_status_;
+}
+
+bool Trakstar::isInitialized(){
+  return init_status_==TRAKSTAR_STATUS_STARTED;
 }
 
 int Trakstar::getNumberSensorsAttached()

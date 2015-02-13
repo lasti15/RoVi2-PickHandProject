@@ -53,17 +53,17 @@ include_directories(
 # TrakStar stuff (6D Pose sensors)
 ADD_DEFINITIONS( -DLINUX )
 INCLUDE_DIRECTORIES( /opt/3DGuidance.Rev.E.64/3DGuidanceAPI)
-SET(TRAKSTAR_LIBRARIES /opt/3DGuidance.Rev.E.64/3DGuidanceAPI/ATC3DGlib64.so)
+SET(TRAKSTAR_LIBRARIES ATC3DGlib64)
 LINK_DIRECTORIES(/opt/3DGuidance.Rev.E.64/3DGuidanceAPI )
 
 # mband: link_directories is required until RobWork issue ## is solved
 ######link_directories(${ROBWORK_LIBRARY_DIRS})
 
-add_library(trakstar 	
+add_library(trakstar	
     src/Trakstar.cpp
     src/trakstar_node.cpp
 )
-TARGET_LINK_LIBRARIES(trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES})
+TARGET_LINK_LIBRARIES(trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})
 
-#add_executable(caros_test src/Caros_Test.cpp)
-#target_link_libraries(caros_test ${conv_library} ${ROBWORK_LIBRARIES})
+add_executable(caros_trakstar src/main.cpp)
+target_link_libraries(caros_trakstar trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})

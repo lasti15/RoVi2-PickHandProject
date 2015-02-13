@@ -1,5 +1,5 @@
 <library path="lib/libtrakstar">
-  <class name="caros_trakstar/TrakstarNode" type="caros::TrakstarNode" base_class_type="nodelet::Nodelet">
+  <class  type="caros::TrakstarNode" base_class_type="nodelet::Nodelet">
   <description>
   This is my nodelet for generating raw trakstar data
   </description>
