@@ -19,7 +19,6 @@ add_message_files(
   TactileArrayData.msg
   TactileArrayState.msg
   ButtonSensorState.msg
-  TrakStarPose.msg
 )
 
 generate_messages(
