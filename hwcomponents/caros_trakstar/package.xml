@@ -12,17 +12,23 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>message_generation</build_depend>
-
+  
+  
   <depend>std_msgs</depend>
   <depend>caros_common</depend>
-
+  <depend>nodelet</depend>
+  <depend>caros_sensor</depend>
+  
   <exec_depend>message_runtime</exec_depend>
-
+  <exec_depend>roscpp</exec_depend>
+  
+  
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
 
-  <export>
-    <rosdoc config="rosdoc.yaml" />
+  <export> 
+  	<rosdoc config="rosdoc.yaml" />
+  	<nodelet plugin="${prefix}/plugins/nodelet_plugins.xml"/> 
   </export>
-
+  
 </package>
