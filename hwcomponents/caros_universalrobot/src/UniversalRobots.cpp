@@ -478,9 +478,18 @@ bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets) {
 }
 
 bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets) {
-    /* FIXME: Empty */
+    bool res = false;
+    /* Throwing away the speed */
+    for (const auto& target : targets)
+    {
+        res = servoT(std::get<0>(target));
+        if (!res)
+        {
+            break;
+        }
+    }
 
-    return false;
+    return res;
 }
 
 bool UniversalRobots::moveStart() {
