@@ -1,7 +1,7 @@
 #include <caros/SerialDeviceSIProxy.hpp>
 
 #include <caros/SerialDeviceServiceInterface.hpp>
-#include <caros/common.hpp>
+#include <caros/common.h>
 #include <caros_common_msgs/Stop.h>
 #include <caros_common_msgs/Pause.h>
 #include <caros_common_msgs/ConfigBool.h>

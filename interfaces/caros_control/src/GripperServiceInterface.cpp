@@ -1,5 +1,5 @@
 #include <caros/GripperServiceInterface.hpp>
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <caros_control_msgs/GripperState.h>
 

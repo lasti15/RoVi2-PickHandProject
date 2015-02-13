@@ -1,7 +1,7 @@
 #ifndef CAROS_SDHNode_HPP
 #define CAROS_SDHNode_HPP
 
-#include <caros/CarosNodeServiceInterface.hpp>
+#include <caros/caros_node_service_interface.h>
 #include <caros/GripperServiceInterface.hpp>
 
 #include <rw/math/Q.hpp>

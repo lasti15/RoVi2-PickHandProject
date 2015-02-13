@@ -10,7 +10,7 @@
 #include <rw/models/Device.hpp>
 //#include <caros_grasp_selection/SelectGrasps.hpp>
 #include "GraspDBRepository.hpp"
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <caros_grasp_selection/SelectGrasps.h>
 #include <caros_common_msgs/GetRWState.h>

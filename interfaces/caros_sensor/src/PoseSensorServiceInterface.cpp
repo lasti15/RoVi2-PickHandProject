@@ -2,7 +2,7 @@
 #include <caros/PoseSensorServiceInterface.hpp>
 #include <caros_sensor_msgs/PoseSensorState.h>
 
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 using namespace rw::common;
 

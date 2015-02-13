@@ -55,7 +55,7 @@ include_directories(
 
 add_library(${library_name}
   src/common.cpp
-  src/CarosNodeServiceInterface.cpp
+  src/caros_node_service_interface.cpp
 )
 
 target_link_libraries(${library_name}

@@ -1,5 +1,5 @@
 #include <caros/SerialDeviceSIProxy.hpp>
-#include <caros/common.hpp>
+#include <caros/common.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/loaders/WorkCellLoader.hpp>
