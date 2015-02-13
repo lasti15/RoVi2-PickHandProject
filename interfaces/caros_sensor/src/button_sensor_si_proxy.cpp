@@ -1,5 +1,5 @@
 /**/
-#include <caros/ButtonSensorSIProxy.hpp>
+#include <caros/button_sensor_si_proxy.h>
 
 #include <caros/common.h>
 #include <rw/common/Ptr.hpp>
@@ -14,14 +14,18 @@ using namespace caros;
 ButtonSensorSIProxy::ButtonSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle) :
         _nodeHnd(nhandle)
 {
-    _buttonSensorState = _nodeHnd->subscribe(_nodeHnd->getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
 }
 
 ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) :
         _nodeHnd( ownedPtr( new ros::NodeHandle(name) ) )
 {
-    _buttonSensorState = _nodeHnd->subscribe(_nodeHnd->getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
 }
+
+bool ButtonSensorSIProxy::configureProxy(){
+  _buttonSensorState = _nodeHnd->subscribe(_nodeHnd->getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
+  return true;
+}
+
 
 ButtonSensorSIProxy::~ButtonSensorSIProxy()
 {

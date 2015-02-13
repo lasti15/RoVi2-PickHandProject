@@ -16,7 +16,6 @@ namespace caros {
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a PoseSensorServiceInterface.
- *
  */
 class PoseSensorSIProxy {
 
@@ -24,7 +23,7 @@ public:
 	typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
 
 	//! constructor - create with device name
-	PoseSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
+	PoseSensorSIProxy(const ros::NodeHandle& nhandle);
 
 	PoseSensorSIProxy(const std::string& devname);
 
@@ -44,15 +43,14 @@ public:
 	ros::Time getTimeStamp();
 
 protected:
-
+	void configureProxy();
 	void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+	ros::NodeHandle node_hnd_;
 
 	// states
 	ros::Subscriber _poseSensorState;
-
 
 private:
 	boost::mutex _mutex;

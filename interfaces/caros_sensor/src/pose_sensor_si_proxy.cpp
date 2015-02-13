@@ -1,5 +1,5 @@
 /**/
-#include <caros/PoseSensorSIProxy.hpp>
+#include <caros/pose_sensor_si_proxy.h>
 
 #include <fstream>
 #include <rw/common/Ptr.hpp>
@@ -13,19 +13,23 @@ using namespace std;
 
 using namespace caros;
 
-PoseSensorSIProxy::PoseSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle):
-		_nodeHnd(nhandle)
+PoseSensorSIProxy::PoseSensorSIProxy(const ros::NodeHandle& nhandle):
+    node_hnd_(nhandle)
 {
-	_poseSensorState = _nodeHnd->subscribe("poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
+
 }
 
 PoseSensorSIProxy::PoseSensorSIProxy(const std::string& devname):
-        _nodeHnd( rw::common::ownedPtr(new ros::NodeHandle(devname)) )
+    node_hnd_( devname )
 {
-    _poseSensorState = _nodeHnd->subscribe(devname + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
+
 }
 
 PoseSensorSIProxy::~PoseSensorSIProxy() {
+}
+
+void PoseSensorSIProxy::configureProxy(){
+  _poseSensorState = node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
 }
 
 void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state)
