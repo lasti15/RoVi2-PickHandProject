@@ -39,13 +39,13 @@ namespace caros {
         virtual ~SerialDeviceSIProxy();
 
         //! @brief move robot in a linear Cartesian path
-        bool moveLin(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
+        bool moveLin(const rw::math::Transform3D<>& target, const float speed = 100, const float blend = 0);
 
         //! @brief move robot from point to point
-        bool movePTP(const rw::math::Q& target, float speed = 100, float blend = 0);
+        bool movePTP(const rw::math::Q& target, const float speed = 100, const float blend = 0);
 
         //! @brief move robot from point to point but using a pose as target (requires invkin)
-        bool movePTP_T(const rw::math::Transform3D<>& target, float speed = 100, float blend = 0);
+        bool movePTP_T(const rw::math::Transform3D<>& target, const float speed = 100, const float blend = 0);
 
         //! @brief TODO Missing
         bool moveVelQ(const rw::math::Q& target);
@@ -55,20 +55,20 @@ namespace caros {
 
         //! @brief move robot in a servoing fasion using joint configurations
         /* There is no blend parameter, as it is irrelevent when doing servoing. */
-        bool moveServoQ(const rw::math::Q& target, float speed = 100);
+        bool moveServoQ(const rw::math::Q& target, const float speed = 100);
 
         //! @brief move robot in a servoing fasion using pose configurations
         /* There is no blend parameter, as it is irrelevent when doing servoing. */
-        bool moveServoT(const rw::math::Transform3D<>& target, float speed = 100);
+        bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100);
 
         //! @brief move robot with a hybrid position/force control
         bool moveLinFC(const rw::math::Transform3D<>& target,
-                       rw::math::Wrench6D<>& wtarget,
-                       float selection[6],
-                       std::string refframe,
-                       rw::math::Transform3D<> offset,
-                       float speed = 100,
-                       float blend = 0);
+                       const rw::math::Wrench6D<>& wtarget,
+                       const float selection[6],
+                       const std::string refframe,
+                       const rw::math::Transform3D<> offset,
+                       const float speed = 100,
+                       const float blend = 0);
 
         //! @brief hard stop the robot,
         bool stop();
@@ -77,7 +77,7 @@ namespace caros {
         bool pause();
 
         //! @brief enable safe mode, so that robot stops when collisions are detected
-        bool setSafeModeEnabled(bool enable);
+        bool setSafeModeEnabled(const bool enable);
 
         rw::math::Q getQ();
         rw::math::Q getQd();

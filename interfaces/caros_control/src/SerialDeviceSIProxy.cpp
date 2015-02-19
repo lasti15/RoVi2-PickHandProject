@@ -38,7 +38,7 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
 SerialDeviceSIProxy::~SerialDeviceSIProxy() {
 }
 
-bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, float speed, float blend)
+bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMoveLin srv;
     srv.request.targets.push_back( caros::toRos(target) );
@@ -47,7 +47,7 @@ bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, float s
     return _srvMoveLin.call(srv);
 }
 
-bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, float speed, float blend)
+bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMovePTP srv;
     srv.request.targets.push_back( caros::toRos(target) );
@@ -56,7 +56,7 @@ bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, float speed, float 
     return _srvMovePTP.call(srv);
 }
 
-bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, float speed, float blend)
+bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMovePTP_T srv;
     srv.request.targets.push_back( caros::toRos(target) );
@@ -65,7 +65,7 @@ bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, float
     return _srvMovePTP_T.call(srv);
 }
 
-bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, float speed)
+bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float speed)
 {
     caros_control_msgs::SerialDeviceMoveServoQ srv;
     srv.request.targets.push_back( caros::toRos(target) );
@@ -73,7 +73,7 @@ bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, float speed)
     return _srvMoveServoQ.call(srv);
 }
 
-bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, float speed)
+bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, const float speed)
 {
     caros_control_msgs::SerialDeviceMoveServoT srv;
     srv.request.targets.push_back( caros::toRos(target) );
@@ -96,12 +96,12 @@ bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
 }
 
 bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& target,
-                                    rw::math::Wrench6D<>& wtarget,
-                                    float selection[6],
-                                    std::string refframe,
-                                    rw::math::Transform3D<> offset,
-                                    float speed,
-                                    float blend)
+                                    const rw::math::Wrench6D<>& wtarget,
+                                    const float selection[6],
+                                    const std::string refframe,
+                                    const rw::math::Transform3D<> offset,
+                                    const float speed,
+                                    const float blend)
 {
     //! TODO: need implementing
     ROS_ERROR("NOT IMPLEMENTED!");
