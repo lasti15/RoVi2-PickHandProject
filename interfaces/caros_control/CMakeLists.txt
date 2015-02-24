@@ -78,3 +78,12 @@ target_link_libraries(${library_name}
   ${catkin_LIBRARIES}
   ${ROBWORK_LIBRARIES}
 )
+
+########################################################################
+#### Testing
+########################################################################
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest_gtest(serial_device_service_interface_proxy test/serial_device_service_interface_proxy.test test/serial_device_service_interface_proxy.cpp test/serial_device_service_interface_dummy.cpp)
+  target_link_libraries(serial_device_service_interface_proxy ${library_name} ${catkin_LIBRARIES})
+endif()

@@ -38,70 +38,98 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
 SerialDeviceSIProxy::~SerialDeviceSIProxy() {
 }
 
-bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, float speed, float blend)
+bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMoveLin srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    return _srvMoveLin.call(srv);
+    if (not _srvMoveLin.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, float speed, float blend)
+bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMovePTP srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    return _srvMovePTP.call(srv);
+    if (not _srvMovePTP.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, float speed, float blend)
+bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
     caros_control_msgs::SerialDeviceMovePTP_T srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    return _srvMovePTP_T.call(srv);
+    if (not _srvMovePTP_T.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, float speed)
+bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float speed)
 {
     caros_control_msgs::SerialDeviceMoveServoQ srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    return _srvMoveServoQ.call(srv);
+    if (not _srvMoveServoQ.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, float speed)
+bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, const float speed)
 {
     caros_control_msgs::SerialDeviceMoveServoT srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    return _srvMoveServoT.call(srv);
+    if (not _srvMoveServoT.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelQ(const rw::math::Q& target)
 {
     caros_control_msgs::SerialDeviceMoveVelQ srv;
     srv.request.vel =  caros::toRos(target) ;
-    return _srvMoveVelQ.call(srv);
+    if (not _srvMoveVelQ.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
 {
     caros_control_msgs::SerialDeviceMoveVelT srv;
     srv.request.vel =  caros::toRos(target) ;
-    return _srvMoveVelT.call(srv);
+    if (not _srvMoveVelT.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& target,
-                                    rw::math::Wrench6D<>& wtarget,
-                                    float selection[6],
-                                    std::string refframe,
-                                    rw::math::Transform3D<> offset,
-                                    float speed,
-                                    float blend)
+                                    const rw::math::Wrench6D<>& wtarget,
+                                    const float selection[6],
+                                    const std::string refframe,
+                                    const rw::math::Transform3D<> offset,
+                                    const float speed,
+                                    const float blend)
 {
     //! TODO: need implementing
     ROS_ERROR("NOT IMPLEMENTED!");
@@ -110,18 +138,30 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& target,
 
 bool SerialDeviceSIProxy::stop(){
     caros_common_msgs::Stop srv;
-    return _srvStop.call(srv);
+    if (not _srvStop.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::pause(){
     caros_common_msgs::Pause srv;
-    return _srvPause.call(srv);
+    if (not _srvPause.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable){
     caros_common_msgs::ConfigBool srv;
     srv.request.value = caros::toRos(enable);
-    return _srvSetSafeModeEnabled.call(srv);
+    if (not _srvSetSafeModeEnabled.call(srv))
+    {
+      ROS_ERROR("The service call failed!");
+    }
+    return srv.response.success;
 }
 
 void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::RobotState& state) {
