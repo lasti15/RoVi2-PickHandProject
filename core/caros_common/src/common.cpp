@@ -17,6 +17,12 @@
 
 namespace caros
 {
+/************************************************************************
+ * Notes:
+ * These conversion functions can be templated to work with other scalar
+ * types than the default 'double'.
+ * But sticking with the default to keep things simple.
+ ************************************************************************/
 
 caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
 {
@@ -73,10 +79,13 @@ rw::kinematics::State toRw(const caros_common_msgs::RWState& state_ros, rw::mode
   return state;
 }
 
+/************************************************************************
+ * Q
+ ************************************************************************/
 rw::math::Q toRw(const caros_common_msgs::Q& q)
 {
   rw::math::Q res(q.data.size());
-  for (size_t i = 0; i < q.data.size(); ++i)
+  for (std::size_t i = 0; i < q.data.size(); ++i)
   {
     res(i) = q.data[i];
   }
@@ -87,13 +96,16 @@ caros_common_msgs::Q toRos(const rw::math::Q& q)
 {
   caros_common_msgs::Q res;
   res.data.resize(q.size());
-  for (size_t i = 0; i < q.size(); ++i)
+  for (std::size_t i = 0; i < q.size(); ++i)
   {
     res.data[i] = static_cast<double>(q(i));
   }
   return res;
 }
 
+/************************************************************************
+ * Transform
+ ************************************************************************/
 geometry_msgs::Transform toRos(const rw::math::Transform3D<>& transform)
 {
   rw::math::Quaternion<> q(transform.R());
@@ -110,20 +122,6 @@ geometry_msgs::Transform toRos(const rw::math::Transform3D<>& transform)
   return result;
 }
 
-void toRos(const rw::math::Transform3D<>& transform, geometry_msgs::Pose& pose)
-{
-  rw::math::Quaternion<> q(transform.R());
-
-  pose.position.x = transform.P()(0);
-  pose.position.y = transform.P()(1);
-  pose.position.z = transform.P()(2);
-
-  pose.orientation.x = q(0);
-  pose.orientation.y = q(1);
-  pose.orientation.z = q(2);
-  pose.orientation.w = q(3);
-}
-
 rw::math::Transform3D<> toRw(const geometry_msgs::Transform& transform)
 {
   rw::math::Vector3D<> p(transform.translation.x, transform.translation.y, transform.translation.z);
@@ -131,21 +129,42 @@ rw::math::Transform3D<> toRw(const geometry_msgs::Transform& transform)
   return rw::math::Transform3D<>(p, q);
 }
 
-rw::math::Transform3D<> toRw(const geometry_msgs::Pose& transform)
+/************************************************************************
+ * Pose
+ *
+ * Because the RobWork representation of a ROS pose is also a transform
+ * then the function to convert to a ROS pose has the type appended i.e.
+ * toRosPose
+ * This may change in the future if a better way to streamline the
+ * conversion functions is found with acceptable tradeoffs.
+ ************************************************************************/
+geometry_msgs::Pose toRosPose(const rw::math::Transform3D<>& transform)
 {
-  rw::math::Vector3D<> p(transform.position.x, transform.position.y, transform.position.z);
-  rw::math::Quaternion<> q(transform.orientation.x, transform.orientation.y, transform.orientation.z,
-                           transform.orientation.w);
+  rw::math::Quaternion<> q(transform.R());
+  geometry_msgs::Pose result;
+  result.position.x = transform.P()(0);
+  result.position.y = transform.P()(1);
+  result.position.z = transform.P()(2);
+
+  result.orientation.x = q(0);
+  result.orientation.y = q(1);
+  result.orientation.z = q(2);
+  result.orientation.w = q(3);
+
+  return result;
+}
+
+rw::math::Transform3D<> toRw(const geometry_msgs::Pose& pose)
+{
+  rw::math::Vector3D<> p(pose.position.x, pose.position.y, pose.position.z);
+  rw::math::Quaternion<> q(pose.orientation.x, pose.orientation.y, pose.orientation.z,
+                           pose.orientation.w);
   return rw::math::Transform3D<>(p, q);
 }
 
-rw::math::Wrench6D<> toRw(const geometry_msgs::Wrench& wrench)
-{
-  rw::math::Wrench6D<> w(wrench.force.x, wrench.force.y, wrench.force.z, wrench.torque.x, wrench.torque.y,
-                         wrench.torque.z);
-  return w;
-}
-
+/************************************************************************
+ * Wrench
+ ************************************************************************/
 geometry_msgs::Wrench toRos(const rw::math::Wrench6D<>& w)
 {
   geometry_msgs::Wrench wrench;
@@ -158,6 +177,16 @@ geometry_msgs::Wrench toRos(const rw::math::Wrench6D<>& w)
   return wrench;
 }
 
+rw::math::Wrench6D<> toRw(const geometry_msgs::Wrench& wrench)
+{
+  rw::math::Wrench6D<> w(wrench.force.x, wrench.force.y, wrench.force.z, wrench.torque.x, wrench.torque.y,
+                         wrench.torque.z);
+  return w;
+}
+
+/************************************************************************
+ * Twist / VelocityScrew
+ ************************************************************************/
 rw::math::VelocityScrew6D<> toRw(const geometry_msgs::Twist& twist)
 {
   rw::math::VelocityScrew6D<> vs(twist.linear.x, twist.linear.y, twist.linear.z, twist.angular.x, twist.angular.y,
@@ -177,16 +206,48 @@ geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs)
   return twist;
 }
 
+/************************************************************************
+ * Double
+ ************************************************************************/
+double toRos(const double value)
+{
+  return value;
+}
+
+double toRw(const double value)
+{
+  return value;
+}
+
+/************************************************************************
+ * Float
+ ************************************************************************/
 float toRos(const float value)
 {
   return value;
 }
 
+float toRw(const float value)
+{
+  return value;
+}
+
+/************************************************************************
+ * Boolean
+ ************************************************************************/
 bool toRos(const bool value)
 {
   return value;
 }
 
+bool toRw(const bool value)
+{
+  return value;
+}
+
+/************************************************************************
+ *
+ ************************************************************************/
 rw::models::WorkCell::Ptr getWorkCell()
 {
   return getWorkCell("/caros/workcell");

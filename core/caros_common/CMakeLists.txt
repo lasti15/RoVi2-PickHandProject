@@ -75,3 +75,11 @@ target_link_libraries(${library_name}
 add_dependencies(${library_name}
   caros_common_msgs_generate_messages_cpp
 )
+
+########################################################################
+#### Testing
+########################################################################
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(type_conversion test/type_conversion.cpp)
+  target_link_libraries(type_conversion ${library_name} ${ROBWORK_LIBRARIES} ${catkin_LIBRARIES})
+endif()

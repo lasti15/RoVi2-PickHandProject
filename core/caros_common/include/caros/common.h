@@ -43,8 +43,16 @@ geometry_msgs::Transform toRos(const rw::math::Transform3D<>& transform);
 //! convert Transform to Transform3D
 rw::math::Transform3D<> toRw(const geometry_msgs::Transform& transform);
 
+/**
+ * @brief convert Transform3D to Pose
+ *
+ * @note This function has the type appended i.e. toRosPose.
+ * This is because the ROS pose is also represented as a Transform3D in RobWork.
+ */
+geometry_msgs::Pose toRosPose(const rw::math::Transform3D<>& transform);
+
 //! convert Pose to Transform3D
-rw::math::Transform3D<> toRw(const geometry_msgs::Pose& transform);
+rw::math::Transform3D<> toRw(const geometry_msgs::Pose& pose);
 
 //! convert Wrench to Wrench6D
 rw::math::Wrench6D<> toRw(const geometry_msgs::Wrench& wrench);
@@ -58,16 +66,27 @@ rw::math::VelocityScrew6D<> toRw(const geometry_msgs::Twist& twist);
 //! convert VelocityScrew6D to Twist
 geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs);
 
+//! convert double to double
+double toRos(const double value);
+
+//! convert double to double
+double toRw(const double value);
+
 //! convert float to float
 float toRos(const float value);
+
+//! convert float to float
+float toRw(const float value);
 
 //! convert bool to bool
 bool toRos(const bool value);
 
+//! convert bool to bool
+bool toRw(const bool value);
+
 /* TODO:
  * Properly document these functions
  */
-void toRos(const rw::math::Transform3D<>& transform, geometry_msgs::Pose& pose);
 
 caros_common_msgs::RWState toRos(const rw::kinematics::State& state);
 
