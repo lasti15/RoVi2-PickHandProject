@@ -11,26 +11,24 @@ Robotiq3Node::Robotiq3Node(const ros::NodeHandle& nodehandle):
             caros::CarosNodeServiceInterface(nodehandle),
             caros::GripperServiceInterface(nodehandle),
             _lastQ(4,0,0,0,0),
-            _robotiq(NULL),
+            _robotiq3(NULL),
             _nodeHandle(nodehandle)
 
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     /* Currently nothing specific should happen */
 }
 
 Robotiq3Node::~Robotiq3Node() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!cleanupGripperService()) {
         ROS_ERROR_STREAM("cleanupGripperService() failed.");
     }
 
-    if (_robotiq != 0) {
-        if (_robotiq->isConnected()) {
+    if (_robotiq3 != NULL) {
+        if (_robotiq3->isConnected()) {
             ROS_DEBUG_STREAM("Still connected to the Robotiq device - going to stop the device and disconnect.");
-            _robotiq->disconnect();
+            _robotiq3->disconnect();
         }
-        _robotiq = NULL;
+        _robotiq3 = NULL;
     } else {
         ROS_DEBUG_STREAM("There was no Robotiq device to destroy before deallocating/destroying the Robotci3Node object.");
     }
@@ -38,7 +36,6 @@ Robotiq3Node::~Robotiq3Node() {
 
 
 bool Robotiq3Node::activateHook(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!configureRobotiqDevice()) {
         return false;
     }
@@ -52,21 +49,21 @@ bool Robotiq3Node::activateHook(){
 
 bool Robotiq3Node::recoverHook() {
     /* TODO: */
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+
     ROS_ERROR_STREAM(__PRETTY_FUNCTION__ << " has not been implemented yet!");
+    ROS_BREAK();
 
     return false;
 }
 
 void Robotiq3Node::runLoopHook() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     try {
-        if (_robotiq == 0) {
+        if (_robotiq3 == 0) {
             CAROS_FATALERROR("The Robotiq device is not configured", ROBOTIQ3NODE_INTERNAL_ERROR);
             return;
         }
 
-        if (! _robotiq->isConnected()) {
+        if (! _robotiq3->isConnected()) {
             CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
             return;
         }
@@ -80,16 +77,14 @@ void Robotiq3Node::runLoopHook() {
         /************************************************************************
          * Get current gripper state and split values
          ************************************************************************/
-        _robotiq->getAllStatus();
-        Q q = _robotiq->getQ();
+        _robotiq3->getAllStatusCMD();
+        Q q = _robotiq3->getQ();
         Q dqcalc = (q-_lastQ)/diff.toSec();
-        Q dq = _robotiq->getdQ();
         ROS_DEBUG_STREAM_NAMED("velocity", "Calculated velocity: " << dqcalc);
-        ROS_DEBUG_STREAM_NAMED("velocity", "Robotiq reported velocity: " << dq);
-        Q force = _robotiq->getQCurrent();
-        bool ismov = _robotiq->isGripperMoving();
-        bool isblock = _robotiq->isGripperBlocked();
-        bool isstop = _robotiq->isGripperStopped();
+        Q force = _robotiq3->getQCurrent();
+        bool ismov = _robotiq3->isGripperMoving();
+        bool isblock = _robotiq3->isGripperBlocked();
+        bool isstop = !_robotiq3->isGripperMoving() && !_robotiq3->isGripperBlocked();
         /* FIXME: hardcoded isEstop value */
         bool isEstop = false;
         publishState(q,dqcalc,force,ismov,isblock,isstop,isEstop);
@@ -104,31 +99,28 @@ void Robotiq3Node::runLoopHook() {
 }
 
 void Robotiq3Node::errorLoopHook(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     /* Stop the Robotiq's current action(s) */
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
-        _robotiq->stopCmd();
-        _robotiq->disconnect();
+        _robotiq3->stopCmd();
+        _robotiq3->disconnect();
     }
 }
 
 void Robotiq3Node::fatalErrorLoopHook(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     /* Stop the Robotiq's current action(s) */
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
-        _robotiq->stopCmd();
-        _robotiq->disconnect();
+        _robotiq3->stopCmd();
+        _robotiq3->disconnect();
     }
 }
 
 
 bool Robotiq3Node::configureRobotiqDevice() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    if (_robotiq != 0) {
+    if (_robotiq3 != 0) {
         /* Could also just silently return true or false and ignore the error that configure is being invoked twice... */
         CAROS_FATALERROR("The Robotiq device is already active - trying to configure an already configured Robotiq3 node is a bug!", ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE);
         return false;
@@ -140,7 +132,7 @@ bool Robotiq3Node::configureRobotiqDevice() {
 
     // TODO: Verify that the chosen parameters are valid?
 
-    _robotiq = ownedPtr( new rwhw::Robotiq3() );
+    _robotiq3 = ownedPtr( new rwhw::Robotiq3() );
 
     if (!configureGripperService()) {
         CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.", ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
@@ -167,25 +159,24 @@ bool Robotiq3Node::configureRobotiqDevice() {
 
 
 bool Robotiq3Node::connectToRobotiqDevice() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured", ROBOTIQ3NODE_INTERNAL_ERROR);
         return false;
     }
 
-    if (_robotiq->isConnected()) {
+    if (_robotiq3->isConnected()) {
         ROS_ERROR_STREAM("'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the Robotiq device has already been established - this is a bug!");
         return false;
     }
 
     /* Connect according to configured parameters */
-    if (!_robotiq->connect(_ip, _port)) {
+    if (!_robotiq3->connect(_ip, _port)) {
         CAROS_FATALERROR("The robotiq hand was not able to connect to" << _ip << " : " << _port, CONNECTION_ERROR);
         return false;
     }
 
     /* Verify that the connection to the Robotiq device has been established - this eliminates the need for verifying that the _robotiq->connect() function calls actually succeed */
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         /* Something went wrong when connecting */
         CAROS_FATALERROR("Failed to properly connect to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
         return false;
@@ -202,24 +193,23 @@ bool Robotiq3Node::connectToRobotiqDevice() {
  * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A preprocessor code generating macro is not exactly a nice and easily maintainable solution)
  */
 bool Robotiq3Node::moveQ(const rw::math::Q& q){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;
     }
 
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
         return false;
     }
 
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _robotiq->moveCmd(q);
+        _robotiq3->moveCmd(q);
         _lastCmd = MOVE;
     } catch (const rw::common::Exception& exp) {
         CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
@@ -229,24 +219,23 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q){
 }
 
 bool Robotiq3Node::gripQ(const rw::math::Q& q){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;
     }
 
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
         return false;
     }
 
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _robotiq->moveCmd(q);
+        _robotiq3->moveCmd(q);
         _lastCmd = GRIP;
     } catch (const rw::common::Exception& exp) {
         CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
@@ -256,24 +245,23 @@ bool Robotiq3Node::gripQ(const rw::math::Q& q){
 }
 
 bool Robotiq3Node::setForceQ(const rw::math::Q& q){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;
     }
 
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
         return false;
     }
 
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _robotiq->setTargetQCurrent(q);
+        _robotiq3->setTargetQForce(q);
     } catch (const rw::common::Exception& exp) {
         CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
         return false;
@@ -282,24 +270,23 @@ bool Robotiq3Node::setForceQ(const rw::math::Q& q){
 }
 
 bool Robotiq3Node::setVelocityQ(const rw::math::Q& q){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;
     }
 
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
         return false;
     }
 
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _robotiq->setTargetQVel(q);
+        _robotiq3->setTargetQVel(q);
     } catch (const rw::common::Exception& exp) {
         CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
         return false;
@@ -309,24 +296,23 @@ bool Robotiq3Node::setVelocityQ(const rw::math::Q& q){
 }
 
 bool Robotiq3Node::stopMovement() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!isInRunning()) {
         ROS_WARN_STREAM("Not in running state!");
         return false;
     }
 
-    if (_robotiq == 0) {
+    if (_robotiq3 == 0) {
         CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
         return false;
     }
 
-    if (! _robotiq->isConnected()) {
+    if (! _robotiq3->isConnected()) {
         CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _robotiq->stopCmd();
+        _robotiq3->stopCmd();
     } catch (const rw::common::Exception& exp) {
         CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
         return false;
