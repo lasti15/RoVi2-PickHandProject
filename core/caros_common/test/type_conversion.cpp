@@ -1,26 +1,70 @@
 #include <caros/common.h>
 #include <gtest/gtest.h>
 
-#if 0
+#include <rw/loaders/WorkCellFactory.hpp>
+
+namespace
+{
+void testQAbsoluteDifference(const rw::math::Q& value1, const rw::math::Q& value2, const rw::math::Q& difference)
+{
+  // Make sure all the Q's have the same size
+  ASSERT_EQ(value1.size(), value2.size());
+  ASSERT_EQ(value1.size(), difference.size());
+
+  for (std::size_t index = 0; index < value1.size(); ++index)
+  {
+    EXPECT_DOUBLE_EQ(std::fabs(value1[index] - value2[index]), difference[index]);
+  }
+}
+
+void testQEqual(const rw::math::Q& value1, const rw::math::Q& value2)
+{
+  // Make sure all the Q's have the same size
+  ASSERT_EQ(value1.size(), value2.size());
+
+  for (std::size_t index = 0; index < value1.size(); ++index)
+  {
+    EXPECT_DOUBLE_EQ(value1[index], value2[index]);
+  }
+}
+}
+
 TEST(TypeConversion, state)
 {
-  /* Unittest:
-   * Make/get a state -> Just use the default state? (or else a workcell has to be provided and all the dependencies (i.e. included files such as the UR robots, environment, cameras and etc.)
-   * create a clone/copy
-   * change some values in the clone
-   * use the clone to convert to ros type
-   * then use the original state for converting from ros to rw
-   * verify that this state is now completely equal to the clone (used for converting to ros).
-   *
-   * Test data
-   * See http://docs.ros.org/api/catkin/html/howto/format2/downloading_test_data.html for some information
-   * But it's not possible to easily download a workcell as there are a lot of files that are included - unless a very simple test worcell is created.
-   * Or do we require the user to actually download another test data repository, where everything is checked out somewhere. And the unittests have to be informed of that particular location.
-   *
-   * Or do the tedious download of every single file and place it properly according to the workcell construction...
-   */
+  rw::models::WorkCell::Ptr wc;
+  ASSERT_TRUE(wc == 0);
+  EXPECT_NO_THROW({wc = rw::loaders::WorkCellFactory::load("data/workcell.xml");});
+  ASSERT_TRUE(wc != 0);
+  const auto device = wc->findDevice("UR1");
+  ASSERT_TRUE(device != 0);
+
+  const auto defaultState = wc->getDefaultState();
+  auto newState = defaultState;
+
+  rw::math::Q qChange(device->getQ(newState).size(), 1.3);
+  for (std::size_t index = 0; index < qChange.size(); ++index)
+  {
+    qChange[index] += index;
+  }
+  device->setQ(device->getQ(newState) + qChange, newState);
+
+  // Verify that the states give different Q's
+  testQAbsoluteDifference(device->getQ(newState), device->getQ(defaultState), qChange);
+
+  const auto toRos = caros::toRos(newState);
+  // Test the function taking a workcell ptr
+  const auto stateFromRos = caros::toRw(toRos, wc);
+  testQEqual(device->getQ(newState), device->getQ(stateFromRos));
+  testQAbsoluteDifference(device->getQ(stateFromRos), device->getQ(defaultState), qChange);
+
+  // Test the function taking a RobWork state reference
+  auto modifiedState = wc->getDefaultState();
+  // Verify that the modified state is similar to defaultState
+  testQEqual(device->getQ(defaultState), device->getQ(modifiedState));
+  caros::toRw(toRos, modifiedState);
+  testQEqual(device->getQ(newState), device->getQ(modifiedState));
+  testQAbsoluteDifference(device->getQ(defaultState), device->getQ(modifiedState), qChange);
 }
-#endif
 
 /************************************************************************
  * Q
@@ -39,6 +83,7 @@ TEST(TypeConversion, toRosFromRwQ)
   const auto toRosAndBack = caros::toRw(caros::toRos(rwQ));
   // Note: Currently the comparison operator implementation is not doing proper floating point comparisons
   EXPECT_TRUE(rwQ == toRosAndBack);
+  testQEqual(rwQ, toRosAndBack);
 }
 
 TEST(TypeConversion, toRwFromRosQ)

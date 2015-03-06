@@ -80,6 +80,7 @@ add_dependencies(${library_name}
 #### Testing
 ########################################################################
 if(CATKIN_ENABLE_TESTING)
-  catkin_add_gtest(type_conversion test/type_conversion.cpp)
+  # Using WORKING_DIRECTORY to allow specifying a relative path to the test data that is being used.
+  catkin_add_gtest(type_conversion test/type_conversion.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
   target_link_libraries(type_conversion ${library_name} ${ROBWORK_LIBRARIES} ${catkin_LIBRARIES})
 endif()

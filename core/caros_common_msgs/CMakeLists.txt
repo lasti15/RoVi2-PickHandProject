@@ -22,7 +22,8 @@ add_message_files(
   Q.msg
   CarosNodeState.msg
   WrenchData.msg
-  RWState.msg
+  rw_state_data.msg
+  rw_state.msg
 )
 
 add_service_files(
@@ -33,7 +34,7 @@ add_service_files(
   ConfigBool.srv
   ConfigInt.srv
   EmptySrv.srv
-  GetRWState.srv
+  get_rw_state.srv
 )
 
 generate_messages(

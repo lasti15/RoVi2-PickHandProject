@@ -4,7 +4,8 @@
 #include <rw/loaders/WorkCellFactory.hpp>
 
 #include <caros_common_msgs/Q.h>
-#include <caros_common_msgs/GetRWState.h>
+#include <caros_common_msgs/get_rw_state.h>
+#include <caros_common_msgs/rw_state.h>
 
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Transform.h>
@@ -24,53 +25,70 @@ namespace caros
  * But sticking with the default to keep things simple.
  ************************************************************************/
 
-caros_common_msgs::RWState toRos(const rw::kinematics::State& state)
+/************************************************************************
+ * State
+ ************************************************************************/
+caros_common_msgs::rw_state toRos(const rw::kinematics::State& state)
 {
-  caros_common_msgs::RWState res;
+  ROS_DEBUG_STREAM("RobWork state to ROS rw_state -begin-");
+  caros_common_msgs::rw_state res;
+  /* Preallocate the size */
+  auto stateDataSize = state.getStateStructure()->getStateData().size();
+  ROS_DEBUG_STREAM("stateDataSize: " << stateDataSize);
+  res.state_data.reserve(stateDataSize);
+
   for (const auto& data : state.getStateStructure()->getStateData())
   {
-    std::string name = data->getName();
-    int size = data->size() * sizeof(double);
+    caros_common_msgs::rw_state_data resData;
+    resData.name = data->getName();
+    resData.size = data->size() * sizeof(double); /* This hardcoded sizeof should be provided by the 'data->' object, as the type used for storing the state data is highly implementation specific */
+    ROS_DEBUG_STREAM("resData name: " << resData.name);
+    ROS_DEBUG_STREAM("resData size: " << resData.size << " where data->size = " << data->size() << " and sizeof(double) = " << sizeof(double));
+    /* Preallocate the size */
+    resData.data.reserve(resData.size);
 
-    res.statedata_names.push_back(name);
-    res.statedata_sizes.push_back(size);
-    for (int i = 0; i < size; i++)
+    for (std::size_t index = 0; index < resData.size; ++index)
     {
-      res.statedata_q.push_back(reinterpret_cast<const std::uint8_t*>(data->getData(state))[i]);
+      /* Converting to uint8_t because the data in the state should just be considered a memory space and not necessarily consist of doubles, as it could as well be booleans and other sort of types */
+      std::uint8_t binaryData = reinterpret_cast<const std::uint8_t*>(data->getData(state))[index];
+      ROS_DEBUG_STREAM("binaryData[" << index << "] = " << std::hex << std::setw(2) << static_cast<std::uint32_t>(binaryData));
+      resData.data.push_back(binaryData);
     }
+    res.state_data.push_back(resData);
   }
 
+  ROS_DEBUG_STREAM("RobWork state to ROS rw_state -end-");
   return res;
 }
 
-void toRw(const caros_common_msgs::RWState& state_ros, rw::kinematics::State& state)
+void toRw(const caros_common_msgs::rw_state& stateRos, rw::kinematics::State& state)
 {
-  int idx = 0;
-  for (size_t i = 0; i < state_ros.statedata_names.size(); i++)
+  ROS_DEBUG_STREAM("ROS rw_state to RobWork state -begin-");
+  for (const auto& stateRosData : stateRos.state_data)
   {
-
-    std::string name = state_ros.statedata_names[i];
-    int size = state_ros.statedata_sizes[i];
-    boost::shared_ptr<rw::kinematics::StateData> data = state.getStateStructure()->findData(name);
-    // todo: verify that data
-    if (data->size() * sizeof(double) == size)
+    auto data = state.getStateStructure()->findData(stateRosData.name);
+    if ((data->size() * sizeof(double)) == stateRosData.data.size())
     {
-      for (int i = 0; i < size; i++)
+      ROS_DEBUG_STREAM("data name: " << stateRosData.name);
+      ROS_DEBUG_STREAM("data size: " << stateRosData.data.size());
+      // Place the stateRosData.data in a continuous memory space
+      std::uint8_t rawData[stateRosData.data.size()];
+      for (std::size_t index = 0; index < stateRosData.data.size(); ++index)
       {
-        data->setData(state, (double*)(&state_ros.statedata_q[idx]));
+        rawData[index] = stateRosData.data.at(index);
+        ROS_DEBUG_STREAM("rawData[" << index << "] = " << std::hex << std::setw(2) << static_cast<std::uint32_t>(rawData[index]));
       }
+      data->setData(state, reinterpret_cast<const double *>(rawData));
     }
     else
     {
-      ROS_ERROR_STREAM("Mismatch in statedata lengths between current state and serialized state! For "
-                       << name << " " << data->size() * 4 << "==" << size);
+      ROS_ERROR_STREAM("Mismatch in data (i.e. payload) lengths between current state and the serialised state from ROS: ros_state_name=" << stateRosData.name << " ros_state_size=" << stateRosData.data.size() * sizeof(double) << " current_state_size=" << data->size());
     }
-
-    idx += size;
   }
+  ROS_DEBUG_STREAM("ROS rw_state to RobWork state -end-");
 }
 
-rw::kinematics::State toRw(const caros_common_msgs::RWState& state_ros, rw::models::WorkCell::Ptr wc)
+rw::kinematics::State toRw(const caros_common_msgs::rw_state& state_ros, const rw::models::WorkCell::Ptr wc)
 {
   rw::kinematics::State state = wc->getDefaultState();
 
@@ -291,17 +309,17 @@ rw::common::Ptr<rw::kinematics::State> getState()
 {
   // currently we always get the state from a service and not a topic
   ros::NodeHandle node("~");
-  if (!ros::service::exists("/caros/getworkcellstate", true))
+  if (!ros::service::exists("/caros/get_workcell_state", true))
   {
-    ROS_ERROR_STREAM("There are no registered state sources! Using default state.");
+    ROS_ERROR_STREAM("There are no registered state sources!");
     return NULL;
   }
 
   rw::models::WorkCell::Ptr wc = getWorkCell();
 
-  ros::ServiceClient global = node.serviceClient<caros_common_msgs::GetRWState>("/caros/getworkcellstate");
+  ros::ServiceClient global = node.serviceClient<caros_common_msgs::get_rw_state>("/caros/get_workcell_state");
 
-  caros_common_msgs::GetRWState service;
+  caros_common_msgs::get_rw_state service;
 
   global.call(service);
 

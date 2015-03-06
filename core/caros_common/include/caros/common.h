@@ -6,7 +6,7 @@
 #include <rw/kinematics/State.hpp>
 
 #include <caros_common_msgs/Q.h>
-#include <caros_common_msgs/RWState.h>
+#include <caros_common_msgs/rw_state.h>
 
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Transform.h>
@@ -88,11 +88,26 @@ bool toRw(const bool value);
  * Properly document these functions
  */
 
-caros_common_msgs::RWState toRos(const rw::kinematics::State& state);
+/**
+ * @brief convert RobWork state to rw_state
+ *
+ * @note The full state can't be serialised yet. Endianness is not being handled properly.
+ */
+caros_common_msgs::rw_state toRos(const rw::kinematics::State& state);
 
-void toRw(const caros_common_msgs::RWState& state, rw::kinematics::State& state_dst);
+/**
+ * @brief Convert rw_state to RobWork state
+ *
+ * @note Requires a non-empty state (state) to copy the state information into (not everything can be serialized yet, so this is basically just a way to transfer state changes across ROS nodes). Endianness is not being handled properly.
+ */
+void toRw(const caros_common_msgs::rw_state& stateRos, rw::kinematics::State& state);
 
-rw::kinematics::State toRw(const caros_common_msgs::RWState& state, rw::models::WorkCell::Ptr wc);
+/**
+ * @brief Convert rw_state to RobWork state
+ *
+ * @note Endianness is not being handled properly. Uses the default state from the provided workcell ptr and populates it accordingly to the content of rw_state.
+ */
+rw::kinematics::State toRw(const caros_common_msgs::rw_state& state, const rw::models::WorkCell::Ptr wc);
 
 /**
  * @} end of group
@@ -112,15 +127,15 @@ rw::models::WorkCell::Ptr getWorkCell();
 /**
  * @brief gets the workcell from parameter server.
  *
- * @note requires that ROS is initialized
+ * @note requires that ROS is initialized. Currently implemented as a singleton, so once a workcell is found and loaded properly, then it will keep returning that workcell.
  * @param paramname [in] the name of the variable on the parameter server
  * @return the WorkCell or NULL
  */
 rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname);
 
 /**
- * @brief get current stateinformation of the workcell
- * @return
+ * @brief get current state information of the workcell
+ * @return pointer to new state or NULL if no state information is available.
  */
 rw::common::Ptr<rw::kinematics::State> getState();
 
