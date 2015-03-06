@@ -17,11 +17,10 @@
  */
 class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
-public:
-
+ public:
   enum ERRORCODE
   {
-    CONNECTION_ERROR = 1 //! Connection to robotiq hand was not possible
+    CONNECTION_ERROR = 1  //! Connection to robotiq hand was not possible
   };
 
   //! constructor
@@ -60,7 +59,7 @@ public:
     ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH
   };
 
-protected:
+ protected:
   // hooks implemented from CarosNodeServiceInterface base class
   bool activateHook();
   bool recoverHook();
@@ -73,7 +72,7 @@ protected:
   bool configureRobotiqDevice();
   bool connectToRobotiqDevice();
 
-protected:
+ protected:
   typedef enum
   {
     MOVE,
@@ -86,9 +85,9 @@ protected:
   std::string ip_;
   int port_;
 
-private:
+ private:
   rw::common::Ptr<rwhw::Robotiq3> robotiq3_;
   ros::NodeHandle node_handle_;
 };
 
-#endif //#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
+#endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H

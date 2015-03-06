@@ -5,12 +5,12 @@ USE_ROBWORK_NAMESPACE
 
 using namespace robwork;
 
-Robotiq3Node::Robotiq3Node(const ros::NodeHandle& node_handle) :
-    caros::CarosNodeServiceInterface(node_handle),
-    caros::GripperServiceInterface(node_handle),
-    last_Q_(4, 0, 0, 0, 0),
-    robotiq3_(NULL),
-    node_handle_(node_handle)
+Robotiq3Node::Robotiq3Node(const ros::NodeHandle& node_handle)
+    : caros::CarosNodeServiceInterface(node_handle),
+      caros::GripperServiceInterface(node_handle),
+      last_Q_(4, 0, 0, 0, 0),
+      robotiq3_(NULL),
+      node_handle_(node_handle)
 
 {
   /* Currently nothing specific should happen */
@@ -102,7 +102,6 @@ void Robotiq3Node::runLoopHook()
 
     last_Q_ = q;
     last_loop_time_ = now;
-
   }
   catch (const rw::common::Exception& exp)
   {
@@ -144,8 +143,9 @@ bool Robotiq3Node::configureRobotiqDevice()
   if (robotiq3_ != 0)
   {
     /* Could also just silently return true or false and ignore the error that configure is being invoked twice... */
-    CAROS_FATALERROR("The Robotiq3 device is already active - trying to configure an already configured Robotiq3 node is a bug!",
-                     ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE);
+    CAROS_FATALERROR(
+        "The Robotiq3 device is already active - trying to configure an already configured Robotiq3 node is a bug!",
+        ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE);
     return false;
   }
 
@@ -172,19 +172,16 @@ bool Robotiq3Node::configureRobotiqDevice()
 
   ROS_ERROR_STREAM_COND(position_limits.first.size() != position_limits.second.size(),
                         "The sizes of the Q's in the position limit pair are not equal. first contains "
-                        << position_limits.first.size()
-                        << " and second contains "
-                        << position_limits.second.size() << " elements.");
+                            << position_limits.first.size() << " and second contains " << position_limits.second.size()
+                            << " elements.");
   ROS_ERROR_STREAM_COND(velocity_limits.first.size() != velocity_limits.second.size(),
                         "The sizes of the Q's in the velocity limit pair are not equal. first contains "
-                        << velocity_limits.first.size()
-                        << " and second contains "
-                        << velocity_limits.second.size() << " elements.");
+                            << velocity_limits.first.size() << " and second contains " << velocity_limits.second.size()
+                            << " elements.");
   ROS_ERROR_STREAM_COND(force_limits.first.size() != force_limits.second.size(),
                         "The sizes of the Q's in the force limit pair are not equal. first contains "
-                        << force_limits.first.size()
-                        << " and second contains "
-                        << force_limits.second.size() << " elements.");
+                            << force_limits.first.size() << " and second contains " << force_limits.second.size()
+                            << " elements.");
   ROS_INFO_STREAM("Lower position limits: " << position_limits.first);
   ROS_INFO_STREAM("Upper position limits: " << position_limits.second);
   ROS_INFO_STREAM("Lower velocity limits: " << velocity_limits.first);
@@ -207,7 +204,9 @@ bool Robotiq3Node::connectToRobotiqDevice()
   if (robotiq3_->isConnected())
   {
     ROS_ERROR_STREAM(
-        "'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the Robotiq3 device has already been established - this is a bug!");
+        "'"
+        << __PRETTY_FUNCTION__
+        << "' invoked even though a connection to the Robotiq3 device has already been established - this is a bug!");
     return false;
   }
 
@@ -218,7 +217,8 @@ bool Robotiq3Node::connectToRobotiqDevice()
     return false;
   }
 
-  /* Verify that the connection to the Robotiq3 device has been established - this eliminates the need for verifying that the _robotiq->connect() function calls actually succeed */
+  /* Verify that the connection to the Robotiq3 device has been established - this eliminates the need for verifying
+   * that the _robotiq->connect() function calls actually succeed */
   if (!robotiq3_->isConnected())
   {
     /* Something went wrong when connecting */
@@ -233,8 +233,11 @@ bool Robotiq3Node::connectToRobotiqDevice()
  * GripperServiceInterface
  ************************************************************************/
 /* Note:
- * The checks isInRunning(), (_robotiq == 0) and (! _robotiq->isConnected()) are not placed in one common function, because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty" function.
- * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A preprocessor code generating macro is not exactly a nice and easily maintainable solution)
+ * The checks isInRunning(), (_robotiq == 0) and (! _robotiq->isConnected()) are not placed in one common function,
+ * because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty"
+ * function.
+ * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A
+ * preprocessor code generating macro is not exactly a nice and easily maintainable solution)
  */
 bool Robotiq3Node::moveQ(const rw::math::Q& q)
 {
@@ -252,7 +255,8 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
 
   if (!robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -285,7 +289,8 @@ bool Robotiq3Node::gripQ(const rw::math::Q& q)
 
   if (!robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -318,7 +323,8 @@ bool Robotiq3Node::setForceQ(const rw::math::Q& q)
 
   if (!robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -350,7 +356,8 @@ bool Robotiq3Node::setVelocityQ(const rw::math::Q& q)
 
   if (!robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -383,7 +390,8 @@ bool Robotiq3Node::stopMovement()
 
   if (!robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -399,4 +407,3 @@ bool Robotiq3Node::stopMovement()
 
   return true;
 }
-
