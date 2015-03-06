@@ -80,7 +80,6 @@ void Robotiq3Node::runLoopHook() {
         _robotiq3->getAllStatusCMD();
         Q q = _robotiq3->getQ();
         Q dqcalc = (q-_lastQ)/diff.toSec();
-        ROS_DEBUG_STREAM_NAMED("velocity", "Calculated velocity: " << dqcalc);
         Q force = _robotiq3->getQCurrent();
         bool ismov = _robotiq3->isGripperMoving();
         bool isblock = _robotiq3->isGripperBlocked();
