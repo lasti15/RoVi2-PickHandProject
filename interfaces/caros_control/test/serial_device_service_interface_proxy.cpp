@@ -9,16 +9,16 @@
 namespace
 {
 std::unordered_map<std::string, const std::string> functionCalledMap = {
-  {"moveLin", "virtual bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t &)"},
-  {"movePTP", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t &)"},
-  {"movePTP_T", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP_T(const TransformAndSpeedContainer_t &)"},
-  {"moveServoQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t &)"},
-  {"moveServoT", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContainer_t &)"},
-  {"moveVelQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q &)"},
-  {"moveVelT", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<> &)"},
+  {"moveLin", "virtual bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t&)"},
+  {"movePTP", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t&)"},
+  {"movePTP_T", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP_T(const TransformAndSpeedContainer_t&)"},
+  {"moveServoQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t&)"},
+  {"moveServoT", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContainer_t&)"},
+  {"moveVelQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q&)"},
+  {"moveVelT", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<double>&)"},
   {"stop", "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()"},
   {"pause", "virtual bool SerialDeviceServiceInterfaceDummy::movePause()"},
-  {"setSafeModeEnabled", "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(const bool)"} };
+  {"setSafeModeEnabled", "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(bool)"} };
 }
 
 
