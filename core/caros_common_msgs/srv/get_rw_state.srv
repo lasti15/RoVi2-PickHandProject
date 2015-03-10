@@ -1,5 +1,5 @@
 # There are currently only a get method for robwork state
 
---- 
+---
 
-RWState state
+caros_common_msgs/rw_state state

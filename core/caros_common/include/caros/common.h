@@ -6,7 +6,7 @@
 #include <rw/kinematics/State.hpp>
 
 #include <caros_common_msgs/Q.h>
-#include <caros_common_msgs/RWState.h>
+#include <caros_common_msgs/rw_state.h>
 
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Transform.h>
@@ -21,6 +21,8 @@ namespace caros
 /**
  * \addtogroup TypeConversion CAROS Type Conversion
  * Overloaded utility functions for converting between the different system types (e.g. from ROS to RobWork)
+ * If a type can be converted to more types, then the most obvious/direct type conversion is having the toRos or toRw
+ * signature, while the alternative types will be toRosType and toRwType.
  * @{
  */
 
@@ -41,8 +43,16 @@ geometry_msgs::Transform toRos(const rw::math::Transform3D<>& transform);
 //! convert Transform to Transform3D
 rw::math::Transform3D<> toRw(const geometry_msgs::Transform& transform);
 
+/**
+ * @brief convert Transform3D to Pose
+ *
+ * @note This function has the type appended i.e. toRosPose.
+ * This is because the ROS pose is also represented as a Transform3D in RobWork.
+ */
+geometry_msgs::Pose toRosPose(const rw::math::Transform3D<>& transform);
+
 //! convert Pose to Transform3D
-rw::math::Transform3D<> toRw(const geometry_msgs::Pose& transform);
+rw::math::Transform3D<> toRw(const geometry_msgs::Pose& pose);
 
 //! convert Wrench to Wrench6D
 rw::math::Wrench6D<> toRw(const geometry_msgs::Wrench& wrench);
@@ -56,22 +66,48 @@ rw::math::VelocityScrew6D<> toRw(const geometry_msgs::Twist& twist);
 //! convert VelocityScrew6D to Twist
 geometry_msgs::Twist toRos(const rw::math::VelocityScrew6D<>& vs);
 
+//! convert double to double
+double toRos(const double value);
+
+//! convert double to double
+double toRw(const double value);
+
 //! convert float to float
 float toRos(const float value);
+
+//! convert float to float
+float toRw(const float value);
 
 //! convert bool to bool
 bool toRos(const bool value);
 
+//! convert bool to bool
+bool toRw(const bool value);
+
 /* TODO:
  * Properly document these functions
  */
-void toRos(const rw::math::Transform3D<>& transform, geometry_msgs::Pose& pose);
 
-caros_common_msgs::RWState toRos(const rw::kinematics::State& state);
+/**
+ * @brief convert RobWork state to rw_state
+ *
+ * @note The full state can't be serialised yet. Endianness is not being handled properly.
+ */
+caros_common_msgs::rw_state toRos(const rw::kinematics::State& state);
 
-void toRw(const caros_common_msgs::RWState& state, rw::kinematics::State& state_dst);
+/**
+ * @brief Convert rw_state to RobWork state
+ *
+ * @note Requires a non-empty state (state) to copy the state information into (not everything can be serialized yet, so this is basically just a way to transfer state changes across ROS nodes). Endianness is not being handled properly.
+ */
+void toRw(const caros_common_msgs::rw_state& stateRos, rw::kinematics::State& state);
 
-rw::kinematics::State toRw(const caros_common_msgs::RWState& state, rw::models::WorkCell::Ptr wc);
+/**
+ * @brief Convert rw_state to RobWork state
+ *
+ * @note Endianness is not being handled properly. Uses the default state from the provided workcell ptr and populates it accordingly to the content of rw_state.
+ */
+rw::kinematics::State toRw(const caros_common_msgs::rw_state& state, const rw::models::WorkCell::Ptr wc);
 
 /**
  * @} end of group
@@ -91,15 +127,15 @@ rw::models::WorkCell::Ptr getWorkCell();
 /**
  * @brief gets the workcell from parameter server.
  *
- * @note requires that ROS is initialized
+ * @note requires that ROS is initialized. Currently implemented as a singleton, so once a workcell is found and loaded properly, then it will keep returning that workcell.
  * @param paramname [in] the name of the variable on the parameter server
  * @return the WorkCell or NULL
  */
 rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname);
 
 /**
- * @brief get current stateinformation of the workcell
- * @return
+ * @brief get current state information of the workcell
+ * @return pointer to new state or NULL if no state information is available.
  */
 rw::common::Ptr<rw::kinematics::State> getState();
 
