@@ -2,10 +2,8 @@
 #ifndef CAROS_BUTTONSENSORSERVICEINTERFACE_H
 #define CAROS_BUTTONSENSORSERVICEINTERFACE_H
 
-#include <rw/math/Q.hpp>
-#include <rw/math/Transform3D.hpp>
-
 #include <ros/ros.h>
+#include <vector>
 #include <string>
 
 namespace caros
