@@ -244,7 +244,7 @@ bool simpleSelectGrasps(caros_grasp_selection::SelectGrasps::Request& req, caros
 		target.q_grasp = stask->closeQ.toStdVector();
 		target.q_tau = stask->tauMax.toStdVector();
 		target.tcp_frame_name = gripperDev->getBase()->getName();
-		caros::toRos( wTobj_pose * ttask->pose * inverse(colfree_targets[i].get<2>()), target.tcp_pose);
+                target.tcp_pose = caros::toRosPose( wTobj_pose * ttask->pose * inverse(colfree_targets[i].get<2>()));
 		resp.targets.push_back( target );
 	}
 
