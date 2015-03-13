@@ -45,7 +45,7 @@ public:
 			ROS_ERROR_STREAM("Mismatching dimensions to robot state information: " << q.size() << "!=" << jstate->position.size());
 			return;
 		}
-		for(int i=0;i<jstate->position.size();i++){
+		for(std::size_t i=0;i<jstate->position.size();i++){
 			q(i) = jstate->position[i];
 		}
 		_dev->setQ(q,*_state);
@@ -58,7 +58,7 @@ public:
 			ROS_ERROR_STREAM("Mismatching dimensions to robot state information: " << q.size() << "!=" << array->data.size());
 			return;
 		}
-		for(int i=0;i<array->data.size();i++){
+		for(std::size_t i=0;i<array->data.size();i++){
 			q(i) = array->data[i];
 		}
 		_dev->setQ(q,*_state);
@@ -70,7 +70,7 @@ public:
 			ROS_ERROR_STREAM("Mismatching dimensions to robot state information: " << q.size() << "!=" << array->data.size());
 			return;
 		}
-		for(int i=0;i<array->data.size();i++){
+		for(std::size_t i=0;i<array->data.size();i++){
 			q(i) = array->data[i];
 		}
 		_dev->setQ(q,*_state);

@@ -186,7 +186,7 @@ bool simpleSelectGrasps(caros_grasp_selection::SelectGrasps::Request& req, caros
 		}
 		Transform3D<> baseTtcp = Kinematics::frameTframe(gripperDev->getBase(),tcp,curr_state);
 		// test target for collision
-		for(int i=0;i<targets.size();i++){
+		for(std::size_t i=0;i<targets.size();i++){
 			//if(rwtime.currentTimeMs()>maxtime){
 			//	break;
 			//}
@@ -235,7 +235,7 @@ bool simpleSelectGrasps(caros_grasp_selection::SelectGrasps::Request& req, caros
 	std::sort(colfree_targets.begin(), colfree_targets.end(), wayToSortTargets);
 
 	// now copy grasp targets into ros format
-	for(int i=0;i<std::min((size_t)maxgrasps,colfree_targets.size());i++){
+	for(std::size_t i=0;i<std::min((size_t)maxgrasps,colfree_targets.size());i++){
 		GraspSubTask* stask = colfree_targets[i].get<0>();
 		rwlibs::task::GraspTarget* ttask = colfree_targets[i].get<1>();
 		caros_grasp_selection::GraspTarget target;
