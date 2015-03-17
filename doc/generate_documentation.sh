@@ -24,8 +24,9 @@ function extract_package_name_from_package_path () {
 
 #$1=package_name, $2=tagfile_path
 function add_tagfile_to_yaml_collection_of_tagfiles () {
+    # The relative walking up through parent directories should be ../../../ (c++, html, and project name) - but changed to only walk up two times, as the documentation is being generated in a subfolder specified via the -o options to rosdoc_lite. And due to the change introduced in https://github.com/ros-infrastructure/rosdoc_lite/commit/34b448d90e4fe453570da5172a544f70190b9499 then the generated cross-referencing links would go up four times instead of the required and working three times - so this change is a workaround.
     cat >> "${yaml_collection_of_tagfiles}" <<EOF
-- docs_url: ../../../${1}/html/c++
+- docs_url: ../../${1}/html/c++
   location: file://${2}
 EOF
 }
@@ -52,6 +53,9 @@ function generate_documentation_using_tagfiles () {
     [ -f "${yaml_collection_of_tagfiles_excluding_current_package}" ] && rm "${yaml_collection_of_tagfiles_excluding_current_package}"
 }
 
+########################################################################
+#### Main
+########################################################################
 # Find all CAROS packages
 found_packages="$(find ../ -name 'package.xml')"
 package_names=""
