@@ -13,7 +13,8 @@ SerialDeviceServiceInterfaceDummy::~SerialDeviceServiceInterfaceDummy()
   /* Nothing to clean up */
 }
 
-std::string SerialDeviceServiceInterfaceDummy::getMostRecentFunctionCalled() {
+std::string SerialDeviceServiceInterfaceDummy::getMostRecentFunctionCalled()
+{
   return mostRecentFunctionCalled_;
 }
 

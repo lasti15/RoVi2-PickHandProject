@@ -106,11 +106,6 @@ if (SHOULD_BUILD_CAROS_SDH)
   ########################################################################
   #### Testing
   ########################################################################
-  if(CATKIN_ENABLE_TESTING)
-    find_package(rostest REQUIRED)
-    add_rostest_gtest(simple_demo test/simple_demo.test test/simple_demo.cpp)
-    target_link_libraries(simple_demo ${catkin_LIBRARIES})
-  endif()
 
 else()
   message(WARNING "Skipping ${PROJECT_NAME} due to missing libraries - see earlier warnings.")
