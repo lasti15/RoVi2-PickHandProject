@@ -5,83 +5,87 @@
 
 #include <string>
 #include <unordered_map>
+#include <functional>
+#include <tuple>
 
 namespace
 {
-std::unordered_map<std::string, const std::string> functionCalledMap = {
-  {"moveQ", "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)"},
-  {"gripQ", "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)"},
-  {"setForceQ", "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)"},
-  {"setVelocityQ", "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)"},
-  {"stopMovement", "virtual bool GripperServiceInterfaceDummy::stopMovement()"} };
+std::unordered_map<std::string, std::tuple<std::function<bool(caros::GripperSIProxy&)>, const std::string> > servicesToTest = {
+  {"moveQ", std::make_tuple(
+      std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)")
+  },
+  {"gripQ", std::make_tuple(
+      std::bind(&caros::GripperSIProxy::gripQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)")
+  },
+  {"setForceQ", std::make_tuple(
+      std::bind(&caros::GripperSIProxy::setForceQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)")
+  },
+  {"setVelocityQ", std::make_tuple(
+      std::bind(&caros::GripperSIProxy::setVelocityQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)")
+  },
+  {"stopMovement", std::make_tuple(
+      std::bind(&caros::GripperSIProxy::stopMovement, std::placeholders::_1),
+      "virtual bool GripperServiceInterfaceDummy::stopMovement()")
+  } };
+
+void testReturnValue(std::function<bool()> doFunc, const std::string expectedFunctionCalled, const bool expectedReturnValue, const GripperServiceInterfaceDummy& si_dummy)
+{
+  if (expectedReturnValue == true)
+  {
+    EXPECT_TRUE(doFunc());
+  }
+  else
+  {
+    EXPECT_FALSE(doFunc());
+  }
+  EXPECT_EQ(expectedFunctionCalled, si_dummy.getMostRecentFunctionCalled());
 }
 
-TEST(GripperSIProxy, servicesSuccess)
+void testReturnValueWrapper(const bool returnValueToTest)
 {
-  ros::NodeHandle nodehandleService("gsi_dummy_true");
-  GripperServiceInterfaceDummy gsid(nodehandleService, true);
+  ros::NodeHandle nodehandleService("si_dummy");
+  GripperServiceInterfaceDummy si_dummy(nodehandleService, returnValueToTest);
 
   ros::AsyncSpinner spinner(1);
   ASSERT_TRUE(spinner.canStart());
   spinner.start();
 
   ros::NodeHandle nodehandleClient("sip");
-  caros::GripperSIProxy sip(nodehandleClient, "gsi_dummy_true");
+  caros::GripperSIProxy sip(nodehandleClient, "si_dummy");
 
-  EXPECT_TRUE(sip.moveQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveQ"), gsid.getMostRecentFunctionCalled());
+  // The (unordered)map foreach uses member .first to access the key and .second to access the value
+  for (const auto& serviceInfo : servicesToTest)
+  {
+    // Not using auto for all types, because it increases maintainability and makes it easier to diagnose compilation errors
+    //auto serviceInfoFunc = std::get<0>(serviceInfo.second);
+    std::function<bool(caros::GripperSIProxy&)> serviceInfoFunc = std::get<0>(serviceInfo.second);
+    std::string serviceInfoFuncName = std::get<1>(serviceInfo.second);
+    // Bind the SerialDeviceSIProxy member function to be called on the sip object
+    std::function<bool()> func = std::bind(serviceInfoFunc, sip);
 
-  EXPECT_TRUE(sip.gripQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("gripQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.setForceQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setForceQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.setVelocityQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setVelocityQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.stopMovement());
-  EXPECT_EQ(functionCalledMap.at("stopMovement"), gsid.getMostRecentFunctionCalled());
+    testReturnValue(func, serviceInfoFuncName, returnValueToTest, si_dummy);
+  }
 
   /* End */
   nodehandleClient.shutdown();
   nodehandleService.shutdown();
 
   spinner.stop();
+}
+} // end namespace
+
+TEST(GripperSIProxy, servicesSuccess)
+{
+  testReturnValueWrapper(true);
 }
 
 TEST(GripperSIProxy, servicesFailure)
 {
-  ros::NodeHandle nodehandleService("gsi_dummy_true");
-  GripperServiceInterfaceDummy gsid(nodehandleService, false);
-
-  ros::AsyncSpinner spinner(1);
-  ASSERT_TRUE(spinner.canStart());
-  spinner.start();
-
-  ros::NodeHandle nodehandleClient("sip");
-  caros::GripperSIProxy sip(nodehandleClient, "gsi_dummy_true");
-
-  EXPECT_FALSE(sip.moveQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.gripQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("gripQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.setForceQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setForceQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.setVelocityQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setVelocityQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.stopMovement());
-  EXPECT_EQ(functionCalledMap.at("stopMovement"), gsid.getMostRecentFunctionCalled());
-
-  /* End */
-  nodehandleClient.shutdown();
-  nodehandleService.shutdown();
-
-  spinner.stop();
+  testReturnValueWrapper(false);
 }
 
 int main(int argc, char *argv[])

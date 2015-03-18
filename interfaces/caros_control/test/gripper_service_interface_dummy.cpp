@@ -13,7 +13,7 @@ GripperServiceInterfaceDummy::~GripperServiceInterfaceDummy()
   /* Nothing to clean up */
 }
 
-std::string GripperServiceInterfaceDummy::getMostRecentFunctionCalled()
+const std::string& GripperServiceInterfaceDummy::getMostRecentFunctionCalled() const
 {
   return mostRecentFunctionCalled_;
 }

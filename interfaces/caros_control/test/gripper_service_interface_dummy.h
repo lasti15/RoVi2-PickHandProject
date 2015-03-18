@@ -11,7 +11,7 @@ class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
   GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue);
   virtual ~GripperServiceInterfaceDummy();
 
-  std::string getMostRecentFunctionCalled();
+  const std::string& getMostRecentFunctionCalled() const;
 
   bool moveQ(const rw::math::Q& q);
   bool gripQ(const rw::math::Q& q);
