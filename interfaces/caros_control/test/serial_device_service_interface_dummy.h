@@ -11,7 +11,7 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
   SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue);
   virtual ~SerialDeviceServiceInterfaceDummy();
 
-  std::string getMostRecentFunctionCalled();
+  const std::string& getMostRecentFunctionCalled() const;
 
   bool moveLin(const TransformAndSpeedContainer_t& targets);
   bool movePTP(const QAndSpeedContainer_t& targets);
