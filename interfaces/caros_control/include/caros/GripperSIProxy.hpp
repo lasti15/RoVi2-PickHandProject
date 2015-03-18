@@ -131,9 +131,7 @@ namespace caros {
 
         ros::NodeHandle _nodeHnd;
 
-        // protectStateVariable
-        boost::mutex _pSV;
-
+      // _pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being implemented within the SIProxy.
         caros_control_msgs::GripperState _pSV_gripperState;
     };
 }

@@ -148,26 +148,21 @@ bool GripperSIProxy::stopMovement()
 }
 
 rw::math::Q GripperSIProxy::getQ() {
-    boost::mutex::scoped_lock lock(_pSV);
     return caros::toRw(_pSV_gripperState.q);
 }
 
 rw::math::Q GripperSIProxy::getQd() {
-    boost::mutex::scoped_lock lock(_pSV);
     return caros::toRw(_pSV_gripperState.dq);
 }
 
 rw::math::Q GripperSIProxy::getForce() {
-    boost::mutex::scoped_lock lock(_pSV);
     return caros::toRw(_pSV_gripperState.force);
 }
 
 ros::Time GripperSIProxy::getTimeStamp() {
-    boost::mutex::scoped_lock lock(_pSV);
     return _pSV_gripperState.header.stamp;
 }
 
 void GripperSIProxy::handleGripperState(const caros_control_msgs::GripperState& state) {
-	boost::mutex::scoped_lock lock(_pSV);
 	_pSV_gripperState = state;
 }
