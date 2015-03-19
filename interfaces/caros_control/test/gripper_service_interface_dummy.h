@@ -4,11 +4,12 @@
 #include <caros/GripperServiceInterface.hpp>
 
 #include <string>
+#include <stdexcept>
 
 class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
 {
  public:
-  GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue);
+  GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue, const bool causeError = false);
   virtual ~GripperServiceInterfaceDummy();
 
   const std::string& getMostRecentFunctionCalled() const;
@@ -21,6 +22,7 @@ class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
 
  private:
   bool returnValue_;
+  bool causeError_;
   std::string mostRecentFunctionCalled_;
 };
 
