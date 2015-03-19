@@ -1,16 +1,12 @@
 #ifndef _GRIPPERSIPROXY_HPP_
 #define _GRIPPERSIPROXY_HPP_
 
+#include <caros/exceptions.h>
 #include <caros_control_msgs/GripperState.h>
 
 #include <rw/math/Q.hpp>
 
 #include <ros/ros.h>
-
-/* TODO:
- * Is boost mutex required? 
- */
-#include <boost/thread/mutex.hpp>
 
 namespace caros {
     /**
