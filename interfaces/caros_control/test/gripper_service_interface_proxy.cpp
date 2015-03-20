@@ -9,14 +9,15 @@
 #include <list>
 #include <functional>
 #include <tuple>
+#include <string>
 
 using namespace caros::test;
 
+namespace
+{
 // Container type to hold the services that should be tested
 typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy&)>, const std::string>> services_t;
 
-namespace
-{
 const services_t servicesToTest = {
   {std::make_tuple(
       std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
