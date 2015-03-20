@@ -4,11 +4,12 @@
 #include <caros/SerialDeviceServiceInterface.hpp>
 
 #include <string>
+#include <stdexcept>
 
 class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInterface
 {
  public:
-  SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue);
+  SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue, const bool causeError);
   virtual ~SerialDeviceServiceInterfaceDummy();
 
   const std::string& getMostRecentFunctionCalled() const;
@@ -30,6 +31,7 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
 
  private:
   bool returnValue_;
+  bool causeError_;
   std::string mostRecentFunctionCalled_;
 };
 
