@@ -123,17 +123,28 @@ bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
     return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& target,
-                                    const rw::math::Wrench6D<>& wtarget,
-                                    const float selection[6],
-                                    const std::string refframe,
-                                    const rw::math::Transform3D<> offset,
-                                    const float speed,
-                                    const float blend)
+bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& posTarget,
+                                    const rw::math::Transform3D<>& offset,
+                                    const rw::math::Wrench6D<>& wrenchTarget,
+                                    const rw::math::Q& controlGain)
 {
-    //! TODO: need implementing
-    ROS_ERROR("NOT IMPLEMENTED!");
-    return false;
+    caros_control_msgs::SerialDeviceMoveLinFC srv;
+    srv.request.pos_target = caros::toRos(posTarget);
+    srv.request.offset = caros::toRos(offset);
+    srv.request.wrench_target = caros::toRos(wrenchTarget);
+
+    ROS_ASSERT(controlGain.size() == srv.request.ctrl_gains.size());
+    for (std::size_t index = 0; index < srv.request.ctrl_gains.size(); ++index)
+    {
+        srv.request.ctrl_gains[index] = caros::toRosFloat(controlGain[index]);
+    }
+
+    if (not _srvMoveLinFC.call(srv))
+    {
+        ROS_ERROR("The service call failed!");
+    }
+
+    return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::stop(){

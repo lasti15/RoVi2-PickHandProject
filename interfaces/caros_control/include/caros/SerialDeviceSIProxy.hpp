@@ -61,14 +61,24 @@ namespace caros {
         /* There is no blend parameter, as it is irrelevent when doing servoing. */
         bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100);
 
-        //! @brief move robot with a hybrid position/force control
-        bool moveLinFC(const rw::math::Transform3D<>& target,
-                       const rw::math::Wrench6D<>& wtarget,
-                       const float selection[6],
-                       const std::string refframe,
-                       const rw::math::Transform3D<> offset,
-                       const float speed = 100,
-                       const float blend = 0);
+        /* TODO:
+         * Update the parameter description - especially for offset
+         */
+        /**
+         * @brief move robot with a hybrid position/force control
+         * @param[in] posTarget the target pose configuration
+         * @param[in] offset ...
+         * @param[in] wrenchTarget wrench
+         * @param[in] controlGain Control gains for the force control. 0 means 100% position control, while values != 0 means force control with the numerical value.
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
+        bool moveLinFC(const rw::math::Transform3D<>& posTarget,
+                       const rw::math::Transform3D<>& offset,
+                       const rw::math::Wrench6D<>& wrenchTarget,
+                       const rw::math::Q& controlGain);
 
         //! @brief hard stop the robot,
         bool stop();
