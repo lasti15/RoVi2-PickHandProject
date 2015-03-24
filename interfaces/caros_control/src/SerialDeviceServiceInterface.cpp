@@ -235,7 +235,7 @@ bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::SerialDev
     /* FIXME:
      * Convert the ctrl_gains (boost::array) to std::vector or rw::math::Q ?
      */
-    rw::math::Q selection(request.ctrl_gains.at(0), request.ctrl_gains.at(1), request.ctrl_gains.at(2), request.ctrl_gains.at(3), request.ctrl_gains.at(4), request.ctrl_gains.at(5));
+    rw::math::Q selection(request.ctrl_gains.size(), request.ctrl_gains.at(0), request.ctrl_gains.at(1), request.ctrl_gains.at(2), request.ctrl_gains.at(3), request.ctrl_gains.at(4), request.ctrl_gains.at(5));
 
     response.success = moveLinFC(posTarget, offset, wrenchTarget, selection);
 
