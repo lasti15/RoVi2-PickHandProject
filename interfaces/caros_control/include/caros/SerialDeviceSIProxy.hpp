@@ -1,11 +1,14 @@
 #ifndef SerialDeviceSIProxy_HPP_
 #define SerialDeviceSIProxy_HPP_
 
+#include <caros/exceptions.h>
 #include <caros_control_msgs/RobotState.h>
 
 #include <rw/math.hpp>
 
 #include <ros/ros.h>
+
+#include <stdexcept>
 
 /* TODO:
  * Make the handleRobotState update/subscribed callback function be called asynchronously - see http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
@@ -38,28 +41,85 @@ namespace caros {
         //! destructor
         virtual ~SerialDeviceSIProxy();
 
-        //! @brief move robot in a linear Cartesian path
-        bool moveLin(const rw::math::Transform3D<>& target, const float speed = 100, const float blend = 0);
+        /**
+         * @brief move robot in a linear Cartesian path
+         * @param[in] target The target to move to
+         * @param[in] speed The movement speed (a value between 0 and 100 is expected)
+         * @param[in] blend
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
+        bool moveLin(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
 
-        //! @brief move robot from point to point
-        bool movePTP(const rw::math::Q& target, const float speed = 100, const float blend = 0);
+        /**
+         * @brief move robot from point to point
+         * @param[in] target The target to move to
+         * @param[in] speed The movement speed (a value between 0 and 100 is expected)
+         * @param[in] blend
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
+        bool movePTP(const rw::math::Q& target, const float speed = 100.0f, const float blend = 0.0f);
 
-        //! @brief move robot from point to point but using a pose as target (requires invkin)
-        bool movePTP_T(const rw::math::Transform3D<>& target, const float speed = 100, const float blend = 0);
+        /**
+         * @brief move robot from point to point but using a pose as target (requires invkin)
+         * @param[in] target The target to move to
+         * @param[in] speed The movement speed (a value between 0 and 100 is expected)
+         * @param[in] blend
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
+        bool movePTP_T(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
 
-        //! @brief TODO Missing
+        /**
+         * @brief move robot by some implementation specific distance based on the provided joint velocities
+         * @param[in] target The joint velocities
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         bool moveVelQ(const rw::math::Q& target);
 
-        //! @brief TODO Missing
+        /**
+         * @brief move robot by some implementation specific distance based on the provided velocity screw
+         * @param[in] target The velocity screw.
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         bool moveVelT(const rw::math::VelocityScrew6D<>& target);
 
-        //! @brief move robot in a servoing fasion using joint configurations
+        /**
+         * @brief move robot in a servoing fashion using joint configurations
+         * @param[in] target The joint configurations to move it
+         * @param[in] speed The movement speed (a value between 0 and 100 is expected)
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         /* There is no blend parameter, as it is irrelevent when doing servoing. */
-        bool moveServoQ(const rw::math::Q& target, const float speed = 100);
+        bool moveServoQ(const rw::math::Q& target, const float speed = 100.0f);
 
-        //! @brief move robot in a servoing fasion using pose configurations
+        /**
+         * @brief move robot in a servoing fasion using pose configurations
+         * @param[in] target The pose configuration to move it
+         * @param[in] speed The movement speed (a value between 0 and 100 is expected)
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         /* There is no blend parameter, as it is irrelevent when doing servoing. */
-        bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100);
+        bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100.0f);
 
         /* TODO:
          * Update the parameter description - especially for offset
@@ -80,13 +140,32 @@ namespace caros {
                        const rw::math::Wrench6D<>& wrenchTarget,
                        const rw::math::Q& controlGain);
 
-        //! @brief hard stop the robot,
+        /**
+         * @brief hard stop the robot
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         bool stop();
 
-        //! @brief pause the robot, should be able to continue trajectory
+        /**
+         * @brief pause the robot, should be able to continue trajectory
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         bool pause();
 
-        //! @brief enable safe mode, so that robot stops when collisions are detected
+        /**
+         * @brief enable safe mode, so that robot stops when collisions are detected
+         * @param[in] enable a value of true enables safe mode, and false disables it
+         *
+         * @returns a boolean indicating if the serial device accepted the command
+         * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the serial device is not fully working, or the serial device has not announced this service yet.
+         * @throws badServiceCall when an error happened while communicating with the serial device.
+         */
         bool setSafeModeEnabled(const bool enable);
 
         rw::math::Q getQ();

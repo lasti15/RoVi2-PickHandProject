@@ -5,7 +5,44 @@
 #include <caros_common_msgs/Stop.h>
 #include <caros_common_msgs/Pause.h>
 #include <caros_common_msgs/ConfigBool.h>
+#include <caros_control_msgs/SerialDeviceMoveLin.h>
+#include <caros_control_msgs/SerialDeviceMovePTP.h>
+#include <caros_control_msgs/SerialDeviceMovePTP_T.h>
+#include <caros_control_msgs/SerialDeviceMoveVelQ.h>
+#include <caros_control_msgs/SerialDeviceMoveVelT.h>
+#include <caros_control_msgs/SerialDeviceMoveLinFC.h>
+#include <caros_control_msgs/SerialDeviceMoveServoQ.h>
+#include <caros_control_msgs/SerialDeviceMoveServoT.h>
 
+#include <sstream>
+#include <cmath>
+
+#define SPEED_MIN 0.0f
+#define SPEED_MAX 100.0f
+
+namespace
+{
+/* If doing this as a do {...} while(0) macro, then there wouldn't be any type enforcement */
+/* Throw an appropriate exception if the value is not within [min;max] */
+void verifyValueIsWithin(const float& value, const float& min, const float& max)
+{
+    ROS_DEBUG_STREAM("Verifying that the value '" << value << "' is within [" << min << ";" << max << "]");
+    if (std::isnan(min) || std::isnan(max))
+    {
+        throw std::invalid_argument("Make sure both min and max are not NaN's");
+    }
+    else if (std::isnan(value))
+    {
+        throw std::invalid_argument("The value is considered NaN");
+    }
+    else if (not (std::isgreaterequal(value, min) && std::islessequal(value, max)))
+    {
+        std::ostringstream oss;
+        oss << "The value is not within [" << min << ";" << max << "]";
+        throw std::range_error(oss.str());
+    }
+}
+} // end namespace
 
 using namespace caros;
 
@@ -40,86 +77,154 @@ SerialDeviceSIProxy::~SerialDeviceSIProxy() {
 
 bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
+    bool srvCallSuccess = false;
+    verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
     caros_control_msgs::SerialDeviceMoveLin srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    if (not _srvMoveLin.call(srv))
+
+    if (not _srvMoveLin.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveLin.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMoveLin.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveLin.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, const float speed, const float blend)
 {
+    bool srvCallSuccess = false;
+    verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
     caros_control_msgs::SerialDeviceMovePTP srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    if (not _srvMovePTP.call(srv))
+
+    if (not _srvMovePTP.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMovePTP.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMovePTP.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMovePTP.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
+    bool srvCallSuccess = false;
+    verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
     caros_control_msgs::SerialDeviceMovePTP_T srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
     srv.request.blends.push_back( caros::toRos(blend) );
-    if (not _srvMovePTP_T.call(srv))
+
+    if (not _srvMovePTP_T.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMovePTP_T.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMovePTP_T.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMovePTP_T.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float speed)
 {
+    bool srvCallSuccess = false;
+    verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
     caros_control_msgs::SerialDeviceMoveServoQ srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    if (not _srvMoveServoQ.call(srv))
+
+    if (not _srvMoveServoQ.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveServoQ.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMoveServoQ.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveServoQ.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, const float speed)
 {
+    bool srvCallSuccess = false;
+    verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
     caros_control_msgs::SerialDeviceMoveServoT srv;
     srv.request.targets.push_back( caros::toRos(target) );
     srv.request.speeds.push_back( caros::toRos(speed) );
-    if (not _srvMoveServoT.call(srv))
+
+    if (not _srvMoveServoT.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveServoT.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMoveServoT.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveServoT.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelQ(const rw::math::Q& target)
 {
+    bool srvCallSuccess = false;
     caros_control_msgs::SerialDeviceMoveVelQ srv;
     srv.request.vel =  caros::toRos(target) ;
-    if (not _srvMoveVelQ.call(srv))
+
+    if (not _srvMoveVelQ.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveVelQ.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMoveVelQ.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveVelQ.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
 {
+    bool srvCallSuccess = false;
     caros_control_msgs::SerialDeviceMoveVelT srv;
     srv.request.vel =  caros::toRos(target) ;
-    if (not _srvMoveVelT.call(srv))
+
+    if (not _srvMoveVelT.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveVelT.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvMoveVelT.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveVelT.getService());
+    }
+
     return srv.response.success;
 }
 
@@ -128,6 +233,7 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& posTarget,
                                     const rw::math::Wrench6D<>& wrenchTarget,
                                     const rw::math::Q& controlGain)
 {
+    bool srvCallSuccess = false;
     caros_control_msgs::SerialDeviceMoveLinFC srv;
     srv.request.pos_target = caros::toRos(posTarget);
     srv.request.offset = caros::toRos(offset);
@@ -139,39 +245,72 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& posTarget,
         srv.request.ctrl_gains[index] = caros::toRosFloat(controlGain[index]);
     }
 
-    if (not _srvMoveLinFC.call(srv))
+    if (not _srvMoveLinFC.exists())
     {
-        ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveLinFC.getService() << " does not exist.");
+    }
+
+    srvCallSuccess = _srvMoveLinFC.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveLinFC.getService());
     }
 
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::stop(){
+    bool srvCallSuccess = false;
     caros_common_msgs::Stop srv;
-    if (not _srvStop.call(srv))
+
+    if (not _srvStop.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvStop.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvStop.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvStop.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::pause(){
+    bool srvCallSuccess = false;
     caros_common_msgs::Pause srv;
-    if (not _srvPause.call(srv))
+
+    if (not _srvPause.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvPause.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvPause.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvPause.getService());
+    }
+
     return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable){
+    bool srvCallSuccess = false;
     caros_common_msgs::ConfigBool srv;
     srv.request.value = caros::toRos(enable);
-    if (not _srvSetSafeModeEnabled.call(srv))
+
+    if (not _srvSetSafeModeEnabled.exists())
     {
-      ROS_ERROR("The service call failed!");
+        THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvSetSafeModeEnabled.getService() << " does not exist.");
     }
+
+    srvCallSuccess = _srvSetSafeModeEnabled.call(srv);
+    if (not srvCallSuccess)
+    {
+        THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvSetSafeModeEnabled.getService());
+    }
+
     return srv.response.success;
 }
 
