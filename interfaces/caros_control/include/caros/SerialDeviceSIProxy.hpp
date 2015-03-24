@@ -8,25 +8,15 @@
 #include <ros/ros.h>
 
 /* TODO:
- * Make the handleRobotState update/subscribed callback function be called asynchronously - see http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
- * Make sure to use c++11 mutex for synchronising the access to the variables that are updated asynchronously.
- *
- * ^- When having to supply the constructor with a ROS nodehandle, then it's up to the user to make a "proper" ros node and just use this wrapper as a convenience library for accessing SerialDeviceServices. It's not a complete standalone encapsulation of the ROS middleware layer, where the user don't need to know anything about ROS... That could probably be provided with one more layer on top of this SIProxy...
- *
- *
- * How to properly handle the cases where the _q, _dq, etc. variables havn't been updated yet?
- * ^- The user should look at the timestamp (i.e. getTimeStamp())
- * There could be possible inconsistency when some of the data is pulled from class variables and the timestamp is fetched from the _pRobotState.
+ * Could make the 'caros_control_msgs::RobotState _pRobotState' available to the user (as a copy), so if this SIP is being updated automatically in a thread, then it's not certain that a call to getTimeStamp and isMoving will be reading from the same robot state
+ * Maybe even pack it into it's own structure with a c++/rw interface/types returned instead of the ROS types. The getQ, getQd, isMoving and getTimeStamp functions could be moved to become member functions of that struct/class.
  */
 
 namespace caros {
 /**
- * @brief this class implements a cpp proxy to control and read data from
- * a SerialDeviceServiceInterface.
- *
+ * @brief this class implements a c++ proxy to control and read data from a SerialDeviceServiceInterface.
  */
     class SerialDeviceSIProxy {
-
     public:
         /**
          * @brief Constructor
@@ -79,12 +69,39 @@ namespace caros {
         //! @brief enable safe mode, so that robot stops when collisions are detected
         bool setSafeModeEnabled(const bool enable);
 
+        /**
+         * @brief Get the last reported joint configuration
+         *
+         * @returns the joint configuration (the type of values are very implementation specific, but as a guideline it's recommended to keep angles in radians, and distances in meters)
+         *
+         * @note Make sure to look at getTimeStamp for ensuring the sample is "current enough"
+         */
         rw::math::Q getQ();
+
+        /**
+         * @brief Get the last reported velocities
+         *
+         * @returns the velocities (the type of values are implementation specific, but as a guideline it's recommended to represent velocitites as radians per sec)
+         *
+         * @note Make sure to look at getTimeStamp for ensuring the sample is "current enough"
+         */
         rw::math::Q getQd();
 
-        ros::Time getTimeStamp();
-
+        /**
+         * @brief Get information on whether the device was moving as of the sample timestamp
+         *
+         * @returns a boolean indicating whether the device was moving as of the sample timestamp
+         *
+         * @note Make sure to look at getTimeStamp for ensuring the sample is "current enough"
+         */
         bool isMoving();
+
+        /**
+         * @brief get the timestamp of the received data - use this to verify that the data is "current enough" and supposedly valid - in the case that no data has yet been reported from the device
+         *
+         * @returns the timestamp of the last reported robot state
+         */
+        ros::Time getTimeStamp();
 
     protected:
         ros::NodeHandle _nodehandle;
@@ -114,7 +131,6 @@ namespace caros {
 
         caros_control_msgs::RobotState _pRobotState;
     };
-
 }
 
 #endif //end include guard

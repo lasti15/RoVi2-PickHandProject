@@ -18,8 +18,6 @@ namespace caros {
      */
     class GripperSIProxy {
     public:
-        // typedef rw::common::Ptr<GripperSIProxy> Ptr;
-
         /**
          * @brief Constructor
          * @param[in] nodehandle
@@ -29,14 +27,6 @@ namespace caros {
 
         //! Destructor
         virtual ~GripperSIProxy();
-
-        /* TODO:
-         *   What about blocking and non-blocking calls (given we don't use the action library)?
-         *
-         *   Maybe in the detailed descriptions also (if the gripper service interface ends up supporting it) refer to the functionality that allows for obtaining the supported limits of the force/current, velocities and positions
-         *
-         *   What promises are we making with respect to accepting and/or completing commands - is it only the setForceQ and setVelocityQ commands that are guaranteed to be successfully completed if true is returned? [ related to synchronous and asynchronous commands ]
-         */
 
         /**
          * @brief Move gripper to configuration
