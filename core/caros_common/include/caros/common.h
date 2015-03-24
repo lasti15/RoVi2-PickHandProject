@@ -72,6 +72,12 @@ double toRos(const double value);
 //! convert double to double
 double toRw(const double value);
 
+//! convert double to ros float
+float toRosFloat(const double value);
+
+//! convert float to ros double
+double toRosDouble(const float value);
+
 //! convert float to float
 float toRos(const float value);
 

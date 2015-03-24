@@ -238,6 +238,20 @@ double toRw(const double value)
 }
 
 /************************************************************************
+ * Double to float
+ * Float to double
+ ************************************************************************/
+float toRosFloat(const double value)
+{
+  return static_cast<float>(value);
+}
+
+double toRosDouble(const float value)
+{
+  return static_cast<double>(value);
+}
+
+/************************************************************************
  * Float
  ************************************************************************/
 float toRos(const float value)
