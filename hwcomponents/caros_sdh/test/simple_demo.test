@@ -1,4 +1,0 @@
-<launch>
-  <node name="sdh_test_node" pkg="caros_sdh" type="sdh_node" />
-  <test test-name="caros_sdh_simple_demo" name="caros_sdh_simple_demo" pkg="caros_sdh" type="simple_demo" />
-</launch>

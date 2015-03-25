@@ -268,6 +268,7 @@ bool selectGrasps(caros_grasp_selection::SelectGrasps::Request& req,
 
   std::string refFrameName = req.sensor_frame_name;
 
+
   Frame* refFrame = workcell->findFrame(refFrameName);
   if (!refFrame){
     std::stringstream sstr;
@@ -277,6 +278,7 @@ bool selectGrasps(caros_grasp_selection::SelectGrasps::Request& req,
         << ". \n A reference frame of pose and pointcloud data is REQUIRED!");
     refFrame = workcell->getWorldFrame();
   }
+
 
   object = workcell->findObject(obj_id);
   if (!object)
@@ -306,6 +308,7 @@ bool selectGrasps(caros_grasp_selection::SelectGrasps::Request& req,
   rw::common::Timer rwtime;
 
   Transform3D<> initialBase = gripperDev->getBase()->getTransform(state);
+
 
   rw::proximity::CollisionDetector cdetect(workcell, ownedPtr(new rwlibs::proximitystrategies::ProximityStrategyPQP()));
 

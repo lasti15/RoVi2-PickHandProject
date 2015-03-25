@@ -5,6 +5,7 @@ project(caros_sdh)
 #### Local Variables
 ########################################################################
 set(library_name ${PROJECT_NAME})
+set(SHOULD_BUILD_CAROS_SDH 1)
 
 ########################################################################
 #### Catkin Packages
@@ -20,22 +21,32 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 find_package(RobWorkHardware COMPONENTS sdh serialport PATHS "${RWHW_ROOT}")
 
 if (NOT ROBWORKHARDWARE_FOUND)
-  message(WARNING "Skipping ${PROJECT_NAME}. Requires both SDH and Serialport components of RobWorkHardware!")
-else()
-  ########################################################################
-  #### SDH and CAN
-  ########################################################################
-  # find the SDH library to use
-  find_package(SDH REQUIRED)
-  # we use peak so find the library to use
-  find_package(PEAKCAN)
+  message(WARNING "Requires both SDH and Serialport components of RobWorkHardware!")
+  set(SHOULD_BUILD_CAROS_SDH 0)
+endif()
 
-  if(NOT PEAKCAN_FOUND)
-    set(PEAKCAN_INCLUDE_DIR "")
-    set(PEAKCAN_LIBRARIES "")
-    message(STATUS "The PEAK CAN libraries have not been found. You will only be able to use RS232")
-  endif()
+########################################################################
+#### SDH
+########################################################################
+find_package(SDH)
+if (NOT SDH_FOUND)
+  message(WARNING "Requires the SDH library to be installed.")
+  set(SHOULD_BUILD_CAROS_SDH 0)
+endif()
 
+########################################################################
+#### PEAK CAN
+########################################################################
+find_package(PEAKCAN)
+if (NOT PEAKCAN_FOUND)
+  message(WARNING "Requires the PEAK CAN library/driver to be installed.")
+  set(SHOULD_BUILD_CAROS_SDH 0)
+endif()
+
+########################################################################
+#### Build process
+########################################################################
+if (SHOULD_BUILD_CAROS_SDH)
   ################################################
   ## Declare ROS messages, services and actions ##
   ################################################
@@ -70,8 +81,6 @@ else()
     include
     ${ROBWORK_INCLUDE_DIR}
     ${ROBWORKHARDWARE_INCLUDE_DIRS}
-    ${PEAKCAN_INCLUDE_DIR}
-    ${SDH_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
     )
 
@@ -97,10 +106,7 @@ else()
   ########################################################################
   #### Testing
   ########################################################################
-  if(CATKIN_ENABLE_TESTING)
-    find_package(rostest REQUIRED)
-    add_rostest_gtest(simple_demo test/simple_demo.test test/simple_demo.cpp)
-    target_link_libraries(simple_demo ${catkin_LIBRARIES})
-  endif()
 
+else()
+  message(WARNING "Skipping ${PROJECT_NAME} due to missing libraries - see earlier warnings.")
 endif()

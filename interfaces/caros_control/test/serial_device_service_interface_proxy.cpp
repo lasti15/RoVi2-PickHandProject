@@ -1,139 +1,89 @@
+#include <caros/proxy_services_test_setup.h>
+
 #include <caros/SerialDeviceSIProxy.hpp>
 #include "serial_device_service_interface_dummy.h"
+
 #include <ros/ros.h>
 #include <gtest/gtest.h>
 
+#include <vector>
+#include <functional>
+#include <tuple>
 #include <string>
-#include <unordered_map>
 
 namespace
 {
-std::unordered_map<std::string, const std::string> functionCalledMap = {
-  {"moveLin", "virtual bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t &)"},
-  {"movePTP", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t &)"},
-  {"movePTP_T", "virtual bool SerialDeviceServiceInterfaceDummy::movePTP_T(const TransformAndSpeedContainer_t &)"},
-  {"moveServoQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t &)"},
-  {"moveServoT", "virtual bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContainer_t &)"},
-  {"moveVelQ", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q &)"},
-  {"moveVelT", "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<> &)"},
-  {"stop", "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()"},
-  {"pause", "virtual bool SerialDeviceServiceInterfaceDummy::movePause()"},
-  {"setSafeModeEnabled", "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(const bool)"} };
-}
+typedef std::vector<std::tuple<std::function<bool(caros::SerialDeviceSIProxy&)>, const std::string>> services_t;
 
+const services_t servicesToTest = {
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveLin, std::placeholders::_1, rw::math::Transform3D<>(), 0, 0),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::movePTP, std::placeholders::_1, rw::math::Q(), 0, 0),
+      "virtual bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::movePTP_T, std::placeholders::_1, rw::math::Transform3D<>(), 0, 0),
+      "virtual bool SerialDeviceServiceInterfaceDummy::movePTP_T(const TransformAndSpeedContainer_t&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveServoQ, std::placeholders::_1, rw::math::Q(), 0),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveServoT, std::placeholders::_1, rw::math::Transform3D<>(), 0),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContainer_t&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveVelQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveVelT, std::placeholders::_1, rw::math::VelocityScrew6D<>()),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<double>&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveLinFC, std::placeholders::_1, rw::math::Transform3D<>(), rw::math::Transform3D<>(), rw::math::Wrench6D<>(), rw::math::Q(6)),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveLinFC(const rw::math::Transform3D<double>&, const rw::math::Transform3D<double>&, const rw::math::Wrench6D<double>&, const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::stop, std::placeholders::_1),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::pause, std::placeholders::_1),
+      "virtual bool SerialDeviceServiceInterfaceDummy::movePause()")
+  },
+  {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::setSafeModeEnabled, std::placeholders::_1, false),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(bool)")
+  }
+};
+
+typedef SerialDeviceServiceInterfaceDummy D_t;
+typedef caros::SerialDeviceSIProxy P_t;
+} // end namespace
 
 TEST(SerialDeviceSIProxy, servicesSuccess)
 {
-  ros::NodeHandle nodehandleService("sdsi_dummy_true");
-  SerialDeviceServiceInterfaceDummy sdsid(nodehandleService, true);
-
-  ros::AsyncSpinner spinner(1);
-  ASSERT_TRUE(spinner.canStart());
-  spinner.start();
-
-  ros::NodeHandle nodehandleClient("sip");
-  caros::SerialDeviceSIProxy sip(nodehandleClient, "sdsi_dummy_true");
-
-  EXPECT_TRUE(sip.moveLin(rw::math::Transform3D<>(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("moveLin"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.movePTP(rw::math::Q(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("movePTP"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.movePTP_T(rw::math::Transform3D<>(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("movePTP_T"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.moveServoQ(rw::math::Q(), 0));
-  EXPECT_EQ(functionCalledMap.at("moveServoQ"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.moveServoT(rw::math::Transform3D<>(), 0));
-  EXPECT_EQ(functionCalledMap.at("moveServoT"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.moveVelQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveVelQ"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.moveVelT(rw::math::VelocityScrew6D<>()));
-  EXPECT_EQ(functionCalledMap.at("moveVelT"), sdsid.getMostRecentFunctionCalled());
-
-  /*
-    float selection[6];
-    EXPECT_TRUE(sip.moveLinFC(rw::math::Transform3D<>(), rw::math::Wrench6D<>(), selection, "",
-    rw::math::Transform3D<>(), 0, 0));
-    EXPECT_EQ(functionCalledMap.at("moveLinFC"), sdsid.getMostRecentFunctionCalled());
-  */
-
-  EXPECT_TRUE(sip.stop());
-  EXPECT_EQ(functionCalledMap.at("stop"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.pause());
-  EXPECT_EQ(functionCalledMap.at("pause"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.setSafeModeEnabled(false));
-  EXPECT_EQ(functionCalledMap.at("setSafeModeEnabled"), sdsid.getMostRecentFunctionCalled());
-
-  /* End */
-  nodehandleClient.shutdown();
-  nodehandleService.shutdown();
-
-  spinner.stop();
+  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::ReturnTrue);
 }
 
-/* An exact copy of servicesSuccess, just with true->false substitution (although a few places shouldn't have the
- * substitution done, so verify each location in the find-and-replace process */
 TEST(SerialDeviceSIProxy, servicesFailure)
 {
-  ros::NodeHandle nodehandleService("sdsi_dummy_false");
-  SerialDeviceServiceInterfaceDummy sdsid(nodehandleService, false);
+  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::ReturnFalse);
+}
 
-  ros::AsyncSpinner spinner(1);
-  ASSERT_TRUE(spinner.canStart());
-  spinner.start();
+TEST(SerialDeviceSIProxy, unavailableService)
+{
+  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::UnavailableService);
+}
 
-  ros::NodeHandle nodehandleClient("sip");
-  caros::SerialDeviceSIProxy sip(nodehandleClient, "sdsi_dummy_false");
-
-  EXPECT_FALSE(sip.moveLin(rw::math::Transform3D<>(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("moveLin"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.movePTP(rw::math::Q(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("movePTP"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.movePTP_T(rw::math::Transform3D<>(), 0, 0));
-  EXPECT_EQ(functionCalledMap.at("movePTP_T"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.moveServoQ(rw::math::Q(), 0));
-  EXPECT_EQ(functionCalledMap.at("moveServoQ"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.moveServoT(rw::math::Transform3D<>(), 0));
-  EXPECT_EQ(functionCalledMap.at("moveServoT"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.moveVelQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveVelQ"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.moveVelT(rw::math::VelocityScrew6D<>()));
-  EXPECT_EQ(functionCalledMap.at("moveVelT"), sdsid.getMostRecentFunctionCalled());
-
-  /*
-    float selection[6];
-    EXPECT_FALSE(sip.moveLinFC(rw::math::Transform3D<>(), rw::math::Wrench6D<>(), selection, "",
-    rw::math::Transform3D<>(), 0, 0));
-    EXPECT_EQ(functionCalledMap.at("moveLinFC"), sdsid.getMostRecentFunctionCalled());
-  */
-
-  EXPECT_FALSE(sip.stop());
-  EXPECT_EQ(functionCalledMap.at("stop"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.pause());
-  EXPECT_EQ(functionCalledMap.at("pause"), sdsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.setSafeModeEnabled(false));
-  EXPECT_EQ(functionCalledMap.at("setSafeModeEnabled"), sdsid.getMostRecentFunctionCalled());
-
-  /* End */
-  nodehandleClient.shutdown();
-  nodehandleService.shutdown();
-
-  spinner.stop();
+TEST(SerialDeviceSIProxy, badServiceCall)
+{
+  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::BadServiceCall);
 }
 
 int main(int argc, char *argv[])
