@@ -216,7 +216,7 @@ std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >
                        Transform3D<> refTobj_pose,
                        rw::proximity::CollisionDetector& detector,
                        Frame *tcp,
-                       std::vector<std::pair<GraspSubTask*, GraspTarget*> >& grasps){
+                       std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >& grasps){
   std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > > filteredGrasps = grasps;
 
 
@@ -228,7 +228,7 @@ std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >
                        Frame *refFrame,
                        Transform3D<> refTobj_pose,
                        Frame *tcp,
-                       std::vector<std::pair<GraspSubTask*, GraspTarget*> >& grasps)
+                       std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >& grasps)
 {
   std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > > filteredGrasps = grasps;
 
@@ -241,7 +241,7 @@ std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >
                        Frame *refFrame,
                        Transform3D<> refTobj_pose,
                        Frame *tcp,
-                       std::vector<std::pair<GraspSubTask*, GraspTarget*> >& grasps){
+                       std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > >& grasps){
   std::vector<boost::tuple<GraspSubTask*, GraspTarget*, Transform3D<> > > filteredGrasps = grasps;
 
 
@@ -567,7 +567,7 @@ bool simpleSelectGrasps(caros_grasp_selection::SelectGrasps::Request& req,
     target.q_grasp = stask->closeQ.toStdVector();
     target.q_tau = stask->tauMax.toStdVector();
     target.tcp_frame_name = gripperDev->getBase()->getName();
-    caros::toRos(wTobj_pose * ttask->pose * inverse(colfree_targets[i].get<2>()), target.tcp_pose);
+    target.tcp_pose = caros::toRosPose(wTobj_pose * ttask->pose * inverse(colfree_targets[i].get<2>()));
     resp.targets.push_back(target);
   }
 
