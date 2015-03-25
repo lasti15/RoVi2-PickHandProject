@@ -291,10 +291,13 @@ bool UniversalRobots::servoQ(const rw::math::Q& q) {
 
 bool UniversalRobots::forceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection, const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits)
 {
-    /* TODO:
-     * Add debug messages that outputs the arguments, to make it extremely transparent what is happening
-     * ^- Should basically be a more verbose level than debug e.g. TRACE (if that existed...)
-     */
+    ROS_DEBUG_STREAM("ForceModeStart arguments begin:");
+    ROS_DEBUG_STREAM("refToffset: " << refToffset);
+    ROS_DEBUG_STREAM("selection: " << selection);
+    ROS_DEBUG_STREAM("wrenchTarget: " << wrenchTarget);
+    ROS_DEBUG_STREAM("limits: " << limits);
+    ROS_DEBUG_STREAM("ForceModeStart arguments end");
+
     if (selection.size() != 6) {
         ROS_WARN_STREAM("The number of elements in selection is '" << selection.size() << "' but should be '" << 6 << "'");
         return false;
@@ -374,15 +377,31 @@ bool UniversalRobots::movePTP_T(const TransformAndSpeedContainer_t& targets)
 
 /* Forwarding the movement to the URServiceInterface function servoQ */
 bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel) {
-        /* TODO:
-         * Missing documentation on why the new specified speed is multiplied with 0.1 and why it's being added to _qcurrent instead of supposedly replacing the previous value - there seems to be conflicting documentation from the SerialDeviceMoveVelQ.srv comment, where q_vel should specifiy the speed in percentage of max speed (i.e. 0=no speed and 100=full speed).
-         */
-	return servoQ(_qcurrent + q_vel*0.1);
+    ROS_ERROR_STREAM("Current implementation does not follow the specification!");
+    return false;
+
+/************************************************************************
+ * Old implementation
+ ************************************************************************/
+#if 0
+    /* TODO:
+     * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
+     * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
+     */
+    return servoQ(_qcurrent + q_vel*0.1);
+#endif
 }
 
 /* Forwarding the movement to the URServiceInterface function servoQ */
 bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
 {
+    ROS_ERROR_STREAM("Current implementation has not been verified to follow the specification!");
+    return false;
+
+/************************************************************************
+ * Old implementation
+ ************************************************************************/
+#if 0
     /* FIXME: Use c++11 mutex and unique_lock */
 //	boost::mutex::scoped_lock lock(_mutex);
 	_device->setQ(_qcurrent, _state);
@@ -394,18 +413,23 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
 	rw::math::Jacobian jacInv( rw::math::LinearAlgebra::pseudoInverse(jac.e()) );
 
 	/* TODO:
-         * Could use some more documentation on why the new speed is being multiplied with 0.1 and added to _qcurrent instead of replacing it?
+         * Could use some more documentation on why the factor of 0.1 is being used (see todo comment for moveVelQ)
          */
         rw::math::Q qtarget = _qcurrent + (jacInv*t_vel)*0.1;
 	return servoQ(qtarget);
+#endif
 }
 
 /* Forwarding the movement to the URServiceInterface function servoT */
 bool UniversalRobots::moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset, const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain)
 {
-/* FIXME:
- * [ Currently ] Go through this code to make sure that it's implemented correctly
- */
+    ROS_ERROR_STREAM("Current implementation has not been verified to follow the specification nor been tested in CAROS!");
+    return false;
+
+/************************************************************************
+ * Implementation
+ ************************************************************************/
+#if 0
     if (_ftFrame == NULL) {
         ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
         return false;
@@ -458,13 +482,13 @@ bool UniversalRobots::moveLinFC(const rw::math::Transform3D<>& posTarget, const 
     rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
 
     return servoT(baseTtarget2);
+#endif
 }
 
 bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets) {
     /* TODO: 
      * Throwing away the speed:
      * RobWorkHardware doesn't support specifying the speed when servoing (because the Universal Robot didn't or doesn't support user specified speeds when doing servoing.
-     *
      */
     bool res = false;
     for (const auto& target : targets) {
@@ -493,14 +517,13 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets) {
 }
 
 bool UniversalRobots::moveStart() {
-    /* Empty */
+    ROS_ERROR_STREAM("Currently not implemented!");
+    return false;
 
     /* TODO:
      * Does this make sense? - how to start the robot and what if it's already started?
      * ^- Isn't it already being started when launching this node?
      */
-
-    return false;
 }
 
 bool UniversalRobots::moveStop() {
@@ -510,13 +533,11 @@ bool UniversalRobots::moveStop() {
 }
 
 bool UniversalRobots::movePause() {
-    /* Empty */
-    
+    ROS_ERROR_STREAM("Currently not implemented!");
     return false;
 }
 
 bool UniversalRobots::moveSetSafeModeEnabled(const bool value) {
-    /* Empty */
-
+    ROS_ERROR_STREAM("Currently not implemented!");
     return false;
 }
