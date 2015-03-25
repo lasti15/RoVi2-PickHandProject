@@ -4,7 +4,10 @@ project(caros_grasp_selection)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs geometry_msgs sensor_msgs caros_common)
+find_package(catkin REQUIRED COMPONENTS 
+    message_generation roscpp std_msgs 
+    geometry_msgs sensor_msgs caros_common
+    pcl_ros)
 
 ################################################
 ## Declare ROS messages, services and actions ##
