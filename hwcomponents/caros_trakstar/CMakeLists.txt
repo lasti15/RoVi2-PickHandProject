@@ -67,3 +67,12 @@ TARGET_LINK_LIBRARIES(trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catk
 
 add_executable(caros_trakstar src/main.cpp)
 target_link_libraries(caros_trakstar trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})
+
+########################################################################
+#### Testing
+########################################################################
+#if(CATKIN_ENABLE_TESTING)
+#  find_package(rostest REQUIRED)
+#  add_rostest_gtest(simple_demo test/simple_demo.test test/simple_demo.cpp)
+#  target_link_libraries(simple_demo ${catkin_LIBRARIES})
+#endif()

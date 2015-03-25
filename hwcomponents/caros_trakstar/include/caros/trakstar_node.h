@@ -29,6 +29,7 @@ public:
 
   //! constructor
   TrakstarNode(const ros::NodeHandle& nodehandle);
+
   //! destructor
   virtual ~TrakstarNode();
 

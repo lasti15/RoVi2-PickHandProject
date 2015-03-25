@@ -579,7 +579,7 @@ void Trakstar::pollData()
     {
       // Don't tell us that a sensor is not attached. We probably(hopefully!) know
       // This would be a place to debug for sensor-data not read if that error present.
-      ROS_ERROR_STREAM("No sensor attached!");
+      //ROS_ERROR_STREAM("No sensor [" << id << "] attached! ");
     }
     else if (status == (NO_TRANSMITTER_RUNNING | GLOBAL_ERROR))
     {
