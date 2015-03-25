@@ -1,16 +1,12 @@
 #ifndef _GRIPPERSIPROXY_HPP_
 #define _GRIPPERSIPROXY_HPP_
 
+#include <caros/exceptions.h>
 #include <caros_control_msgs/GripperState.h>
 
 #include <rw/math/Q.hpp>
 
 #include <ros/ros.h>
-
-/* TODO:
- * Is boost mutex required? 
- */
-#include <boost/thread/mutex.hpp>
 
 namespace caros {
     /**
@@ -131,9 +127,7 @@ namespace caros {
 
         ros::NodeHandle _nodeHnd;
 
-        // protectStateVariable
-        boost::mutex _pSV;
-
+      // _pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being implemented within the SIProxy.
         caros_control_msgs::GripperState _pSV_gripperState;
     };
 }

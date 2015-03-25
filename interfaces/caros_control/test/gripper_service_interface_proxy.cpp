@@ -1,87 +1,68 @@
+#include <caros/proxy_services_test_setup.h>
+
 #include <caros/GripperSIProxy.hpp>
 #include "gripper_service_interface_dummy.h"
+
 #include <ros/ros.h>
 #include <gtest/gtest.h>
 
+#include <list>
+#include <functional>
+#include <tuple>
 #include <string>
-#include <unordered_map>
+
+using namespace caros::test;
 
 namespace
 {
-std::unordered_map<std::string, const std::string> functionCalledMap = {
-  {"moveQ", "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)"},
-  {"gripQ", "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)"},
-  {"setForceQ", "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)"},
-  {"setVelocityQ", "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)"},
-  {"stopMovement", "virtual bool GripperServiceInterfaceDummy::stopMovement()"} };
-}
+// Container type to hold the services that should be tested
+typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy&)>, const std::string>> services_t;
+
+const services_t servicesToTest = {
+  {std::make_tuple(
+      std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::GripperSIProxy::gripQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::GripperSIProxy::setForceQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::GripperSIProxy::setVelocityQ, std::placeholders::_1, rw::math::Q()),
+      "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)")
+  },
+  {std::make_tuple(
+      std::bind(&caros::GripperSIProxy::stopMovement, std::placeholders::_1),
+      "virtual bool GripperServiceInterfaceDummy::stopMovement()")
+  }
+};
+
+typedef GripperServiceInterfaceDummy D_t;
+typedef caros::GripperSIProxy P_t;
+} // end namespace
 
 TEST(GripperSIProxy, servicesSuccess)
 {
-  ros::NodeHandle nodehandleService("gsi_dummy_true");
-  GripperServiceInterfaceDummy gsid(nodehandleService, true);
-
-  ros::AsyncSpinner spinner(1);
-  ASSERT_TRUE(spinner.canStart());
-  spinner.start();
-
-  ros::NodeHandle nodehandleClient("sip");
-  caros::GripperSIProxy sip(nodehandleClient, "gsi_dummy_true");
-
-  EXPECT_TRUE(sip.moveQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.gripQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("gripQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.setForceQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setForceQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.setVelocityQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setVelocityQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_TRUE(sip.stopMovement());
-  EXPECT_EQ(functionCalledMap.at("stopMovement"), gsid.getMostRecentFunctionCalled());
-
-  /* End */
-  nodehandleClient.shutdown();
-  nodehandleService.shutdown();
-
-  spinner.stop();
+  testServices<D_t, P_t, services_t>(servicesToTest, TestType::ReturnTrue);
 }
 
 TEST(GripperSIProxy, servicesFailure)
 {
-  ros::NodeHandle nodehandleService("gsi_dummy_true");
-  GripperServiceInterfaceDummy gsid(nodehandleService, false);
+  testServices<D_t, P_t, services_t>(servicesToTest, TestType::ReturnFalse);
+}
 
-  ros::AsyncSpinner spinner(1);
-  ASSERT_TRUE(spinner.canStart());
-  spinner.start();
+TEST(GripperSIProxy, unavailableService)
+{
+  testServices<D_t, P_t, services_t>(servicesToTest, TestType::UnavailableService);
+}
 
-  ros::NodeHandle nodehandleClient("sip");
-  caros::GripperSIProxy sip(nodehandleClient, "gsi_dummy_true");
-
-  EXPECT_FALSE(sip.moveQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("moveQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.gripQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("gripQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.setForceQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setForceQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.setVelocityQ(rw::math::Q()));
-  EXPECT_EQ(functionCalledMap.at("setVelocityQ"), gsid.getMostRecentFunctionCalled());
-
-  EXPECT_FALSE(sip.stopMovement());
-  EXPECT_EQ(functionCalledMap.at("stopMovement"), gsid.getMostRecentFunctionCalled());
-
-  /* End */
-  nodehandleClient.shutdown();
-  nodehandleService.shutdown();
-
-  spinner.stop();
+TEST(GripperSIProxy, badServiceCall)
+{
+  testServices<D_t, P_t, services_t>(servicesToTest, TestType::BadServiceCall);
 }
 
 int main(int argc, char *argv[])
