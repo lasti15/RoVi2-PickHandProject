@@ -244,7 +244,7 @@ void UniversalRobots::fatalErrorLoopHook() {
      */
 }
 
-void UniversalRobots::addFTData(const caros_common_msgs::WrenchData::ConstPtr state) {
+void UniversalRobots::addFTData(const caros_common_msgs::wrench_data::ConstPtr state) {
     rw::math::Wrench6D<> wrench;
     wrench(0) = state->wrench.force.x;
     wrench(1) = state->wrench.force.y;

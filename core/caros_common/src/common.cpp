@@ -3,7 +3,7 @@
 #include <rw/math.hpp>
 #include <rw/loaders/WorkCellFactory.hpp>
 
-#include <caros_common_msgs/Q.h>
+#include <caros_common_msgs/q.h>
 #include <caros_common_msgs/get_rw_state.h>
 #include <caros_common_msgs/rw_state.h>
 
@@ -100,7 +100,7 @@ rw::kinematics::State toRw(const caros_common_msgs::rw_state& state_ros, const r
 /************************************************************************
  * Q
  ************************************************************************/
-rw::math::Q toRw(const caros_common_msgs::Q& q)
+rw::math::Q toRw(const caros_common_msgs::q& q)
 {
   rw::math::Q res(q.data.size());
   for (std::size_t i = 0; i < q.data.size(); ++i)
@@ -110,9 +110,9 @@ rw::math::Q toRw(const caros_common_msgs::Q& q)
   return res;
 }
 
-caros_common_msgs::Q toRos(const rw::math::Q& q)
+caros_common_msgs::q toRos(const rw::math::Q& q)
 {
-  caros_common_msgs::Q res;
+  caros_common_msgs::q res;
   res.data.resize(q.size());
   for (std::size_t i = 0; i < q.size(); ++i)
   {

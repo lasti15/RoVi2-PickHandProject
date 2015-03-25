@@ -1,5 +1,5 @@
 # List of target joint values
-caros_common_msgs/Q[] targets
+caros_common_msgs/q[] targets
 
 # Speed (defined as the percentage of max speed, 0=no speed, 100=full speed in the leading axis)
 float32[] speeds

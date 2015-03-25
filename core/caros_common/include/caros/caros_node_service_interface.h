@@ -298,7 +298,7 @@ class CarosNodeServiceInterface
   ros::Rate loopRate_;
 
   std::string errorMsg_;
-  /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::CarosNodeState message
+  /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::caros_node_state message
    */
   int64_t errorCode_;
 };

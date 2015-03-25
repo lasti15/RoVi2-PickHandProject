@@ -1,5 +1,5 @@
 # target servo
-caros_common_msgs/Q[] target
+caros_common_msgs/q[] target
 
 ---
 # If the service request was acknowledged

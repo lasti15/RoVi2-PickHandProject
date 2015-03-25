@@ -5,7 +5,7 @@
 #include <rw/models/WorkCell.hpp>
 #include <rw/kinematics/State.hpp>
 
-#include <caros_common_msgs/Q.h>
+#include <caros_common_msgs/q.h>
 #include <caros_common_msgs/rw_state.h>
 
 #include <geometry_msgs/WrenchStamped.h>
@@ -32,10 +32,10 @@ namespace caros
  */
 
 //! convert Q to Q
-rw::math::Q toRw(const caros_common_msgs::Q& q);
+rw::math::Q toRw(const caros_common_msgs::q& q);
 
 //! convert Q to Q
-caros_common_msgs::Q toRos(const rw::math::Q& q);
+caros_common_msgs::q toRos(const rw::math::Q& q);
 
 //! convert Transform3D to Transform
 geometry_msgs::Transform toRos(const rw::math::Transform3D<>& transform);

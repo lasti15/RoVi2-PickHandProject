@@ -5,6 +5,6 @@ bool inError
 string errorMsg
 int64 errorCode
 
-# true if 
+# true if
 bool changedEvent
 string previousState
