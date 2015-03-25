@@ -13,7 +13,7 @@
 #include <caros/common.h>
 
 #include <caros_grasp_selection/SelectGrasps.h>
-#include <caros_common_msgs/GetRWState.h>
+#include <caros_common_msgs/get_rw_state.h>
 
 #include <rwlibs/task.hpp>
 
