@@ -25,9 +25,9 @@ using namespace caros;
 PLUGINLIB_EXPORT_CLASS(caros::TrakstarNode, nodelet::Nodelet)
 
 TrakstarNode::TrakstarNode():Nodelet(),
-CarosNodeServiceInterface(ros::NodeHandle(""), 240),
-ButtonSensorServiceInterface(ros::NodeHandle("")), PoseSensorServiceInterface(
-    ros::NodeHandle("")), nodehandle_(ros::NodeHandle(""))
+CarosNodeServiceInterface(ros::NodeHandle("~"), 240),
+ButtonSensorServiceInterface(ros::NodeHandle("~")), PoseSensorServiceInterface(
+    ros::NodeHandle("~")), nodehandle_(ros::NodeHandle("~"))
 
 {
   t_driver_ = new caros::Trakstar();
@@ -104,6 +104,9 @@ bool TrakstarNode::activateHook()
     CAROS_FATALERROR("The buttonservice could not be configured correctly.", TRAKSTAR_BUTTONSERVICE_CONFIGURE_FAIL);
     return false;
   }
+
+  setLoopRateFrequency(max_pub_frequency_);
+
   return true;
 }
 
