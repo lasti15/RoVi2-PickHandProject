@@ -45,6 +45,10 @@ const services_t servicesToTest = {
       "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<double>&)")
   },
   {std::make_tuple(
+      std::bind(&caros::SerialDeviceSIProxy::moveLinFC, std::placeholders::_1, rw::math::Transform3D<>(), rw::math::Transform3D<>(), rw::math::Wrench6D<>(), rw::math::Q(6)),
+      "virtual bool SerialDeviceServiceInterfaceDummy::moveLinFC(const rw::math::Transform3D<double>&, const rw::math::Transform3D<double>&, const rw::math::Wrench6D<double>&, const rw::math::Q&)")
+  },
+  {std::make_tuple(
       std::bind(&caros::SerialDeviceSIProxy::stop, std::placeholders::_1),
       "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()")
   },
