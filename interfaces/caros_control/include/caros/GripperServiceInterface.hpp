@@ -42,9 +42,7 @@ namespace caros {
         virtual ~GripperServiceInterface();
 
         /* FIXME: apidoc documentation */
-        bool configureGripperService();
-        /* FIXME: apidoc documentation */
-        bool cleanupGripperService();
+        bool configureInterface();
 
         /**
          * @brief signal the gripper to move into a specific configuration Q.
@@ -113,7 +111,7 @@ namespace caros {
          * @brief internal GripperServiceInterface function to properly advertise the services using ROS and setup the callbacks.
          * This should not be called directly.
          */
-        bool initGripperService();
+        bool initService();
 
 
         /* - these functions should be grouped together in the documentation t shortly describe that these are converting from ROS types to e.g. RobWork types according to what the interface expects - */

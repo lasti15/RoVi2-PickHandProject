@@ -18,11 +18,6 @@ Robotiq3Node::Robotiq3Node(const ros::NodeHandle& node_handle)
 
 Robotiq3Node::~Robotiq3Node()
 {
-  if (!cleanupGripperService())
-  {
-    ROS_ERROR_STREAM("cleanupGripperService() failed.");
-  }
-
   if (robotiq3_ != NULL)
   {
     if (robotiq3_->isConnected())
@@ -157,7 +152,7 @@ bool Robotiq3Node::configureRobotiqDevice()
 
   robotiq3_ = ownedPtr(new rwhw::Robotiq3());
 
-  if (!configureGripperService())
+  if (not GripperServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.",
                      ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
