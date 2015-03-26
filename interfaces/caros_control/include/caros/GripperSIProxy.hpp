@@ -2,7 +2,7 @@
 #define _GRIPPERSIPROXY_HPP_
 
 #include <caros/exceptions.h>
-#include <caros_control_msgs/GripperState.h>
+#include <caros_control_msgs/gripper_state.h>
 
 #include <rw/math/Q.hpp>
 
@@ -113,12 +113,12 @@ namespace caros {
         ros::Subscriber _subGripperState;
 
     private:
-        void handleGripperState(const caros_control_msgs::GripperState& state);
+        void handleGripperState(const caros_control_msgs::gripper_state& state);
 
         ros::NodeHandle _nodeHnd;
 
       // _pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being implemented within the SIProxy.
-        caros_control_msgs::GripperState _pSV_gripperState;
+        caros_control_msgs::gripper_state _pSV_gripperState;
     };
 }
 #endif /* _GRIPPERSIPROXY_HPP_ */

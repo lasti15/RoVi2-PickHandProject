@@ -15,28 +15,28 @@ find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msg
 ################################################
 add_service_files(
   FILES
-  SerialDeviceForceControlStart.srv
-  SerialDeviceForceControlStop.srv
-  SerialDeviceForceControlUpdate.srv
-  SerialDeviceMoveLin.srv
-  SerialDeviceMoveLinFC.srv
-  SerialDeviceMovePTP_T.srv
-  SerialDeviceMovePTP.srv
-  SerialDeviceMoveVelQ.srv
-  SerialDeviceMoveVelT.srv
-  SerialDeviceMoveServoQ.srv
-  SerialDeviceMoveServoT.srv
-  GripperMoveQ.srv
-  GripperGripQ.srv
-  GripperSetForceQ.srv
-  GripperSetVelocityQ.srv
-  GripperStopMovement.srv
+  serial_device_force_control_start.srv
+  serial_device_force_control_stop.srv
+  serial_device_force_control_update.srv
+  serial_device_move_lin.srv
+  serial_device_move_lin_fc.srv
+  serial_device_move_ptp_t.srv
+  serial_device_move_ptp.srv
+  serial_device_move_vel_q.srv
+  serial_device_move_vel_t.srv
+  serial_device_move_servo_q.srv
+  serial_device_move_servo_t.srv
+  gripper_move_q.srv
+  gripper_grip_q.srv
+  gripper_set_force_q.srv
+  gripper_set_velocity_q.srv
+  gripper_stop_movement.srv
 )
 
 add_message_files(
   FILES
-  RobotState.msg
-  GripperState.msg
+  robot_state.msg
+  gripper_state.msg
 )
 
 generate_messages(

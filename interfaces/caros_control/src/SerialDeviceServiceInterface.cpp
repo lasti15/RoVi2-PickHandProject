@@ -2,7 +2,7 @@
 #include <caros/SerialDeviceServiceInterface.hpp>
 #include <caros/common.h>
 
-#include <caros_control_msgs/RobotState.h>
+#include <caros_control_msgs/robot_state.h>
 
 #include <rw/math.hpp>
 #include <boost/foreach.hpp>
@@ -40,7 +40,7 @@ bool SerialDeviceServiceInterface::initService(){
      * Should the "RobotState" not be called something like SerialDeviceState or similar?
      * ^- The name should also be replaced in the ros error stream condition statement!
      */
-    _deviceStatePublisher = _nodehandle.advertise<caros_control_msgs::RobotState>("robot_state", SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE);
+    _deviceStatePublisher = _nodehandle.advertise<caros_control_msgs::robot_state>("robot_state", SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE);
     ROS_ERROR_STREAM_COND(!_deviceStatePublisher, "The RobotState publisher is empty!");
 
     _srvMoveLin = _nodehandle.advertiseService("move_lin", &SerialDeviceServiceInterface::moveLinHandle, this);
@@ -90,7 +90,7 @@ bool SerialDeviceServiceInterface::initService(){
     return true;
 }
 
-void SerialDeviceServiceInterface::publish(const caros_control_msgs::RobotState& state) {
+void SerialDeviceServiceInterface::publish(const caros_control_msgs::robot_state& state) {
     _deviceStatePublisher.publish(state);
 }
 
@@ -125,8 +125,8 @@ bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t&
  * Rewrite the functions to also take in the blends (which should be added to the .srv files). Also remember to update the non-handle versions.
  * Try to refactor as much of the shared conversion/code for all these methods, into separate functions, like with the fillContainerWithTransformsAndSpeed(...) function.
  */
-bool SerialDeviceServiceInterface::moveLinHandle(caros_control_msgs::SerialDeviceMoveLin::Request& request,
-                                                 caros_control_msgs::SerialDeviceMoveLin::Response& response)
+bool SerialDeviceServiceInterface::moveLinHandle(caros_control_msgs::serial_device_move_lin::Request& request,
+                                                 caros_control_msgs::serial_device_move_lin::Response& response)
 {
     TransformAndSpeedContainer_t res;
     if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res)) {
@@ -138,8 +138,8 @@ bool SerialDeviceServiceInterface::moveLinHandle(caros_control_msgs::SerialDevic
     return true;
 }
 
-bool SerialDeviceServiceInterface::movePTPHandle(caros_control_msgs::SerialDeviceMovePTP::Request& request,
-                                                 caros_control_msgs::SerialDeviceMovePTP::Response& response)
+bool SerialDeviceServiceInterface::movePTPHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
+                                                 caros_control_msgs::serial_device_move_ptp::Response& response)
 {
     QAndSpeedContainer_t res;
     if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res)) {
@@ -151,8 +151,8 @@ bool SerialDeviceServiceInterface::movePTPHandle(caros_control_msgs::SerialDevic
     return true;
 }
 
-bool SerialDeviceServiceInterface::movePTP_THandle(caros_control_msgs::SerialDeviceMovePTP_T::Request& request,
-                                                   caros_control_msgs::SerialDeviceMovePTP_T::Response& response)
+bool SerialDeviceServiceInterface::movePTP_THandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
+                                                   caros_control_msgs::serial_device_move_ptp_t::Response& response)
 {
     TransformAndSpeedContainer_t res;
     if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res)) {
@@ -164,8 +164,8 @@ bool SerialDeviceServiceInterface::movePTP_THandle(caros_control_msgs::SerialDev
     return true;
 }    
 
-bool SerialDeviceServiceInterface::moveVelQHandle(caros_control_msgs::SerialDeviceMoveVelQ::Request& request,
-                                                  caros_control_msgs::SerialDeviceMoveVelQ::Response& response)
+bool SerialDeviceServiceInterface::moveVelQHandle(caros_control_msgs::serial_device_move_vel_q::Request& request,
+                                                  caros_control_msgs::serial_device_move_vel_q::Response& response)
 {
     rw::math::Q vel = caros::toRw(request.vel);
     response.success = moveVelQ(vel);
@@ -173,8 +173,8 @@ bool SerialDeviceServiceInterface::moveVelQHandle(caros_control_msgs::SerialDevi
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveVelTHandle(caros_control_msgs::SerialDeviceMoveVelT::Request& request,
-                                                  caros_control_msgs::SerialDeviceMoveVelT::Response& response)
+bool SerialDeviceServiceInterface::moveVelTHandle(caros_control_msgs::serial_device_move_vel_t::Request& request,
+                                                  caros_control_msgs::serial_device_move_vel_t::Response& response)
 {
     rw::math::VelocityScrew6D<> vel = caros::toRw(request.vel);
     response.success = moveVelT(vel);
@@ -186,8 +186,8 @@ bool SerialDeviceServiceInterface::moveVelTHandle(caros_control_msgs::SerialDevi
  * Add speeds implementation
  * This should also be added to the RobWorkHardware URCallBackInterface servo functioninality, where the speed should be optional, defaulting to the currently hardcoded value...
  */
-bool SerialDeviceServiceInterface::moveServoQHandle(caros_control_msgs::SerialDeviceMoveServoQ::Request& request,
-                                                    caros_control_msgs::SerialDeviceMoveServoQ::Response& response)
+bool SerialDeviceServiceInterface::moveServoQHandle(caros_control_msgs::serial_device_move_servo_q::Request& request,
+                                                    caros_control_msgs::serial_device_move_servo_q::Response& response)
 {
     QAndSpeedContainer_t res;
     if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res)) {
@@ -199,8 +199,8 @@ bool SerialDeviceServiceInterface::moveServoQHandle(caros_control_msgs::SerialDe
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveServoTHandle(caros_control_msgs::SerialDeviceMoveServoT::Request& request,
-                                                    caros_control_msgs::SerialDeviceMoveServoT::Response& response)
+bool SerialDeviceServiceInterface::moveServoTHandle(caros_control_msgs::serial_device_move_servo_t::Request& request,
+                                                    caros_control_msgs::serial_device_move_servo_t::Response& response)
 {
     TransformAndSpeedContainer_t res;
     if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res)) {
@@ -212,8 +212,8 @@ bool SerialDeviceServiceInterface::moveServoTHandle(caros_control_msgs::SerialDe
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::SerialDeviceMoveLinFC::Request& request,
-                                                   caros_control_msgs::SerialDeviceMoveLinFC::Response& response)
+bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
+                                                   caros_control_msgs::serial_device_move_lin_fc::Response& response)
 {
     rw::math::Transform3D<> posTarget = caros::toRw(request.pos_target);
     rw::math::Transform3D<> offset = caros::toRw(request.offset);

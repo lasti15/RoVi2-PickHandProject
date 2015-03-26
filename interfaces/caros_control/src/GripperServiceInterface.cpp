@@ -1,7 +1,7 @@
 #include <caros/GripperServiceInterface.hpp>
 #include <caros/common.h>
 
-#include <caros_control_msgs/GripperState.h>
+#include <caros_control_msgs/gripper_state.h>
 
 #include <rw/math/Q.hpp>
 
@@ -30,7 +30,7 @@ GripperServiceInterface::~GripperServiceInterface()
 
 void GripperServiceInterface::publishState(const rw::math::Q& q, const rw::math::Q& dq, const rw::math::Q& jointforce, bool isMoving, bool isBlocked, bool isStopped, bool isEstopped)
 {
-    caros_control_msgs::GripperState state;
+    caros_control_msgs::gripper_state state;
 
     state.header.stamp = ros::Time::now();
 
@@ -96,7 +96,7 @@ bool GripperServiceInterface::initGripperService()
         ROS_WARN_STREAM("Reinitialising one or more GripperServiceInterface services or publishers. If this is not fully intended then this should be considered a bug!");
     }
 
-    _gripperStatePublisher = _nodeHandle.advertise<caros_control_msgs::GripperState>("GripperState", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
+    _gripperStatePublisher = _nodeHandle.advertise<caros_control_msgs::gripper_state>("GripperState", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
     ROS_ERROR_STREAM_COND(!_gripperStatePublisher, "The GripperState publisher is empty!");
 
     _srvMoveQ = _nodeHandle.advertiseService("move_q", &GripperServiceInterface::moveQHandle, this);
@@ -125,31 +125,31 @@ bool GripperServiceInterface::initGripperService()
     return true;
 }
 
-bool GripperServiceInterface::moveQHandle(caros_control_msgs::GripperMoveQ::Request& request, caros_control_msgs::GripperMoveQ::Response& response)
+bool GripperServiceInterface::moveQHandle(caros_control_msgs::gripper_move_q::Request& request, caros_control_msgs::gripper_move_q::Response& response)
 {
     response.success = moveQ(caros::toRw(request.q));
     return true;
 }
 
-bool GripperServiceInterface::gripQHandle(caros_control_msgs::GripperGripQ::Request& request, caros_control_msgs::GripperGripQ::Response& response)
+bool GripperServiceInterface::gripQHandle(caros_control_msgs::gripper_grip_q::Request& request, caros_control_msgs::gripper_grip_q::Response& response)
 {
     response.success = gripQ(caros::toRw(request.q));
     return true;
 }
 
-bool GripperServiceInterface::setForceQHandle(caros_control_msgs::GripperSetForceQ::Request& request, caros_control_msgs::GripperSetForceQ::Response& response)
+bool GripperServiceInterface::setForceQHandle(caros_control_msgs::gripper_set_force_q::Request& request, caros_control_msgs::gripper_set_force_q::Response& response)
 {
     response.success = setForceQ(caros::toRw(request.force));
     return true;
 }
 
-bool GripperServiceInterface::setVelocityQHandle(caros_control_msgs::GripperSetVelocityQ::Request& request, caros_control_msgs::GripperSetVelocityQ::Response& response)
+bool GripperServiceInterface::setVelocityQHandle(caros_control_msgs::gripper_set_velocity_q::Request& request, caros_control_msgs::gripper_set_velocity_q::Response& response)
 {
     response.success = setVelocityQ(caros::toRw(request.velocity));
     return true;
 }
 
-bool GripperServiceInterface::stopMovementHandle(caros_control_msgs::GripperStopMovement::Request& request, caros_control_msgs::GripperStopMovement::Response& response)
+bool GripperServiceInterface::stopMovementHandle(caros_control_msgs::gripper_stop_movement::Request& request, caros_control_msgs::gripper_stop_movement::Response& response)
 {
     response.success = stopMovement();
     return true;

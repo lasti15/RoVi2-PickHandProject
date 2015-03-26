@@ -4,7 +4,7 @@
 #include <caros/common.h>
 #include <caros/exceptions.h>
 
-#include <caros_control_msgs/GripperState.h>
+#include <caros_control_msgs/gripper_state.h>
 
 /* TODO:
  * - Does it make sense to have a nodehandle or just use the non-object/instance versions of the function calls?
@@ -42,11 +42,11 @@ GripperSIProxy::GripperSIProxy(ros::NodeHandle nodehandle, const std::string& de
     std::ostringstream rosNamespace;
     rosNamespace << "/" << devname << "/" << GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE;
 
-    _srvMoveQ = _nodeHnd.serviceClient<caros_control_msgs::GripperMoveQ>(rosNamespace.str() + "/move_q");
-    _srvGripQ = _nodeHnd.serviceClient<caros_control_msgs::GripperGripQ>(rosNamespace.str() + "/grip_q");
-    _srvSetForceQ = _nodeHnd.serviceClient<caros_control_msgs::GripperSetForceQ>(rosNamespace.str() + "/set_force_q");
-    _srvSetVelocityQ = _nodeHnd.serviceClient<caros_control_msgs::GripperSetVelocityQ>(rosNamespace.str() + "/set_velocity_q");
-    _srvStopMovement = _nodeHnd.serviceClient<caros_control_msgs::GripperStopMovement>(rosNamespace.str() + "/stop_movement");
+    _srvMoveQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_move_q>(rosNamespace.str() + "/move_q");
+    _srvGripQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_grip_q>(rosNamespace.str() + "/grip_q");
+    _srvSetForceQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_set_force_q>(rosNamespace.str() + "/set_force_q");
+    _srvSetVelocityQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_set_velocity_q>(rosNamespace.str() + "/set_velocity_q");
+    _srvStopMovement = _nodeHnd.serviceClient<caros_control_msgs::gripper_stop_movement>(rosNamespace.str() + "/stop_movement");
 
     /* TODO:
      * Make the queue size into a parameter that can be configured - (hardcoded to 1 here)
@@ -61,7 +61,7 @@ GripperSIProxy::~GripperSIProxy() {
 bool GripperSIProxy::moveQ(const rw::math::Q& q)
 {
     bool srvCallSuccess = false;
-    caros_control_msgs::GripperMoveQ srv;
+    caros_control_msgs::gripper_move_q srv;
     srv.request.q = caros::toRos(q);
 
     if (! _srvMoveQ.exists()) {
@@ -79,7 +79,7 @@ bool GripperSIProxy::moveQ(const rw::math::Q& q)
 bool GripperSIProxy::gripQ(const rw::math::Q& q)
 {
     bool srvCallSuccess = false;
-    caros_control_msgs::GripperGripQ srv;
+    caros_control_msgs::gripper_grip_q srv;
     srv.request.q = caros::toRos(q);
 
     if (! _srvGripQ.exists()) {
@@ -97,7 +97,7 @@ bool GripperSIProxy::gripQ(const rw::math::Q& q)
 bool GripperSIProxy::setForceQ(const rw::math::Q& q)
 {
     bool srvCallSuccess = false;
-    caros_control_msgs::GripperSetForceQ srv;
+    caros_control_msgs::gripper_set_force_q srv;
     srv.request.force = caros::toRos(q);
 
     if (! _srvSetForceQ.exists()) {
@@ -115,7 +115,7 @@ bool GripperSIProxy::setForceQ(const rw::math::Q& q)
 bool GripperSIProxy::setVelocityQ(const rw::math::Q& q)
 {
     bool srvCallSuccess = false;
-    caros_control_msgs::GripperSetVelocityQ srv;
+    caros_control_msgs::gripper_set_velocity_q srv;
     srv.request.velocity = caros::toRos(q);
 
     if (! _srvSetVelocityQ.exists()) {
@@ -133,7 +133,7 @@ bool GripperSIProxy::setVelocityQ(const rw::math::Q& q)
 bool GripperSIProxy::stopMovement()
 {
     bool srvCallSuccess = false;
-    caros_control_msgs::GripperStopMovement srv;
+    caros_control_msgs::gripper_stop_movement srv;
 
     if (! _srvStopMovement.exists()) {
         THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvStopMovement.getService() << " does not exist.");
@@ -163,6 +163,6 @@ ros::Time GripperSIProxy::getTimeStamp() {
     return _pSV_gripperState.header.stamp;
 }
 
-void GripperSIProxy::handleGripperState(const caros_control_msgs::GripperState& state) {
+void GripperSIProxy::handleGripperState(const caros_control_msgs::gripper_state& state) {
 	_pSV_gripperState = state;
 }
