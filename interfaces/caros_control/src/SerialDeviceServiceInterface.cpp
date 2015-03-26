@@ -242,32 +242,32 @@ bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::SerialDev
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveStartHandle(caros_common_msgs::EmptySrv::Request& request,
-                                                   caros_common_msgs::EmptySrv::Response& response)
+bool SerialDeviceServiceInterface::moveStartHandle(caros_common_msgs::empty_srv::Request& request,
+                                                   caros_common_msgs::empty_srv::Response& response)
 {
     response.success = moveStart();
 
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveStopHandle(caros_common_msgs::EmptySrv::Request& request,
-                                                  caros_common_msgs::EmptySrv::Response& response)
+bool SerialDeviceServiceInterface::moveStopHandle(caros_common_msgs::empty_srv::Request& request,
+                                                  caros_common_msgs::empty_srv::Response& response)
 {
     response.success = moveStop();
 
     return true;
 }
 
-bool SerialDeviceServiceInterface::movePauseHandle(caros_common_msgs::EmptySrv::Request& request,
-                                                   caros_common_msgs::EmptySrv::Response& response)
+bool SerialDeviceServiceInterface::movePauseHandle(caros_common_msgs::empty_srv::Request& request,
+                                                   caros_common_msgs::empty_srv::Response& response)
 {
     response.success = movePause();
 
     return true;
 }
 
-bool SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle(caros_common_msgs::ConfigBool::Request& request,
-                                                                caros_common_msgs::ConfigBool::Response& response)
+bool SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle(caros_common_msgs::config_bool::Request& request,
+                                                                caros_common_msgs::config_bool::Response& response)
 {
     bool value = request.value;
     response.success = moveSetSafeModeEnabled(value);

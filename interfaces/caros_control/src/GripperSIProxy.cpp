@@ -10,7 +10,7 @@
  * - Does it make sense to have a nodehandle or just use the non-object/instance versions of the function calls?
  *  ^--< With this simple implementation, where the subscribed callback will only be called when the user of this proxy calls spin or otherwise invoke the callback handling, then it makes plenty of sense to enforce the user to provide a nodehandle - otherwise this functionality will not work as intended.
  *  ^-- This also makes it the user's responsibility to ensure that the calls to getTimeStamp() and other interesting getters are done on the same received GripperState i.e. not calling any spin or processing of the subscribing callback queue... otherwise the data may be inconsistent.
- *  ^-- If using a thread to run the handleGripperState callback, then it would make sense to expose the reported gripperState to the user or create a struct holding the same fields just with converted types such as rw::math::Q instead of caros_common_msgs/Q.
+ *  ^-- If using a thread to run the handleGripperState callback, then it would make sense to expose the reported gripperState to the user or create a struct holding the same fields just with converted types such as rw::math::Q instead of caros_common_msgs/q.
  *
  * - Would it make sense to default to persistent connections? and automatic reconnection?
  *

@@ -1,5 +1,5 @@
 #include <caros/caros_node_service_interface.h>
-#include <caros_common_msgs/CarosNodeState.h>
+#include <caros_common_msgs/caros_node_state.h>
 
 #include <ros/ros.h>
 
@@ -50,7 +50,7 @@ void CarosNodeServiceInterface::start()
         "activateNode() was unsuccessful - the node should now be in an error state according to best practices.");
   }
 
-  caros_common_msgs::CarosNodeState state;
+  caros_common_msgs::caros_node_state state;
   while (ros::ok())
   {
     ros::spinOnce();
@@ -198,7 +198,7 @@ bool CarosNodeServiceInterface::initCarosNode()
         "then this should be considered a bug!");
   }
 
-  nodeStatePublisher_ = nodeHandle_.advertise<caros_common_msgs::CarosNodeState>("caros_node_state", 1);
+  nodeStatePublisher_ = nodeHandle_.advertise<caros_common_msgs::caros_node_state>("caros_node_state", 1);
   ROS_ERROR_STREAM_COND(!nodeStatePublisher_, "The caros_node_state publisher is empty!");
 
   srvRecover_ = nodeHandle_.advertiseService("recover", &CarosNodeServiceInterface::recoverHandle, this);
@@ -224,7 +224,7 @@ bool CarosNodeServiceInterface::recoverHandle(std_srvs::Empty::Request& request,
 
 void CarosNodeServiceInterface::publishNodeState(const bool stateChanged)
 {
-  caros_common_msgs::CarosNodeState state;
+  caros_common_msgs::caros_node_state state;
   state.state = CarosStateString[nodeState_];
   state.inError = nodeState_ == INERROR || nodeState_ == INFATALERROR;
   if (state.inError)

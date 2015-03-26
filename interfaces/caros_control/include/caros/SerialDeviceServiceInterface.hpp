@@ -11,8 +11,8 @@
 #include <caros_control_msgs/SerialDeviceMoveLinFC.h>
 #include <caros_control_msgs/SerialDeviceMoveServoQ.h>
 #include <caros_control_msgs/SerialDeviceMoveServoT.h>
-#include <caros_common_msgs/ConfigBool.h>
-#include <caros_common_msgs/EmptySrv.h>
+#include <caros_common_msgs/config_bool.h>
+#include <caros_common_msgs/empty_srv.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
@@ -137,17 +137,17 @@ namespace caros {
         bool moveLinFCHandle(caros_control_msgs::SerialDeviceMoveLinFC::Request& request,
                              caros_control_msgs::SerialDeviceMoveLinFC::Response& response);
 
-        bool moveStartHandle(caros_common_msgs::EmptySrv::Request& request,
-                             caros_common_msgs::EmptySrv::Response& response);
+        bool moveStartHandle(caros_common_msgs::empty_srv::Request& request,
+                             caros_common_msgs::empty_srv::Response& response);
 
-        bool moveStopHandle(caros_common_msgs::EmptySrv::Request& request,
-                            caros_common_msgs::EmptySrv::Response& response);
+        bool moveStopHandle(caros_common_msgs::empty_srv::Request& request,
+                            caros_common_msgs::empty_srv::Response& response);
 
-        bool movePauseHandle(caros_common_msgs::EmptySrv::Request& request,
-                             caros_common_msgs::EmptySrv::Response& response);
+        bool movePauseHandle(caros_common_msgs::empty_srv::Request& request,
+                             caros_common_msgs::empty_srv::Response& response);
 
-        bool moveSetSafeModeEnabledHandle(caros_common_msgs::ConfigBool::Request& request,
-                                          caros_common_msgs::ConfigBool::Response& response);
+        bool moveSetSafeModeEnabledHandle(caros_common_msgs::config_bool::Request& request,
+                                          caros_common_msgs::config_bool::Response& response);
 
     protected:
         std::string _service_name;

@@ -89,7 +89,7 @@ TEST(TypeConversion, toRosFromRwQ)
 TEST(TypeConversion, toRwFromRosQ)
 {
   // Create ros Q and fill it with data
-  caros_common_msgs::Q rosQ;
+  caros_common_msgs::q rosQ;
   rosQ.data.resize(4);
   for (std::size_t index = 0; index < rosQ.data.size(); ++index)
   {

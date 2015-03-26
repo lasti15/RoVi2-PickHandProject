@@ -7,7 +7,7 @@
 #include <caros/caros_node_service_interface.h>
 #include <caros/SerialDeviceServiceInterface.hpp>
 
-#include <caros_common_msgs/WrenchData.h>
+#include <caros_common_msgs/wrench_data.h>
 
 #include <rw/invkin/JacobianIKSolver.hpp>
 
@@ -99,7 +99,7 @@ namespace caros {
 
     private:
         //! @brief Support function for capturing published wrench data
-        void addFTData(const caros_common_msgs::WrenchData::ConstPtr state);
+        void addFTData(const caros_common_msgs::wrench_data::ConstPtr state);
 
         //! @brief Simple collision detector on the linear configuration space path from current configuration to the specified end configuration
         bool isPathCollisionFree(const rw::math::Q &endConfiguration);

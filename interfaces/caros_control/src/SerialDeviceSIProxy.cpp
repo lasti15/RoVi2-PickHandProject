@@ -2,9 +2,9 @@
 
 #include <caros/SerialDeviceServiceInterface.hpp>
 #include <caros/common.h>
-#include <caros_common_msgs/Stop.h>
-#include <caros_common_msgs/Pause.h>
-#include <caros_common_msgs/ConfigBool.h>
+#include <caros_common_msgs/stop.h>
+#include <caros_common_msgs/pause.h>
+#include <caros_common_msgs/config_bool.h>
 #include <caros_control_msgs/SerialDeviceMoveLin.h>
 #include <caros_control_msgs/SerialDeviceMovePTP.h>
 #include <caros_control_msgs/SerialDeviceMovePTP_T.h>
@@ -63,10 +63,10 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
     _srvMoveServoQ = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveServoQ> (rosNamespace.str() + "/move_servo_q");
     _srvMoveServoT = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveServoT> (rosNamespace.str() + "/move_servo_t");
     _srvMoveLinFC = _nodehandle.serviceClient<caros_control_msgs::SerialDeviceMoveLinFC> (rosNamespace.str() + "/move_lin_fc");
-    _srvStart = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_start");
-    _srvStop = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_stop");
-    _srvPause = _nodehandle.serviceClient<caros_common_msgs::EmptySrv> (rosNamespace.str() + "/move_pause");
-    _srvSetSafeModeEnabled = _nodehandle.serviceClient<caros_common_msgs::ConfigBool> (rosNamespace.str() + "/set_safe_mode_enabled");
+    _srvStart = _nodehandle.serviceClient<caros_common_msgs::empty_srv> (rosNamespace.str() + "/move_start");
+    _srvStop = _nodehandle.serviceClient<caros_common_msgs::empty_srv> (rosNamespace.str() + "/move_stop");
+    _srvPause = _nodehandle.serviceClient<caros_common_msgs::empty_srv> (rosNamespace.str() + "/move_pause");
+    _srvSetSafeModeEnabled = _nodehandle.serviceClient<caros_common_msgs::config_bool> (rosNamespace.str() + "/set_safe_mode_enabled");
 
     // states
     _subRobotState = _nodehandle.subscribe(rosNamespace.str() + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
@@ -261,7 +261,7 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& posTarget,
 
 bool SerialDeviceSIProxy::stop(){
     bool srvCallSuccess = false;
-    caros_common_msgs::Stop srv;
+    caros_common_msgs::stop srv;
 
     if (not _srvStop.exists())
     {
@@ -279,7 +279,7 @@ bool SerialDeviceSIProxy::stop(){
 
 bool SerialDeviceSIProxy::pause(){
     bool srvCallSuccess = false;
-    caros_common_msgs::Pause srv;
+    caros_common_msgs::pause srv;
 
     if (not _srvPause.exists())
     {
@@ -297,7 +297,7 @@ bool SerialDeviceSIProxy::pause(){
 
 bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable){
     bool srvCallSuccess = false;
-    caros_common_msgs::ConfigBool srv;
+    caros_common_msgs::config_bool srv;
     srv.request.value = caros::toRos(enable);
 
     if (not _srvSetSafeModeEnabled.exists())
