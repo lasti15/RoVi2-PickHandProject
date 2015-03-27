@@ -1,7 +1,7 @@
-#ifndef CAROS_GRIPPER_SERVICE_INTERFACE_DUMMY_H
-#define CAROS_GRIPPER_SERVICE_INTERFACE_DUMMY_H
+#ifndef CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
+#define CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
 
-#include <caros/GripperServiceInterface.hpp>
+#include <caros/gripper_service_interface.h>
 
 #include <string>
 #include <stdexcept>

@@ -2,8 +2,9 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 
-GripperServiceInterfaceDummy::GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue, const bool causeError)
-  : caros::GripperServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
+GripperServiceInterfaceDummy::GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue,
+                                                           const bool causeError)
+    : caros::GripperServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
 {
   /* make ROS publish the services */
   if (not GripperServiceInterface::configureInterface())

@@ -1,7 +1,7 @@
 #include <caros/SDHNode.hpp>
 
 #include <caros/caros_node_service_interface.h>
-#include <caros/GripperServiceInterface.hpp>
+#include <caros/gripper_service_interface.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/common/Timer.hpp>

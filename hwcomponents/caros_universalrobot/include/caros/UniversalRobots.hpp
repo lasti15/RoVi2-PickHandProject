@@ -5,7 +5,7 @@
 #include <caros/URServiceInterface.hpp>
 
 #include <caros/caros_node_service_interface.h>
-#include <caros/SerialDeviceServiceInterface.hpp>
+#include <caros/serial_device_service_interface.h>
 
 #include <caros_common_msgs/wrench_data.h>
 

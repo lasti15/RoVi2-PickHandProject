@@ -2,8 +2,9 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 
-SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue, const bool causeError)
-  : caros::SerialDeviceServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
+SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue,
+                                                                     const bool causeError)
+    : caros::SerialDeviceServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
 {
   /* make ROS publish the services */
   if (not SerialDeviceServiceInterface::configureInterface())
