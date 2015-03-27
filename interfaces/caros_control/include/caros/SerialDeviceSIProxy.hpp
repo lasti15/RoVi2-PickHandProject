@@ -1,5 +1,5 @@
-#ifndef SerialDeviceSIProxy_HPP_
-#define SerialDeviceSIProxy_HPP_
+#ifndef CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
+#define CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
 
 #include <caros/exceptions.h>
 #include <caros_control_msgs/robot_state.h>

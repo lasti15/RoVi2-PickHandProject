@@ -1,6 +1,5 @@
-/**/
-#ifndef SERIALDEVICESERVICEINTERFACE_HPP
-#define SERIALDEVICESERVICEINTERFACE_HPP
+#ifndef CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
+#define CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
 
 #include <caros_control_msgs/robot_state.h>
 #include <caros_control_msgs/serial_device_move_lin.h>
@@ -181,4 +180,4 @@ class SerialDeviceServiceInterface
   ros::ServiceServer _srvSetSafeModeEnabled;
 };
 }
-#endif  //#ifndef URSERVICEINTERFACE_HPP
+#endif  //#ifndef

@@ -1,5 +1,5 @@
-#ifndef CAROS_GripperServiceInterface_HPP_
-#define CAROS_GripperServiceInterface_HPP_
+#ifndef CAROS_CONTROL_GRIPPER_SERVICE_INTERFACE_H
+#define CAROS_CONTROL_GRIPPER_SERVICE_INTERFACE_H
 
 #include <rw/math/Q.hpp>
 

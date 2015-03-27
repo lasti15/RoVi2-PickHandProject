@@ -1,5 +1,5 @@
-#ifndef _GRIPPERSIPROXY_HPP_
-#define _GRIPPERSIPROXY_HPP_
+#ifndef CAROS_CONTROL_GRIPPER_SI_PROXY_H
+#define CAROS_CONTROL_GRIPPER_SI_PROXY_H
 
 #include <caros/exceptions.h>
 #include <caros_control_msgs/gripper_state.h>
@@ -131,4 +131,4 @@ class GripperSIProxy
   caros_control_msgs::gripper_state _pSV_gripperState;
 };
 }
-#endif /* _GRIPPERSIPROXY_HPP_ */
+#endif /* #ifndef */
