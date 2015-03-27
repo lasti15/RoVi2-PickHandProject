@@ -1,6 +1,6 @@
-#include <caros/GripperSIProxy.hpp>
+#include <caros/gripper_si_proxy.h>
 
-#include <caros/GripperServiceInterface.hpp> /* provides GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE and the different msg \
+#include <caros/gripper_service_interface.h> /* provides GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE and the different msg \
                                                 and srv types*/
 #include <caros/common.h>
 #include <caros/exceptions.h>

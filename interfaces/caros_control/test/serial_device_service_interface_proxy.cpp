@@ -1,6 +1,6 @@
 #include <caros/proxy_services_test_setup.h>
 
-#include <caros/SerialDeviceSIProxy.hpp>
+#include <caros/serial_device_si_proxy.h>
 #include "serial_device_service_interface_dummy.h"
 
 #include <ros/ros.h>

@@ -1,6 +1,6 @@
 #include <caros/proxy_services_test_setup.h>
 
-#include <caros/GripperSIProxy.hpp>
+#include <caros/gripper_si_proxy.h>
 #include "gripper_service_interface_dummy.h"
 
 #include <ros/ros.h>

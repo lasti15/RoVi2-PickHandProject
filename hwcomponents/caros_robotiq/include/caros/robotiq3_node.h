@@ -3,7 +3,7 @@
 #define CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
 
 #include <caros/caros_node_service_interface.h>
-#include <caros/GripperServiceInterface.hpp>
+#include <caros/gripper_service_interface.h>
 
 #include <rwhw/robotiq/Robotiq3.hpp>
 

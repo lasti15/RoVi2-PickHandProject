@@ -1,4 +1,4 @@
-#include <caros/SerialDeviceSIProxy.hpp>
+#include <caros/serial_device_si_proxy.h>
 #include <caros/common.h>
 
 #include <rw/math/Q.hpp>
