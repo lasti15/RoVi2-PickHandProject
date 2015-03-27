@@ -31,7 +31,7 @@ ButtonSensorSIProxy::~ButtonSensorSIProxy()
 {
 }
 
-void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state)
+void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state)
 {
     boost::mutex::scoped_lock lock(_mutex);
     _stamp = state.header.stamp;

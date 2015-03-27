@@ -32,7 +32,7 @@ void PoseSensorSIProxy::configureProxy(){
   _poseSensorState = node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
 }
 
-void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state)
+void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state)
 {
 	boost::mutex::scoped_lock lock(_mutex);
 	_poses.resize(state.poses.size());

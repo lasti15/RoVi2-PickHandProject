@@ -8,7 +8,7 @@
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
-#include <caros_sensor_msgs/PoseSensorState.h>
+#include <caros_sensor_msgs/pose_sensor_state.h>
 #include <queue>
 
 namespace caros {
@@ -44,7 +44,7 @@ public:
 
 protected:
 	void configureProxy();
-	void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
+        void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
 
 protected:
 	ros::NodeHandle node_hnd_;

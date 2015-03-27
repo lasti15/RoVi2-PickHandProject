@@ -2,7 +2,7 @@
 #ifndef CAROS_BUTTONSESORSIPROXY_H
 #define CAROS_BUTTONSESORSIPROXY_H
 
-#include <caros_sensor_msgs/ButtonSensorState.h>
+#include <caros_sensor_msgs/button_sensor_state.h>
 
 #include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
@@ -50,7 +50,7 @@ public:
 
 protected:
   bool configureProxy();
-  void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
+  void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
 
 protected:
   rw::common::Ptr<ros::NodeHandle> _nodeHnd;
