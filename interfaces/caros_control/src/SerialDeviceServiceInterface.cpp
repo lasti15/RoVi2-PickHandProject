@@ -13,7 +13,7 @@
 using namespace caros;
 
 SerialDeviceServiceInterface::SerialDeviceServiceInterface(ros::NodeHandle nodehandle)
-    : _nodehandle(nodehandle, SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE)
+    : nodehandle_(nodehandle, SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE)
 {
   /* Do nothing */
 }
@@ -37,9 +37,9 @@ bool SerialDeviceServiceInterface::configureInterface()
 
 bool SerialDeviceServiceInterface::initService()
 {
-  if (_srvMoveLin || _srvMovePTP || _srvMovePTP_T || _srvMoveVelQ || _srvMoveVelT || _srvMoveServoQ || _srvMoveServoT ||
-      _srvMoveLinFC || _srvMoveStart || _srvMoveStop || _srvMovePause || _srvSetSafeModeEnabled ||
-      _deviceStatePublisher)
+  if (srvMoveLin_ || srvMovePTP_ || srvMovePTP_T_ || srvMoveVelQ_ || srvMoveVelT_ || srvMoveServoQ_ || srvMoveServoT_ ||
+      srvMoveLinFC_ || srvMoveStart_ || srvMoveStop_ || srvMovePause_ || srvSetSafeModeEnabled_ ||
+      deviceStatePublisher_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more SerialDeviceServiceInterface services or publishers. If this is not fully intended "
@@ -50,50 +50,50 @@ bool SerialDeviceServiceInterface::initService()
    * Should the "RobotState" not be called something like SerialDeviceState or similar?
    * ^- The name should also be replaced in the ros error stream condition statement!
    */
-  _deviceStatePublisher =
-      _nodehandle.advertise<caros_control_msgs::robot_state>("robot_state", SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE);
-  ROS_ERROR_STREAM_COND(!_deviceStatePublisher, "The RobotState publisher is empty!");
+  deviceStatePublisher_ =
+      nodehandle_.advertise<caros_control_msgs::robot_state>("robot_state", SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE);
+  ROS_ERROR_STREAM_COND(!deviceStatePublisher_, "The RobotState publisher is empty!");
 
-  _srvMoveLin = _nodehandle.advertiseService("move_lin", &SerialDeviceServiceInterface::moveLinHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveLin, "The move_lin service is empty!");
+  srvMoveLin_ = nodehandle_.advertiseService("move_lin", &SerialDeviceServiceInterface::moveLinHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveLin_, "The move_lin service is empty!");
 
-  _srvMovePTP = _nodehandle.advertiseService("move_ptp", &SerialDeviceServiceInterface::movePTPHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMovePTP, "The move_ptp service is empty!");
+  srvMovePTP_ = nodehandle_.advertiseService("move_ptp", &SerialDeviceServiceInterface::movePTPHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMovePTP_, "The move_ptp service is empty!");
 
-  _srvMovePTP_T = _nodehandle.advertiseService("move_ptp_t", &SerialDeviceServiceInterface::movePTP_THandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMovePTP_T, "The move_ptp_t service is empty!");
+  srvMovePTP_T_ = nodehandle_.advertiseService("move_ptp_t", &SerialDeviceServiceInterface::movePTP_THandle, this);
+  ROS_ERROR_STREAM_COND(!srvMovePTP_T_, "The move_ptp_t service is empty!");
 
-  _srvMoveVelQ = _nodehandle.advertiseService("move_vel_q", &SerialDeviceServiceInterface::moveVelQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveVelQ, "The move_vel_q service is empty!");
+  srvMoveVelQ_ = nodehandle_.advertiseService("move_vel_q", &SerialDeviceServiceInterface::moveVelQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveVelQ_, "The move_vel_q service is empty!");
 
-  _srvMoveVelT = _nodehandle.advertiseService("move_vel_t", &SerialDeviceServiceInterface::moveVelTHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveVelT, "The move_vel_t service is empty!");
+  srvMoveVelT_ = nodehandle_.advertiseService("move_vel_t", &SerialDeviceServiceInterface::moveVelTHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveVelT_, "The move_vel_t service is empty!");
 
-  _srvMoveServoQ = _nodehandle.advertiseService("move_servo_q", &SerialDeviceServiceInterface::moveServoQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveServoQ, "The move_servo_q service is empty!");
+  srvMoveServoQ_ = nodehandle_.advertiseService("move_servo_q", &SerialDeviceServiceInterface::moveServoQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveServoQ_, "The move_servo_q service is empty!");
 
-  _srvMoveServoT = _nodehandle.advertiseService("move_servo_t", &SerialDeviceServiceInterface::moveServoTHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveServoT, "The move_servo_t service is empty!");
+  srvMoveServoT_ = nodehandle_.advertiseService("move_servo_t", &SerialDeviceServiceInterface::moveServoTHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveServoT_, "The move_servo_t service is empty!");
 
-  _srvMoveLinFC = _nodehandle.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFCHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveLinFC, "The move_lin_fc service is empty!");
+  srvMoveLinFC_ = nodehandle_.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFCHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveLinFC_, "The move_lin_fc service is empty!");
 
-  _srvMoveStart = _nodehandle.advertiseService("move_start", &SerialDeviceServiceInterface::moveStartHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveStart, "The move_start service is empty!");
+  srvMoveStart_ = nodehandle_.advertiseService("move_start", &SerialDeviceServiceInterface::moveStartHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveStart_, "The move_start service is empty!");
 
-  _srvMoveStop = _nodehandle.advertiseService("move_stop", &SerialDeviceServiceInterface::moveStopHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveStop, "The move_stop service is empty!");
+  srvMoveStop_ = nodehandle_.advertiseService("move_stop", &SerialDeviceServiceInterface::moveStopHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveStop_, "The move_stop service is empty!");
 
-  _srvMovePause = _nodehandle.advertiseService("move_pause", &SerialDeviceServiceInterface::movePauseHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMovePause, "The move_pause service is empty!");
+  srvMovePause_ = nodehandle_.advertiseService("move_pause", &SerialDeviceServiceInterface::movePauseHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMovePause_, "The move_pause service is empty!");
 
-  _srvSetSafeModeEnabled = _nodehandle.advertiseService(
+  srvSetSafeModeEnabled_ = nodehandle_.advertiseService(
       "set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvSetSafeModeEnabled, "The set_safe_mode_enabled service is empty!");
+  ROS_ERROR_STREAM_COND(!srvSetSafeModeEnabled_, "The set_safe_mode_enabled service is empty!");
 
-  if (_srvMoveLin && _srvMovePTP && _srvMovePTP_T && _srvMoveVelQ && _srvMoveVelT && _srvMoveServoQ && _srvMoveServoT &&
-      _srvMoveLinFC && _srvMoveStart && _srvMoveStop && _srvMovePause && _srvSetSafeModeEnabled &&
-      _deviceStatePublisher)
+  if (srvMoveLin_ && srvMovePTP_ && srvMovePTP_T_ && srvMoveVelQ_ && srvMoveVelT_ && srvMoveServoQ_ && srvMoveServoT_ &&
+      srvMoveLinFC_ && srvMoveStart_ && srvMoveStop_ && srvMovePause_ && srvSetSafeModeEnabled_ &&
+      deviceStatePublisher_)
   {
     /* Everything seems to be properly initialised */
     ROS_DEBUG_STREAM(
@@ -112,7 +112,7 @@ bool SerialDeviceServiceInterface::initService()
 
 void SerialDeviceServiceInterface::publish(const caros_control_msgs::robot_state& state)
 {
-  _deviceStatePublisher.publish(state);
+  deviceStatePublisher_.publish(state);
 }
 
 /* FIXME:

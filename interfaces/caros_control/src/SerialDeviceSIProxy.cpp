@@ -47,7 +47,7 @@ void verifyValueIsWithin(const float& value, const float& min, const float& max)
 using namespace caros;
 
 SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname)
-    : _nodehandle(nodehandle)
+    : nodehandle_(nodehandle)
 {
   std::ostringstream rosNamespace;
   rosNamespace << "/" << devname << "/" << SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE;
@@ -55,29 +55,29 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
   /* TODO:
    * Consider persistent connections - especially for the servoQ - or make it a configurable parameter/argument
    */
-  _srvMoveLin = _nodehandle.serviceClient<caros_control_msgs::serial_device_move_lin>(rosNamespace.str() + "/move_lin");
-  _srvMovePTP = _nodehandle.serviceClient<caros_control_msgs::serial_device_move_ptp>(rosNamespace.str() + "/move_ptp");
-  _srvMovePTP_T =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_ptp_t>(rosNamespace.str() + "/move_ptp_t");
-  _srvMoveVelQ =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_vel_q>(rosNamespace.str() + "/move_vel_q");
-  _srvMoveVelT =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_vel_t>(rosNamespace.str() + "/move_vel_t");
-  _srvMoveServoQ =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_servo_q>(rosNamespace.str() + "/move_servo_q");
-  _srvMoveServoT =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_servo_t>(rosNamespace.str() + "/move_servo_t");
-  _srvMoveLinFC =
-      _nodehandle.serviceClient<caros_control_msgs::serial_device_move_lin_fc>(rosNamespace.str() + "/move_lin_fc");
-  _srvStart = _nodehandle.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_start");
-  _srvStop = _nodehandle.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_stop");
-  _srvPause = _nodehandle.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_pause");
-  _srvSetSafeModeEnabled =
-      _nodehandle.serviceClient<caros_common_msgs::config_bool>(rosNamespace.str() + "/set_safe_mode_enabled");
+  srvMoveLin_ = nodehandle_.serviceClient<caros_control_msgs::serial_device_move_lin>(rosNamespace.str() + "/move_lin");
+  srvMovePTP_ = nodehandle_.serviceClient<caros_control_msgs::serial_device_move_ptp>(rosNamespace.str() + "/move_ptp");
+  srvMovePTP_T_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_ptp_t>(rosNamespace.str() + "/move_ptp_t");
+  srvMoveVelQ_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_vel_q>(rosNamespace.str() + "/move_vel_q");
+  srvMoveVelT_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_vel_t>(rosNamespace.str() + "/move_vel_t");
+  srvMoveServoQ_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_servo_q>(rosNamespace.str() + "/move_servo_q");
+  srvMoveServoT_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_servo_t>(rosNamespace.str() + "/move_servo_t");
+  srvMoveLinFC_ =
+      nodehandle_.serviceClient<caros_control_msgs::serial_device_move_lin_fc>(rosNamespace.str() + "/move_lin_fc");
+  srvStart_ = nodehandle_.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_start");
+  srvStop_ = nodehandle_.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_stop");
+  srvPause_ = nodehandle_.serviceClient<caros_common_msgs::empty_srv>(rosNamespace.str() + "/move_pause");
+  srvSetSafeModeEnabled_ =
+      nodehandle_.serviceClient<caros_common_msgs::config_bool>(rosNamespace.str() + "/set_safe_mode_enabled");
 
   // states
-  _subRobotState =
-      _nodehandle.subscribe(rosNamespace.str() + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
+  subRobotState_ =
+      nodehandle_.subscribe(rosNamespace.str() + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
 }
 
 SerialDeviceSIProxy::~SerialDeviceSIProxy()
@@ -93,15 +93,15 @@ bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const f
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  if (not _srvMoveLin.exists())
+  if (not srvMoveLin_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveLin.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveLin_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveLin.call(srv);
+  srvCallSuccess = srvMoveLin_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveLin.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveLin_.getService());
   }
 
   return srv.response.success;
@@ -116,15 +116,15 @@ bool SerialDeviceSIProxy::movePTP(const rw::math::Q& target, const float speed, 
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  if (not _srvMovePTP.exists())
+  if (not srvMovePTP_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMovePTP.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMovePTP_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMovePTP.call(srv);
+  srvCallSuccess = srvMovePTP_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMovePTP.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMovePTP_.getService());
   }
 
   return srv.response.success;
@@ -139,15 +139,15 @@ bool SerialDeviceSIProxy::movePTP_T(const rw::math::Transform3D<>& target, const
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  if (not _srvMovePTP_T.exists())
+  if (not srvMovePTP_T_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMovePTP_T.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMovePTP_T_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMovePTP_T.call(srv);
+  srvCallSuccess = srvMovePTP_T_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMovePTP_T.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMovePTP_T_.getService());
   }
 
   return srv.response.success;
@@ -161,15 +161,15 @@ bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float spee
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
 
-  if (not _srvMoveServoQ.exists())
+  if (not srvMoveServoQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveServoQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveServoQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveServoQ.call(srv);
+  srvCallSuccess = srvMoveServoQ_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveServoQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveServoQ_.getService());
   }
 
   return srv.response.success;
@@ -183,15 +183,15 @@ bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, cons
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
 
-  if (not _srvMoveServoT.exists())
+  if (not srvMoveServoT_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveServoT.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveServoT_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveServoT.call(srv);
+  srvCallSuccess = srvMoveServoT_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveServoT.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveServoT_.getService());
   }
 
   return srv.response.success;
@@ -203,15 +203,15 @@ bool SerialDeviceSIProxy::moveVelQ(const rw::math::Q& target)
   caros_control_msgs::serial_device_move_vel_q srv;
   srv.request.vel = caros::toRos(target);
 
-  if (not _srvMoveVelQ.exists())
+  if (not srvMoveVelQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveVelQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveVelQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveVelQ.call(srv);
+  srvCallSuccess = srvMoveVelQ_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveVelQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveVelQ_.getService());
   }
 
   return srv.response.success;
@@ -223,15 +223,15 @@ bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
   caros_control_msgs::serial_device_move_vel_t srv;
   srv.request.vel = caros::toRos(target);
 
-  if (not _srvMoveVelT.exists())
+  if (not srvMoveVelT_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveVelT.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveVelT_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveVelT.call(srv);
+  srvCallSuccess = srvMoveVelT_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveVelT.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveVelT_.getService());
   }
 
   return srv.response.success;
@@ -252,15 +252,15 @@ bool SerialDeviceSIProxy::moveLinFC(const rw::math::Transform3D<>& posTarget, co
     srv.request.ctrl_gains[index] = caros::toRosFloat(controlGain[index]);
   }
 
-  if (not _srvMoveLinFC.exists())
+  if (not srvMoveLinFC_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveLinFC.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveLinFC_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveLinFC.call(srv);
+  srvCallSuccess = srvMoveLinFC_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveLinFC.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveLinFC_.getService());
   }
 
   return srv.response.success;
@@ -271,15 +271,15 @@ bool SerialDeviceSIProxy::stop()
   bool srvCallSuccess = false;
   caros_common_msgs::stop srv;
 
-  if (not _srvStop.exists())
+  if (not srvStop_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvStop.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvStop_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvStop.call(srv);
+  srvCallSuccess = srvStop_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvStop.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvStop_.getService());
   }
 
   return srv.response.success;
@@ -290,15 +290,15 @@ bool SerialDeviceSIProxy::pause()
   bool srvCallSuccess = false;
   caros_common_msgs::pause srv;
 
-  if (not _srvPause.exists())
+  if (not srvPause_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvPause.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvPause_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvPause.call(srv);
+  srvCallSuccess = srvPause_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvPause.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvPause_.getService());
   }
 
   return srv.response.success;
@@ -310,15 +310,15 @@ bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable)
   caros_common_msgs::config_bool srv;
   srv.request.value = caros::toRos(enable);
 
-  if (not _srvSetSafeModeEnabled.exists())
+  if (not srvSetSafeModeEnabled_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvSetSafeModeEnabled.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvSetSafeModeEnabled_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvSetSafeModeEnabled.call(srv);
+  srvCallSuccess = srvSetSafeModeEnabled_.call(srv);
   if (not srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvSetSafeModeEnabled.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvSetSafeModeEnabled_.getService());
   }
 
   return srv.response.success;
@@ -326,25 +326,25 @@ bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable)
 
 void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::robot_state& state)
 {
-  _pRobotState = state;
+  pRobotState_ = state;
 }
 
 rw::math::Q SerialDeviceSIProxy::getQ()
 {
-  return caros::toRw(_pRobotState.q);
+  return caros::toRw(pRobotState_.q);
 }
 
 rw::math::Q SerialDeviceSIProxy::getQd()
 {
-  return caros::toRw(_pRobotState.dq);
+  return caros::toRw(pRobotState_.dq);
 }
 
 bool SerialDeviceSIProxy::isMoving()
 {
-  return _pRobotState.isMoving;
+  return pRobotState_.isMoving;
 }
 
 ros::Time SerialDeviceSIProxy::getTimeStamp()
 {
-  return _pRobotState.header.stamp;
+  return pRobotState_.header.stamp;
 }

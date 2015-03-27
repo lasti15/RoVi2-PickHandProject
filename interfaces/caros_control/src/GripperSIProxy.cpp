@@ -32,7 +32,7 @@
  *   - or how to properly signal that the data has not been updated at all?
  *   - what about timestamps?
  *
- * How to diagnose if the subscription is still valid and reinitiate a subscription? [ use _subGripperState() != 0 or
+ * How to diagnose if the subscription is still valid and reinitiate a subscription? [ use subGripperState_() != 0 or
  *similar, but reinitiating requires creating a new object or is that supposed to never ever happen so the functionality
  *is missing? [ possibly interesting functions: getNumPublishers() and/or getTopic() ... ]
  * - Should there be a function to verify the subscription state/condition, and/or have every function that is being
@@ -57,23 +57,23 @@
 
 using namespace caros;
 
-GripperSIProxy::GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname) : _nodeHnd(nodehandle)
+GripperSIProxy::GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname) : nodeHnd_(nodehandle)
 {
   std::ostringstream rosNamespace;
   rosNamespace << "/" << devname << "/" << GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE;
 
-  _srvMoveQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_move_q>(rosNamespace.str() + "/move_q");
-  _srvGripQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_grip_q>(rosNamespace.str() + "/grip_q");
-  _srvSetForceQ = _nodeHnd.serviceClient<caros_control_msgs::gripper_set_force_q>(rosNamespace.str() + "/set_force_q");
-  _srvSetVelocityQ =
-      _nodeHnd.serviceClient<caros_control_msgs::gripper_set_velocity_q>(rosNamespace.str() + "/set_velocity_q");
-  _srvStopMovement =
-      _nodeHnd.serviceClient<caros_control_msgs::gripper_stop_movement>(rosNamespace.str() + "/stop_movement");
+  srvMoveQ_ = nodeHnd_.serviceClient<caros_control_msgs::gripper_move_q>(rosNamespace.str() + "/move_q");
+  srvGripQ_ = nodeHnd_.serviceClient<caros_control_msgs::gripper_grip_q>(rosNamespace.str() + "/grip_q");
+  srvSetForceQ_ = nodeHnd_.serviceClient<caros_control_msgs::gripper_set_force_q>(rosNamespace.str() + "/set_force_q");
+  srvSetVelocityQ_ =
+      nodeHnd_.serviceClient<caros_control_msgs::gripper_set_velocity_q>(rosNamespace.str() + "/set_velocity_q");
+  srvStopMovement_ =
+      nodeHnd_.serviceClient<caros_control_msgs::gripper_stop_movement>(rosNamespace.str() + "/stop_movement");
 
   /* TODO:
    * Make the queue size into a parameter that can be configured - (hardcoded to 1 here)
    */
-  _subGripperState = _nodeHnd.subscribe("GripperState", 1, &GripperSIProxy::handleGripperState, this);
+  subGripperState_ = nodeHnd_.subscribe("GripperState", 1, &GripperSIProxy::handleGripperState, this);
 }
 
 GripperSIProxy::~GripperSIProxy()
@@ -87,15 +87,15 @@ bool GripperSIProxy::moveQ(const rw::math::Q& q)
   caros_control_msgs::gripper_move_q srv;
   srv.request.q = caros::toRos(q);
 
-  if (!_srvMoveQ.exists())
+  if (!srvMoveQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvMoveQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvMoveQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvMoveQ.call(srv);
+  srvCallSuccess = srvMoveQ_.call(srv);
   if (!srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvMoveQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvMoveQ_.getService());
   }
 
   return srv.response.success;
@@ -107,15 +107,15 @@ bool GripperSIProxy::gripQ(const rw::math::Q& q)
   caros_control_msgs::gripper_grip_q srv;
   srv.request.q = caros::toRos(q);
 
-  if (!_srvGripQ.exists())
+  if (!srvGripQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvGripQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvGripQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvGripQ.call(srv);
+  srvCallSuccess = srvGripQ_.call(srv);
   if (!srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvGripQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvGripQ_.getService());
   }
 
   return srv.response.success;
@@ -127,15 +127,15 @@ bool GripperSIProxy::setForceQ(const rw::math::Q& q)
   caros_control_msgs::gripper_set_force_q srv;
   srv.request.force = caros::toRos(q);
 
-  if (!_srvSetForceQ.exists())
+  if (!srvSetForceQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvSetForceQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvSetForceQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvSetForceQ.call(srv);
+  srvCallSuccess = srvSetForceQ_.call(srv);
   if (!srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvSetForceQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvSetForceQ_.getService());
   }
 
   return srv.response.success;
@@ -147,15 +147,15 @@ bool GripperSIProxy::setVelocityQ(const rw::math::Q& q)
   caros_control_msgs::gripper_set_velocity_q srv;
   srv.request.velocity = caros::toRos(q);
 
-  if (!_srvSetVelocityQ.exists())
+  if (!srvSetVelocityQ_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvSetVelocityQ.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvSetVelocityQ_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvSetVelocityQ.call(srv);
+  srvCallSuccess = srvSetVelocityQ_.call(srv);
   if (!srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvSetVelocityQ.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvSetVelocityQ_.getService());
   }
 
   return srv.response.success;
@@ -166,15 +166,15 @@ bool GripperSIProxy::stopMovement()
   bool srvCallSuccess = false;
   caros_control_msgs::gripper_stop_movement srv;
 
-  if (!_srvStopMovement.exists())
+  if (!srvStopMovement_.exists())
   {
-    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << _srvStopMovement.getService() << " does not exist.");
+    THROW_CAROS_UNAVAILABLE_SERVICE("The service " << srvStopMovement_.getService() << " does not exist.");
   }
 
-  srvCallSuccess = _srvStopMovement.call(srv);
+  srvCallSuccess = srvStopMovement_.call(srv);
   if (!srvCallSuccess)
   {
-    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << _srvStopMovement.getService());
+    THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << srvStopMovement_.getService());
   }
 
   return srv.response.success;
@@ -182,25 +182,25 @@ bool GripperSIProxy::stopMovement()
 
 rw::math::Q GripperSIProxy::getQ()
 {
-  return caros::toRw(_pSV_gripperState.q);
+  return caros::toRw(pSV_gripperState_.q);
 }
 
 rw::math::Q GripperSIProxy::getQd()
 {
-  return caros::toRw(_pSV_gripperState.dq);
+  return caros::toRw(pSV_gripperState_.dq);
 }
 
 rw::math::Q GripperSIProxy::getForce()
 {
-  return caros::toRw(_pSV_gripperState.force);
+  return caros::toRw(pSV_gripperState_.force);
 }
 
 ros::Time GripperSIProxy::getTimeStamp()
 {
-  return _pSV_gripperState.header.stamp;
+  return pSV_gripperState_.header.stamp;
 }
 
 void GripperSIProxy::handleGripperState(const caros_control_msgs::gripper_state& state)
 {
-  _pSV_gripperState = state;
+  pSV_gripperState_ = state;
 }

@@ -12,7 +12,7 @@
 using namespace caros;
 
 GripperServiceInterface::GripperServiceInterface(const ros::NodeHandle& nodehandle)
-    : _nodeHandle(nodehandle, GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE)
+    : nodeHandle_(nodehandle, GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE)
 {
   /* Do nothing */
 }
@@ -36,34 +36,34 @@ bool GripperServiceInterface::configureInterface()
 
 bool GripperServiceInterface::initService()
 {
-  if (_gripperStatePublisher || _srvMoveQ || _srvGripQ || _srvSetForceQ || _srvSetVelocityQ || _srvStopMovement)
+  if (gripperStatePublisher_ || srvMoveQ_ || srvGripQ_ || srvSetForceQ_ || srvSetVelocityQ_ || srvStopMovement_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more GripperServiceInterface services or publishers. If this is not fully intended then "
         "this should be considered a bug!");
   }
 
-  _gripperStatePublisher =
-      _nodeHandle.advertise<caros_control_msgs::gripper_state>("GripperState", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
-  ROS_ERROR_STREAM_COND(!_gripperStatePublisher, "The GripperState publisher is empty!");
+  gripperStatePublisher_ =
+      nodeHandle_.advertise<caros_control_msgs::gripper_state>("GripperState", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
+  ROS_ERROR_STREAM_COND(!gripperStatePublisher_, "The GripperState publisher is empty!");
 
-  _srvMoveQ = _nodeHandle.advertiseService("move_q", &GripperServiceInterface::moveQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvMoveQ, "The move_q service is empty!");
+  srvMoveQ_ = nodeHandle_.advertiseService("move_q", &GripperServiceInterface::moveQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveQ_, "The move_q service is empty!");
 
-  _srvGripQ = _nodeHandle.advertiseService("grip_q", &GripperServiceInterface::gripQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvGripQ, "The grip_q service is empty!");
+  srvGripQ_ = nodeHandle_.advertiseService("grip_q", &GripperServiceInterface::gripQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvGripQ_, "The grip_q service is empty!");
 
-  _srvSetForceQ = _nodeHandle.advertiseService("set_force_q", &GripperServiceInterface::setForceQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvSetForceQ, "The set_force_q service is empty!");
+  srvSetForceQ_ = nodeHandle_.advertiseService("set_force_q", &GripperServiceInterface::setForceQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvSetForceQ_, "The set_force_q service is empty!");
 
-  _srvSetVelocityQ = _nodeHandle.advertiseService("set_velocity_q", &GripperServiceInterface::setVelocityQHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvSetVelocityQ, "The set_velocity_q service is empty!");
+  srvSetVelocityQ_ = nodeHandle_.advertiseService("set_velocity_q", &GripperServiceInterface::setVelocityQHandle, this);
+  ROS_ERROR_STREAM_COND(!srvSetVelocityQ_, "The set_velocity_q service is empty!");
 
-  _srvStopMovement = _nodeHandle.advertiseService("stop_movement", &GripperServiceInterface::stopMovementHandle, this);
-  ROS_ERROR_STREAM_COND(!_srvStopMovement, "The stop_movement service is empty!");
+  srvStopMovement_ = nodeHandle_.advertiseService("stop_movement", &GripperServiceInterface::stopMovementHandle, this);
+  ROS_ERROR_STREAM_COND(!srvStopMovement_, "The stop_movement service is empty!");
 
   /* Verify that the various ROS services have actually been created properly */
-  if (_gripperStatePublisher && _srvMoveQ && _srvGripQ && _srvSetForceQ && _srvSetVelocityQ && _srvStopMovement)
+  if (gripperStatePublisher_ && srvMoveQ_ && srvGripQ_ && srvSetForceQ_ && srvSetVelocityQ_ && srvStopMovement_)
   {
     /* Everything seems to be properly initialised */
     ROS_DEBUG_STREAM("All GripperServiceInterface publishers and services appear to have been properly initialised");
@@ -93,14 +93,14 @@ void GripperServiceInterface::publishState(const rw::math::Q& q, const rw::math:
   state.isStopped = isStopped;
   state.estopped = isEstopped;
 
-  if (_gripperStatePublisher)
+  if (gripperStatePublisher_)
   {
-    _gripperStatePublisher.publish(state);
+    gripperStatePublisher_.publish(state);
   }
   else
   {
     ROS_ERROR_STREAM(
-        "The _gripperStatePublisher is empty - trying to publish gripper state with a non-working "
+        "The gripperStatePublisher_ is empty - trying to publish gripper state with a non-working "
         "GripperSreviceInterface object.");
   }
 }

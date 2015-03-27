@@ -112,23 +112,23 @@ class GripperSIProxy
    */
  private:
   // services
-  ros::ServiceClient _srvMoveQ;
-  ros::ServiceClient _srvGripQ;
-  ros::ServiceClient _srvSetForceQ;
-  ros::ServiceClient _srvSetVelocityQ;
-  ros::ServiceClient _srvStopMovement;
+  ros::ServiceClient srvMoveQ_;
+  ros::ServiceClient srvGripQ_;
+  ros::ServiceClient srvSetForceQ_;
+  ros::ServiceClient srvSetVelocityQ_;
+  ros::ServiceClient srvStopMovement_;
 
   // states
-  ros::Subscriber _subGripperState;
+  ros::Subscriber subGripperState_;
 
  private:
   void handleGripperState(const caros_control_msgs::gripper_state& state);
 
-  ros::NodeHandle _nodeHnd;
+  ros::NodeHandle nodeHnd_;
 
-  // _pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being
+  // pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being
   // implemented within the SIProxy.
-  caros_control_msgs::gripper_state _pSV_gripperState;
+  caros_control_msgs::gripper_state pSV_gripperState_;
 };
 }
 #endif /* #ifndef */

@@ -160,24 +160,24 @@ class SerialDeviceServiceInterface
                                     caros_common_msgs::config_bool::Response& response);
 
  protected:
-  std::string _service_name;
-  ros::NodeHandle _nodehandle;
+  std::string service_name_;
+  ros::NodeHandle nodehandle_;
 
-  ros::Publisher _deviceStatePublisher;
+  ros::Publisher deviceStatePublisher_;
 
-  ros::ServiceServer _srvMoveLin;
-  ros::ServiceServer _srvMovePTP;
-  ros::ServiceServer _srvMovePTP_T;
-  ros::ServiceServer _srvMoveVelQ;
-  ros::ServiceServer _srvMoveVelT;
-  ros::ServiceServer _srvMoveLinFC;
-  ros::ServiceServer _srvMoveServoQ;
-  ros::ServiceServer _srvMoveServoT;
+  ros::ServiceServer srvMoveLin_;
+  ros::ServiceServer srvMovePTP_;
+  ros::ServiceServer srvMovePTP_T_;
+  ros::ServiceServer srvMoveVelQ_;
+  ros::ServiceServer srvMoveVelT_;
+  ros::ServiceServer srvMoveLinFC_;
+  ros::ServiceServer srvMoveServoQ_;
+  ros::ServiceServer srvMoveServoT_;
 
-  ros::ServiceServer _srvMoveStart;
-  ros::ServiceServer _srvMoveStop;
-  ros::ServiceServer _srvMovePause;
-  ros::ServiceServer _srvSetSafeModeEnabled;
+  ros::ServiceServer srvMoveStart_;
+  ros::ServiceServer srvMoveStop_;
+  ros::ServiceServer srvMovePause_;
+  ros::ServiceServer srvSetSafeModeEnabled_;
 };
 }
 #endif  //#ifndef

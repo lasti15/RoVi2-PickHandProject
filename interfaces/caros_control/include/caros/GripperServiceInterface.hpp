@@ -128,15 +128,15 @@ class GripperServiceInterface
                           caros_control_msgs::gripper_stop_movement::Response& response);
 
  private:
-  ros::NodeHandle _nodeHandle;
+  ros::NodeHandle nodeHandle_;
 
-  ros::Publisher _gripperStatePublisher;
+  ros::Publisher gripperStatePublisher_;
 
-  ros::ServiceServer _srvMoveQ;
-  ros::ServiceServer _srvGripQ;
-  ros::ServiceServer _srvSetForceQ;
-  ros::ServiceServer _srvSetVelocityQ;
-  ros::ServiceServer _srvStopMovement;
+  ros::ServiceServer srvMoveQ_;
+  ros::ServiceServer srvGripQ_;
+  ros::ServiceServer srvSetForceQ_;
+  ros::ServiceServer srvSetVelocityQ_;
+  ros::ServiceServer srvStopMovement_;
 
   /************************************************************************
    * Notes:

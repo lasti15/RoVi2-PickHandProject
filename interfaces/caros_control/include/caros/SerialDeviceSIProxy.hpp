@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 /* TODO:
- * Could make the 'caros_control_msgs::robot_state _pRobotState' available to the user (as a copy), so if this SIP is
+ * Could make the 'caros_control_msgs::robot_state pRobotState_' available to the user (as a copy), so if this SIP is
  * being updated automatically in a thread, then it's not certain that a call to getTimeStamp and isMoving will be
  * reading from the same robot state
  * Maybe even pack it into it's own structure with a c++/rw interface/types returned instead of the ROS types. The getQ,
@@ -211,32 +211,32 @@ class SerialDeviceSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  ros::NodeHandle _nodehandle;
-  ros::ServiceClient _servoService;
+  ros::NodeHandle nodehandle_;
+  ros::ServiceClient servoService_;
 
   // services
-  ros::ServiceClient _srvStop;
-  ros::ServiceClient _srvStart;
-  ros::ServiceClient _srvPause;
+  ros::ServiceClient srvStop_;
+  ros::ServiceClient srvStart_;
+  ros::ServiceClient srvPause_;
 
-  ros::ServiceClient _srvMovePTP;
-  ros::ServiceClient _srvMovePTP_T;
-  ros::ServiceClient _srvMoveLin;
-  ros::ServiceClient _srvMoveLinFC;
-  ros::ServiceClient _srvMoveVelQ;
-  ros::ServiceClient _srvMoveVelT;
-  ros::ServiceClient _srvMoveServoQ;
-  ros::ServiceClient _srvMoveServoT;
+  ros::ServiceClient srvMovePTP_;
+  ros::ServiceClient srvMovePTP_T_;
+  ros::ServiceClient srvMoveLin_;
+  ros::ServiceClient srvMoveLinFC_;
+  ros::ServiceClient srvMoveVelQ_;
+  ros::ServiceClient srvMoveVelT_;
+  ros::ServiceClient srvMoveServoQ_;
+  ros::ServiceClient srvMoveServoT_;
 
-  ros::ServiceClient _srvSetSafeModeEnabled;
+  ros::ServiceClient srvSetSafeModeEnabled_;
 
   // states
-  ros::Subscriber _subRobotState;
+  ros::Subscriber subRobotState_;
 
  private:
   void handleRobotState(const caros_control_msgs::robot_state& state);
 
-  caros_control_msgs::robot_state _pRobotState;
+  caros_control_msgs::robot_state pRobotState_;
 };
 }
 
