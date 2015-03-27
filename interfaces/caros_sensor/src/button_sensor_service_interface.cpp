@@ -1,6 +1,6 @@
 /**/
 #include <caros/button_sensor_service_interface.h>
-#include <caros_sensor_msgs/ButtonSensorState.h>
+#include <caros_sensor_msgs/button_sensor_state.h>
 
 #include <caros/common.h>
 
@@ -13,7 +13,7 @@ ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle
 }
 
 bool ButtonSensorServiceInterface::configureInterface(){
-  button_pub_ = node_hnd_.advertise < caros_sensor_msgs::ButtonSensorState > ("buttons", 5);
+  button_pub_ = node_hnd_.advertise < caros_sensor_msgs::button_sensor_state > ("buttons", 5);
   return true;
 }
 
@@ -21,7 +21,7 @@ void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<st
                                                   const std::vector<std::pair<std::string,bool> >& analog_buttons)
 {
 
-  caros_sensor_msgs::ButtonSensorState pstate;
+  caros_sensor_msgs::button_sensor_state pstate;
   pstate.digital_ids.resize(digital_buttons.size());
   pstate.digital.resize(digital_buttons.size());
   pstate.analog_ids.resize(analog_buttons.size());
