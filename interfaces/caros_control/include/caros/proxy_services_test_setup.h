@@ -39,7 +39,8 @@ void testorReturnValue(const TestorConfiguration& conf)
   EXPECT_EQ(conf.expectedFunctionCalled, conf.getFunctionCalledFunc());
 }
 
-/* EXPECT_THROW doesn't work well with templated exception types, as it outputs the literal name of the exception identifier that is specified */
+/* EXPECT_THROW doesn't work well with templated exception types, as it outputs the literal name of the exception
+ * identifier that is specified */
 void testorUnavailableService(const TestorConfiguration& conf)
 {
   EXPECT_THROW(conf.func(), caros::unavailableService);
@@ -66,7 +67,7 @@ struct TestWrapperConfiguration
  * P: service interface proxy
  * C: container holding services
  */
-template<typename D, typename P, typename C>
+template <typename D, typename P, typename C>
 void testWrapper(const C& services, const TestWrapperConfiguration& conf)
 {
   ros::NodeHandle nodehandleService("si_dummy");
@@ -91,11 +92,14 @@ void testWrapper(const C& services, const TestWrapperConfiguration& conf)
     testorConf.expectedReturnValue = conf.returnValueToTest;
     testorConf.expectedFunctionCalled = std::get<1>(service);
 
-    // Bind the SIProxy member function to be called on the sip object (std::bind will implicitly make a copy of the sip object, so using std::ref to make a copy of a reference to the object - invoking the function on the original sip object)
+    // Bind the SIProxy member function to be called on the sip object (std::bind will implicitly make a copy of the sip
+    // object, so using std::ref to make a copy of a reference to the object - invoking the function on the original sip
+    // object)
     auto serviceFunc = std::get<0>(service);
     testorConf.func = std::bind(serviceFunc, std::ref(sip));
 
-    // See comment for previous std::bind and std::ref (however not necessary if using a shared_ptr, as that can easily be copied and still point to the same object)
+    // See comment for previous std::bind and std::ref (however not necessary if using a shared_ptr, as that can easily
+    // be copied and still point to the same object)
     testorConf.getFunctionCalledFunc = std::bind(&D::getMostRecentFunctionCalled, si_dummy);
 
     conf.testFunc(testorConf);
@@ -111,39 +115,45 @@ void testWrapper(const C& services, const TestWrapperConfiguration& conf)
 /************************************************************************
  * Convenience functions
  ************************************************************************/
-enum class TestType { ReturnTrue, ReturnFalse, BadServiceCall, UnavailableService };
+enum class TestType
+{
+  ReturnTrue,
+  ReturnFalse,
+  BadServiceCall,
+  UnavailableService
+};
 
 TestWrapperConfiguration createTestConfiguration(const TestType testType)
 {
   TestWrapperConfiguration conf;
   switch (testType)
   {
-  case TestType::ReturnTrue:
-    conf.returnValueToTest = true;
-    conf.causeError = false;
-    conf.useServiceInterfaceDummy = true;
-    conf.testFunc = std::bind(testorReturnValue, std::placeholders::_1);
-    break;
-  case TestType::ReturnFalse:
-    conf.returnValueToTest = false;
-    conf.causeError = false;
-    conf.useServiceInterfaceDummy = true;
-    conf.testFunc = std::bind(testorReturnValue, std::placeholders::_1);
-    break;
-  case TestType::BadServiceCall:
-    conf.returnValueToTest = false;
-    conf.causeError = true;
-    conf.useServiceInterfaceDummy = true;
-    conf.testFunc = std::bind(testorBadServiceCall, std::placeholders::_1);
-    break;
-  case TestType::UnavailableService:
-    conf.returnValueToTest = false;
-    conf.causeError = false;
-    conf.useServiceInterfaceDummy = false;
-    conf.testFunc = std::bind(testorUnavailableService, std::placeholders::_1);
-    break;
-  default:
-    throw std::runtime_error("Unsupported TestType enum!");
+    case TestType::ReturnTrue:
+      conf.returnValueToTest = true;
+      conf.causeError = false;
+      conf.useServiceInterfaceDummy = true;
+      conf.testFunc = std::bind(testorReturnValue, std::placeholders::_1);
+      break;
+    case TestType::ReturnFalse:
+      conf.returnValueToTest = false;
+      conf.causeError = false;
+      conf.useServiceInterfaceDummy = true;
+      conf.testFunc = std::bind(testorReturnValue, std::placeholders::_1);
+      break;
+    case TestType::BadServiceCall:
+      conf.returnValueToTest = false;
+      conf.causeError = true;
+      conf.useServiceInterfaceDummy = true;
+      conf.testFunc = std::bind(testorBadServiceCall, std::placeholders::_1);
+      break;
+    case TestType::UnavailableService:
+      conf.returnValueToTest = false;
+      conf.causeError = false;
+      conf.useServiceInterfaceDummy = false;
+      conf.testFunc = std::bind(testorUnavailableService, std::placeholders::_1);
+      break;
+    default:
+      throw std::runtime_error("Unsupported TestType enum!");
   }
 
   return conf;
@@ -153,14 +163,14 @@ TestWrapperConfiguration createTestConfiguration(const TestType testType)
  * P: service interface proxy
  * C: container holding services
  */
-template<typename D, typename P, typename C>
+template <typename D, typename P, typename C>
 void testServices(const C& services, const TestType testType)
 {
   auto conf = createTestConfiguration(testType);
 
   testWrapper<D, P, C>(services, conf);
 }
-} // end namespace
-} // end namespace
+}  // end namespace
+}  // end namespace
 
 #endif

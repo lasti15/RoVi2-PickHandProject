@@ -16,34 +16,23 @@ using namespace caros::test;
 namespace
 {
 // Container type to hold the services that should be tested
-typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy&)>, const std::string>> services_t;
+typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy &)>, const std::string>> services_t;
 
 const services_t servicesToTest = {
-  {std::make_tuple(
-      std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
-      "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)")
-  },
-  {std::make_tuple(
-      std::bind(&caros::GripperSIProxy::gripQ, std::placeholders::_1, rw::math::Q()),
-      "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)")
-  },
-  {std::make_tuple(
-      std::bind(&caros::GripperSIProxy::setForceQ, std::placeholders::_1, rw::math::Q()),
-      "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)")
-  },
-  {std::make_tuple(
-      std::bind(&caros::GripperSIProxy::setVelocityQ, std::placeholders::_1, rw::math::Q()),
-      "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)")
-  },
-  {std::make_tuple(
-      std::bind(&caros::GripperSIProxy::stopMovement, std::placeholders::_1),
-      "virtual bool GripperServiceInterfaceDummy::stopMovement()")
-  }
-};
+    {std::make_tuple(std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
+                     "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)")},
+    {std::make_tuple(std::bind(&caros::GripperSIProxy::gripQ, std::placeholders::_1, rw::math::Q()),
+                     "virtual bool GripperServiceInterfaceDummy::gripQ(const rw::math::Q&)")},
+    {std::make_tuple(std::bind(&caros::GripperSIProxy::setForceQ, std::placeholders::_1, rw::math::Q()),
+                     "virtual bool GripperServiceInterfaceDummy::setForceQ(const rw::math::Q&)")},
+    {std::make_tuple(std::bind(&caros::GripperSIProxy::setVelocityQ, std::placeholders::_1, rw::math::Q()),
+                     "virtual bool GripperServiceInterfaceDummy::setVelocityQ(const rw::math::Q&)")},
+    {std::make_tuple(std::bind(&caros::GripperSIProxy::stopMovement, std::placeholders::_1),
+                     "virtual bool GripperServiceInterfaceDummy::stopMovement()")}};
 
 typedef GripperServiceInterfaceDummy D_t;
 typedef caros::GripperSIProxy P_t;
-} // end namespace
+}  // end namespace
 
 TEST(GripperSIProxy, servicesSuccess)
 {
