@@ -28,69 +28,12 @@ GripperServiceInterface::~GripperServiceInterface()
     /* Currently no special things to clean up */
 }
 
-void GripperServiceInterface::publishState(const rw::math::Q& q, const rw::math::Q& dq, const rw::math::Q& jointforce, bool isMoving, bool isBlocked, bool isStopped, bool isEstopped)
+bool GripperServiceInterface::configureInterface()
 {
-    caros_control_msgs::gripper_state state;
-
-    state.header.stamp = ros::Time::now();
-
-    state.q = caros::toRos(q);
-    state.dq = caros::toRos(dq);
-    state.force = caros::toRos(jointforce);
-    state.isMoving = isMoving;
-    state.isBlocked = isBlocked;
-    state.isStopped = isStopped;
-    state.estopped = isEstopped;
-
-    if (_gripperStatePublisher) {
-        _gripperStatePublisher.publish(state);
-    } else {
-        ROS_ERROR_STREAM("The _gripperStatePublisher is empty - trying to publish gripper state with a non-working GripperSreviceInterface object.");
-    }
+    return initService();
 }
 
-bool GripperServiceInterface::configureGripperService()
-{
-    return initGripperService();
-}
-
-bool GripperServiceInterface::cleanupGripperService()
-{
-    if (_gripperStatePublisher) {
-        _gripperStatePublisher.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _gripperStatePublisher was empty!");
-    }
-    if (_srvMoveQ) {
-        _srvMoveQ.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _srvMoveQ was empty!");
-    }
-    if (_srvGripQ) {
-        _srvGripQ.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _srvGripQ was empty!");
-    }
-    if (_srvSetForceQ) {
-        _srvSetForceQ.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _srvSetForceQ was empty!");
-    }
-    if (_srvSetVelocityQ) {
-        _srvSetVelocityQ.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _srvSetVelocityQ was empty!");
-    }
-    if (_srvStopMovement) {
-        _srvStopMovement.shutdown();
-    } else {
-        ROS_ERROR_STREAM("While trying to cleanup the GripperService, _srvStopMovement was empty!");
-    }
-
-    return true;
-}
-
-bool GripperServiceInterface::initGripperService()
+bool GripperServiceInterface::initService()
 {
     if (_gripperStatePublisher || _srvMoveQ || _srvGripQ || _srvSetForceQ || _srvSetVelocityQ || _srvStopMovement) {
         ROS_WARN_STREAM("Reinitialising one or more GripperServiceInterface services or publishers. If this is not fully intended then this should be considered a bug!");
@@ -123,6 +66,27 @@ bool GripperServiceInterface::initGripperService()
         return false;
     }
     return true;
+}
+
+void GripperServiceInterface::publishState(const rw::math::Q& q, const rw::math::Q& dq, const rw::math::Q& jointforce, bool isMoving, bool isBlocked, bool isStopped, bool isEstopped)
+{
+    caros_control_msgs::gripper_state state;
+
+    state.header.stamp = ros::Time::now();
+
+    state.q = caros::toRos(q);
+    state.dq = caros::toRos(dq);
+    state.force = caros::toRos(jointforce);
+    state.isMoving = isMoving;
+    state.isBlocked = isBlocked;
+    state.isStopped = isStopped;
+    state.estopped = isEstopped;
+
+    if (_gripperStatePublisher) {
+        _gripperStatePublisher.publish(state);
+    } else {
+        ROS_ERROR_STREAM("The _gripperStatePublisher is empty - trying to publish gripper state with a non-working GripperSreviceInterface object.");
+    }
 }
 
 bool GripperServiceInterface::moveQHandle(caros_control_msgs::gripper_move_q::Request& request, caros_control_msgs::gripper_move_q::Response& response)

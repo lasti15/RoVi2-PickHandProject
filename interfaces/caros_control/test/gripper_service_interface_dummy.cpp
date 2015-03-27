@@ -6,7 +6,7 @@ GripperServiceInterfaceDummy::GripperServiceInterfaceDummy(ros::NodeHandle nodeh
   : caros::GripperServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
 {
   /* make ROS publish the services */
-  if (not GripperServiceInterface::configureGripperService())
+  if (not GripperServiceInterface::configureInterface())
   {
     /* Invalid object, since the services weren't published within this constructor */
     throw std::runtime_error("The service interface could not be configured!");

@@ -45,10 +45,6 @@ SDHNode::SDHNode(const ros::NodeHandle& nodehandle):
 }
 
 SDHNode::~SDHNode() {
-    if (!cleanupGripperService()) {
-        ROS_ERROR_STREAM("cleanupGripperService() failed.");
-    }
-
     if (_sdh != 0) {
         if (_sdh->isConnected()) {
             ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
@@ -97,8 +93,8 @@ bool SDHNode::configureSDHDevice() {
     /* TODO: Verify that the chosen interfaceType is valid? or just let it fail when the parameters are being set? */
 
     /* TODO: Could make the use of the gripper service, configurable through the parameter server. */
-    if (!configureGripperService()) {
-        CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.", SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
+    if (not GripperServiceInterface::configureInterface()) {
+        CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.", SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
         return false;
     }
 
