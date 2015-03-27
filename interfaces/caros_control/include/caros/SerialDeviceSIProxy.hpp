@@ -2,7 +2,7 @@
 #define SerialDeviceSIProxy_HPP_
 
 #include <caros/exceptions.h>
-#include <caros_control_msgs/RobotState.h>
+#include <caros_control_msgs/robot_state.h>
 
 #include <rw/math.hpp>
 
@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 /* TODO:
- * Could make the 'caros_control_msgs::RobotState _pRobotState' available to the user (as a copy), so if this SIP is being updated automatically in a thread, then it's not certain that a call to getTimeStamp and isMoving will be reading from the same robot state
+ * Could make the 'caros_control_msgs::robot_state _pRobotState' available to the user (as a copy), so if this SIP is being updated automatically in a thread, then it's not certain that a call to getTimeStamp and isMoving will be reading from the same robot state
  * Maybe even pack it into it's own structure with a c++/rw interface/types returned instead of the ROS types. The getQ, getQd, isMoving and getTimeStamp functions could be moved to become member functions of that struct/class.
  */
 
@@ -216,9 +216,9 @@ namespace caros {
         ros::Subscriber _subRobotState;
 
     private:
-        void handleRobotState(const caros_control_msgs::RobotState& state);
+        void handleRobotState(const caros_control_msgs::robot_state& state);
 
-        caros_control_msgs::RobotState _pRobotState;
+        caros_control_msgs::robot_state _pRobotState;
     };
 }
 

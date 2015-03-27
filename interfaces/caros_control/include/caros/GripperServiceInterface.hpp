@@ -5,11 +5,11 @@
 
 #include <ros/ros.h>
 
-#include <caros_control_msgs/GripperMoveQ.h>
-#include <caros_control_msgs/GripperGripQ.h>
-#include <caros_control_msgs/GripperSetForceQ.h>
-#include <caros_control_msgs/GripperSetVelocityQ.h>
-#include <caros_control_msgs/GripperStopMovement.h>
+#include <caros_control_msgs/gripper_move_q.h>
+#include <caros_control_msgs/gripper_grip_q.h>
+#include <caros_control_msgs/gripper_set_force_q.h>
+#include <caros_control_msgs/gripper_set_velocity_q.h>
+#include <caros_control_msgs/gripper_stop_movement.h>
 
 #include <string>
 
@@ -117,20 +117,20 @@ namespace caros {
 
 
         /* - these functions should be grouped together in the documentation t shortly describe that these are converting from ROS types to e.g. RobWork types according to what the interface expects - */
-        bool moveQHandle(caros_control_msgs::GripperMoveQ::Request& request,
-                         caros_control_msgs::GripperMoveQ::Response& response);
+        bool moveQHandle(caros_control_msgs::gripper_move_q::Request& request,
+                         caros_control_msgs::gripper_move_q::Response& response);
 
-        bool gripQHandle(caros_control_msgs::GripperGripQ::Request& request,
-                         caros_control_msgs::GripperGripQ::Response& response);
+        bool gripQHandle(caros_control_msgs::gripper_grip_q::Request& request,
+                         caros_control_msgs::gripper_grip_q::Response& response);
 
-        bool setForceQHandle(caros_control_msgs::GripperSetForceQ::Request& request,
-                             caros_control_msgs::GripperSetForceQ::Response& response);
+        bool setForceQHandle(caros_control_msgs::gripper_set_force_q::Request& request,
+                             caros_control_msgs::gripper_set_force_q::Response& response);
 
-        bool setVelocityQHandle(caros_control_msgs::GripperSetVelocityQ::Request& request,
-                                caros_control_msgs::GripperSetVelocityQ::Response& response);
+        bool setVelocityQHandle(caros_control_msgs::gripper_set_velocity_q::Request& request,
+                                caros_control_msgs::gripper_set_velocity_q::Response& response);
 
-        bool stopMovementHandle(caros_control_msgs::GripperStopMovement::Request& request,
-                                caros_control_msgs::GripperStopMovement::Response& response);
+        bool stopMovementHandle(caros_control_msgs::gripper_stop_movement::Request& request,
+                                caros_control_msgs::gripper_stop_movement::Response& response);
 
     private:
         ros::NodeHandle _nodeHandle;

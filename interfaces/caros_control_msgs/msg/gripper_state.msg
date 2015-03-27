@@ -3,17 +3,17 @@
 # Header containing information about time and frameid
 Header header
 
-# Joint configuration. 
+# Joint configuration.
 # Angles should be represented as radians and distances in meters.
 caros_common_msgs/q q
 
-# Velocities should be represented as radians per sec 
+# Velocities should be represented as radians per sec
 caros_common_msgs/q dq
 
 # Approximate force applied by the gripper joints (most implementations simply output the measured current)
 caros_common_msgs/q force
 
-# Is the gripper trying to move to a target (notice it can still be blocked even if isMoving is true) 
+# Is the gripper trying to move to a target (notice it can still be blocked even if isMoving is true)
 bool isMoving
 
 # If the gripper is moving then it may be blocked.

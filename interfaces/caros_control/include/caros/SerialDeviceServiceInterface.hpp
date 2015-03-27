@@ -2,15 +2,15 @@
 #ifndef SERIALDEVICESERVICEINTERFACE_HPP
 #define SERIALDEVICESERVICEINTERFACE_HPP
 
-#include <caros_control_msgs/RobotState.h>
-#include <caros_control_msgs/SerialDeviceMoveLin.h>
-#include <caros_control_msgs/SerialDeviceMovePTP.h>
-#include <caros_control_msgs/SerialDeviceMovePTP_T.h>
-#include <caros_control_msgs/SerialDeviceMoveVelQ.h>
-#include <caros_control_msgs/SerialDeviceMoveVelT.h>
-#include <caros_control_msgs/SerialDeviceMoveLinFC.h>
-#include <caros_control_msgs/SerialDeviceMoveServoQ.h>
-#include <caros_control_msgs/SerialDeviceMoveServoT.h>
+#include <caros_control_msgs/robot_state.h>
+#include <caros_control_msgs/serial_device_move_lin.h>
+#include <caros_control_msgs/serial_device_move_ptp.h>
+#include <caros_control_msgs/serial_device_move_ptp_t.h>
+#include <caros_control_msgs/serial_device_move_vel_q.h>
+#include <caros_control_msgs/serial_device_move_vel_t.h>
+#include <caros_control_msgs/serial_device_move_lin_fc.h>
+#include <caros_control_msgs/serial_device_move_servo_q.h>
+#include <caros_control_msgs/serial_device_move_servo_t.h>
 #include <caros_common_msgs/config_bool.h>
 #include <caros_common_msgs/empty_srv.h>
 
@@ -102,7 +102,7 @@ namespace caros {
 	bool configureInterface();
 
         //! publish robot state
-        void publish(const caros_control_msgs::RobotState& state);
+        void publish(const caros_control_msgs::robot_state& state);
 
     private:
         /**
@@ -113,29 +113,29 @@ namespace caros {
 
         bool initService();
 
-        bool moveLinHandle(caros_control_msgs::SerialDeviceMoveLin::Request& request,
-                           caros_control_msgs::SerialDeviceMoveLin::Response& response);
+        bool moveLinHandle(caros_control_msgs::serial_device_move_lin::Request& request,
+                           caros_control_msgs::serial_device_move_lin::Response& response);
 
-        bool movePTPHandle(caros_control_msgs::SerialDeviceMovePTP::Request& request,
-                           caros_control_msgs::SerialDeviceMovePTP::Response& response);
+        bool movePTPHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
+                           caros_control_msgs::serial_device_move_ptp::Response& response);
 
-        bool movePTP_THandle(caros_control_msgs::SerialDeviceMovePTP_T::Request& request,
-                             caros_control_msgs::SerialDeviceMovePTP_T::Response& response);
+        bool movePTP_THandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
+                             caros_control_msgs::serial_device_move_ptp_t::Response& response);
 
-        bool moveVelQHandle(caros_control_msgs::SerialDeviceMoveVelQ::Request& request,
-                            caros_control_msgs::SerialDeviceMoveVelQ::Response& response);
+        bool moveVelQHandle(caros_control_msgs::serial_device_move_vel_q::Request& request,
+                            caros_control_msgs::serial_device_move_vel_q::Response& response);
 
-        bool moveVelTHandle(caros_control_msgs::SerialDeviceMoveVelT::Request& request,
-                            caros_control_msgs::SerialDeviceMoveVelT::Response& response);
+        bool moveVelTHandle(caros_control_msgs::serial_device_move_vel_t::Request& request,
+                            caros_control_msgs::serial_device_move_vel_t::Response& response);
 
-        bool moveServoQHandle(caros_control_msgs::SerialDeviceMoveServoQ::Request& request,
-                              caros_control_msgs::SerialDeviceMoveServoQ::Response& response);
+        bool moveServoQHandle(caros_control_msgs::serial_device_move_servo_q::Request& request,
+                              caros_control_msgs::serial_device_move_servo_q::Response& response);
 
-        bool moveServoTHandle(caros_control_msgs::SerialDeviceMoveServoT::Request& request,
-                              caros_control_msgs::SerialDeviceMoveServoT::Response& response);
+        bool moveServoTHandle(caros_control_msgs::serial_device_move_servo_t::Request& request,
+                              caros_control_msgs::serial_device_move_servo_t::Response& response);
 
-        bool moveLinFCHandle(caros_control_msgs::SerialDeviceMoveLinFC::Request& request,
-                             caros_control_msgs::SerialDeviceMoveLinFC::Response& response);
+        bool moveLinFCHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
+                             caros_control_msgs::serial_device_move_lin_fc::Response& response);
 
         bool moveStartHandle(caros_common_msgs::empty_srv::Request& request,
                              caros_common_msgs::empty_srv::Response& response);

@@ -196,7 +196,7 @@ void UniversalRobots::runLoopHook() {
 
 
     if (urrtData.qActual.size() == URRTDATA_QACTUAL_SIZE) {
-        caros_control_msgs::RobotState robotState;
+        caros_control_msgs::robot_state robotState;
         _qcurrent = urrtData.qActual;
         robotState.q = caros::toRos(urrtData.qActual);
         robotState.dq = caros::toRos(urrtData.dqActual);
