@@ -73,7 +73,7 @@ GripperSIProxy::GripperSIProxy(ros::NodeHandle nodehandle, const std::string& de
   /* TODO:
    * Make the queue size into a parameter that can be configured - (hardcoded to 1 here)
    */
-  subGripperState_ = nodeHnd_.subscribe("GripperState", 1, &GripperSIProxy::handleGripperState, this);
+  subGripperState_ = nodeHnd_.subscribe("gripper_state", 1, &GripperSIProxy::handleGripperState, this);
 }
 
 GripperSIProxy::~GripperSIProxy()

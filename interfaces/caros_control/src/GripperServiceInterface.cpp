@@ -44,7 +44,7 @@ bool GripperServiceInterface::initService()
   }
 
   gripperStatePublisher_ =
-      nodeHandle_.advertise<caros_control_msgs::gripper_state>("GripperState", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
+      nodeHandle_.advertise<caros_control_msgs::gripper_state>("gripper_state", GRIPPER_STATE_PUBLISHER_QUEUE_SIZE);
   ROS_ERROR_STREAM_COND(!gripperStatePublisher_, "The GripperState publisher is empty!");
 
   srvMoveQ_ = nodeHandle_.advertiseService("move_q", &GripperServiceInterface::moveQHandle, this);
