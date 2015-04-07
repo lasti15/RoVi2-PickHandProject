@@ -6,10 +6,10 @@ geometry_msgs/Transform base2forceFrame
 # Selection of which elements to force control in (x, y, z, rx, ry, rz)
 uint32[] selection
 
-# The desired wrench 
+# The desired wrench
 geometry_msgs/Wrench wrench
 
-# The limits of the speed the robot may attempt to generate the force 
+# The limits of the speed the robot may attempt to generate the force
 float32[] limits
 
 ---
