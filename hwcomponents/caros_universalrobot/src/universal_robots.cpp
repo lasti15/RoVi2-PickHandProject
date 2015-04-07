@@ -1,4 +1,4 @@
-#include <caros/UniversalRobots.hpp>
+#include <caros/universal_robots.h>
 
 #include <caros/common.h>
 

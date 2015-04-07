@@ -1,12 +1,12 @@
 #ifndef URSERVICEINTERFACE_HPP
 #define URSERVICEINTERFACE_HPP
 
-#include <caros_universalrobot/URServiceServoQ.h>
-#include <caros_universalrobot/URServiceServoT.h>
-#include <caros_universalrobot/URServiceEmpty.h>
-#include <caros_universalrobot/URServiceForceModeUpdate.h>
-#include <caros_universalrobot/URServiceForceModeStart.h>
-#include <caros_universalrobot/URServiceForceModeStop.h>
+#include <caros_universalrobot/ur_service_servo_q.h>
+#include <caros_universalrobot/ur_service_servo_t.h>
+#include <caros_universalrobot/ur_service_empty.h>
+#include <caros_universalrobot/ur_service_force_mode_update.h>
+#include <caros_universalrobot/ur_service_force_mode_start.h>
+#include <caros_universalrobot/ur_service_force_mode_stop.h>
 
 
 #include <rw/math/Q.hpp>
@@ -65,15 +65,15 @@ public:
     virtual bool forceModeStop() = 0;
 
 private:
-    bool servoTHandle(caros_universalrobot::URServiceServoT::Request& request, caros_universalrobot::URServiceServoT::Response& response);
+    bool servoTHandle(caros_universalrobot::ur_service_servo_t::Request& request, caros_universalrobot::ur_service_servo_t::Response& response);
 
-    bool servoQHandle(caros_universalrobot::URServiceServoQ::Request& request, caros_universalrobot::URServiceServoQ::Response& response);
+    bool servoQHandle(caros_universalrobot::ur_service_servo_q::Request& request, caros_universalrobot::ur_service_servo_q::Response& response);
 
-    bool forceModeStartHandle(caros_universalrobot::URServiceForceModeStart::Request& request, caros_universalrobot::URServiceForceModeStart::Response& response);
+    bool forceModeStartHandle(caros_universalrobot::ur_service_force_mode_start::Request& request, caros_universalrobot::ur_service_force_mode_start::Response& response);
 
-    bool forceModeUpdateHandle(caros_universalrobot::URServiceForceModeUpdate::Request& request, caros_universalrobot::URServiceForceModeUpdate::Response& response);
+    bool forceModeUpdateHandle(caros_universalrobot::ur_service_force_mode_update::Request& request, caros_universalrobot::ur_service_force_mode_update::Response& response);
 
-    bool forceModeStopHandle(caros_universalrobot::URServiceForceModeStop::Request& request, caros_universalrobot::URServiceForceModeStop::Response& response);
+    bool forceModeStopHandle(caros_universalrobot::ur_service_force_mode_stop::Request& request, caros_universalrobot::ur_service_force_mode_stop::Response& response);
 
 protected:
     ros::NodeHandle _nodehandle;

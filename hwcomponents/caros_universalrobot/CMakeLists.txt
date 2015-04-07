@@ -35,12 +35,12 @@ else()
   ################################################
   add_service_files(
     FILES
-    URServiceServoQ.srv
-    URServiceServoT.srv
-    URServiceEmpty.srv
-    URServiceForceModeStart.srv
-    URServiceForceModeUpdate.srv
-    URServiceForceModeStop.srv
+    ur_service_servo_q.srv
+    ur_service_servo_t.srv
+    ur_service_empty.srv
+    ur_service_force_mode_start.srv
+    ur_service_force_mode_update.srv
+    ur_service_force_mode_stop.srv
     )
 
   generate_messages(
@@ -72,7 +72,7 @@ else()
     ${catkin_INCLUDE_DIRS}
     )
 
-  add_executable(${node_name} src/ur_main.cpp src/UniversalRobots.cpp src/URServiceInterface.cpp)
+  add_executable(${node_name} src/ur_main.cpp src/universal_robots.cpp src/ur_service_interface.cpp)
   target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
@@ -90,8 +90,8 @@ else()
   #### Testing
   ########################################################################
   if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_${PROJECT_NAME}_demo_using_SerialDeviceSIP test/simple_demo_using_SerialDeviceSIP.cpp)
-    target_link_libraries(simple_${PROJECT_NAME}_demo_using_SerialDeviceSIP ${catkin_LIBRARIES})
+    add_executable(simple_${PROJECT_NAME}_demo_using_serial_device_sip test/simple_demo_using_serial_device_sip.cpp)
+    target_link_libraries(simple_${PROJECT_NAME}_demo_using_serial_device_sip ${catkin_LIBRARIES})
   endif()
 
 endif()

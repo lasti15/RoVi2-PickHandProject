@@ -2,7 +2,7 @@
 #ifndef UNIVERSALROBOTS_HPP
 #define UNIVERSALROBOTS_HPP
 
-#include <caros/URServiceInterface.hpp>
+#include <caros/ur_service_interface.h>
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/serial_device_service_interface.h>

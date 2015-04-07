@@ -1,4 +1,4 @@
-#include <caros/URServiceInterface.hpp>
+#include <caros/ur_service_interface.h>
 
 #include <caros/common.h>
 
@@ -80,19 +80,19 @@ bool URServiceInterface::cleanupURService() {
     return true;
 }
 
-bool URServiceInterface::servoTHandle(caros_universalrobot::URServiceServoT::Request& request, caros_universalrobot::URServiceServoT::Response& response) {
+bool URServiceInterface::servoTHandle(caros_universalrobot::ur_service_servo_t::Request& request, caros_universalrobot::ur_service_servo_t::Response& response) {
     rw::math::Transform3D<> target = caros::toRw(request.target);
     response.success = servoT(target);
     return true;
 }
 
-bool URServiceInterface::servoQHandle(caros_universalrobot::URServiceServoQ::Request& request, caros_universalrobot::URServiceServoQ::Response& response) {
+bool URServiceInterface::servoQHandle(caros_universalrobot::ur_service_servo_q::Request& request, caros_universalrobot::ur_service_servo_q::Response& response) {
     rw::math::Q target = caros::toRw(request.target);
     response.success = servoQ(target);
     return true;
 }
 
-bool URServiceInterface::forceModeStartHandle(caros_universalrobot::URServiceForceModeStart::Request& request, caros_universalrobot::URServiceForceModeStart::Response& response) {
+bool URServiceInterface::forceModeStartHandle(caros_universalrobot::ur_service_force_mode_start::Request& request, caros_universalrobot::ur_service_force_mode_start::Response& response) {
     rw::math::Transform3D<> refToffset = caros::toRw(request.base2forceFrame);
     rw::math::Wrench6D<> wrenchTarget;
     wrenchTarget(0) = request.wrench.force.x;
@@ -120,7 +120,7 @@ bool URServiceInterface::forceModeStartHandle(caros_universalrobot::URServiceFor
     return true;
 }
 
-bool URServiceInterface::forceModeUpdateHandle(caros_universalrobot::URServiceForceModeUpdate::Request& request, caros_universalrobot::URServiceForceModeUpdate::Response& response) {
+bool URServiceInterface::forceModeUpdateHandle(caros_universalrobot::ur_service_force_mode_update::Request& request, caros_universalrobot::ur_service_force_mode_update::Response& response) {
     rw::math::Wrench6D<> wrenchTarget;
     wrenchTarget(0) = request.wrench.force.x;
     wrenchTarget(1) = request.wrench.force.y;
@@ -134,7 +134,7 @@ bool URServiceInterface::forceModeUpdateHandle(caros_universalrobot::URServiceFo
     return true;
 }
 
-bool URServiceInterface::forceModeStopHandle(caros_universalrobot::URServiceForceModeStop::Request& request, caros_universalrobot::URServiceForceModeStop::Response& response) {
+bool URServiceInterface::forceModeStopHandle(caros_universalrobot::ur_service_force_mode_stop::Request& request, caros_universalrobot::ur_service_force_mode_stop::Response& response) {
     response.success = forceModeStop();
     return true;
 }
