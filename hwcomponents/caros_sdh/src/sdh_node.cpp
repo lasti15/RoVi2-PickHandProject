@@ -190,7 +190,7 @@ void SDHNode::runLoopHook() {
         double time = velUpdateTimer_.getTime();
 
         if (lastQ_.size() != currentQ_.size()) {
-            /* lastq_ has not been set before (first time the runlookHook is being called), so set it to currentQ_ */
+            /* lastq_ has not been set before (first time the runloopHook is being called), so set it to currentQ_ */
             lastQ_ = currentQ_;
         } else if (time > MIN_TIME_THRESHOLD_FOR_CALCULATING_VELOCITY) {
             /* calculate velocity */
