@@ -73,9 +73,6 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   bool connectToSDHDevice();
 
  private:
-  bool verifyWorkingSDHDevice(const std::string& functionName);
-  bool verifyQLength(const rw::math::Q& q, const std::string& functionName);
-
   ros::NodeHandle nodeHandle_;
 
   enum SDH_STATE
