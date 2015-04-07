@@ -1,5 +1,5 @@
-#ifndef URSERVICEINTERFACE_HPP
-#define URSERVICEINTERFACE_HPP
+#ifndef CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
+#define CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
 
 #include <caros_universalrobot/ur_service_servo_q.h>
 #include <caros_universalrobot/ur_service_servo_t.h>
@@ -86,4 +86,4 @@ protected:
 
 };
 
-#endif //#ifndef URSERVICEINTERFACE_HPP
+#endif // include guard

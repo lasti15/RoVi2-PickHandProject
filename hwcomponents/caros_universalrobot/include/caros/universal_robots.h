@@ -1,6 +1,5 @@
-/**/
-#ifndef UNIVERSALROBOTS_HPP
-#define UNIVERSALROBOTS_HPP
+#ifndef CAROS_UNIVERSALROBOT_UNIVERSAL_ROBOTS_H
+#define CAROS_UNIVERSALROBOT_UNIVERSAL_ROBOTS_H
 
 #include <caros/ur_service_interface.h>
 
@@ -143,4 +142,4 @@ namespace caros {
 
     };
 }
-#endif //#ifndef UNIVERSALROBOTS_HPP
+#endif // include guard
