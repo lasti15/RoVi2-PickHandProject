@@ -10,7 +10,7 @@
 #include <algorithm>
 
 URServiceInterface::URServiceInterface(const ros::NodeHandle& nodehandle):
-    _nodehandle(nodehandle)
+    nodehandle_(nodehandle)
 {
     /* Do nothing for now */
     /* No way to verify that this object is properly configured or just a zombie object, since RAII is not being used */
@@ -21,26 +21,26 @@ URServiceInterface::~URServiceInterface() {
 }
 
 bool URServiceInterface::configureURService() {
-    if (_srvServoT || _srvServoQ || _srvForceModeStart || _srvForceModeUpdate || _srvForceModeStop) {
+    if (srvServoT_ || srvServoQ_ || srvForceModeStart_ || srvForceModeUpdate_ || srvForceModeStop_) {
         ROS_WARN_STREAM("Reinitialising one or more URServiceInterface services. If this is not fully intended then this should be considered a bug!");
     }
 
-    _srvServoT = _nodehandle.advertiseService("servo_t", &URServiceInterface::servoTHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvServoT, "The servo_t service is empty!");
+    srvServoT_ = nodehandle_.advertiseService("servo_t", &URServiceInterface::servoTHandle, this);
+    ROS_ERROR_STREAM_COND(!srvServoT_, "The servo_t service is empty!");
 
-    _srvServoQ = _nodehandle.advertiseService("servo_q", &URServiceInterface::servoQHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvServoQ, "The servo_q service is empty!");
+    srvServoQ_ = nodehandle_.advertiseService("servo_q", &URServiceInterface::servoQHandle, this);
+    ROS_ERROR_STREAM_COND(!srvServoQ_, "The servo_q service is empty!");
 
-    _srvForceModeStart = _nodehandle.advertiseService("force_mode_start", &URServiceInterface::forceModeStartHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvForceModeStart, "The force_mode_start service is empty!");
+    srvForceModeStart_ = nodehandle_.advertiseService("force_mode_start", &URServiceInterface::forceModeStartHandle, this);
+    ROS_ERROR_STREAM_COND(!srvForceModeStart_, "The force_mode_start service is empty!");
 
-    _srvForceModeUpdate = _nodehandle.advertiseService("force_mode_update", &URServiceInterface::forceModeUpdateHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvForceModeUpdate, "The force_mode_update service is empty!");
+    srvForceModeUpdate_ = nodehandle_.advertiseService("force_mode_update", &URServiceInterface::forceModeUpdateHandle, this);
+    ROS_ERROR_STREAM_COND(!srvForceModeUpdate_, "The force_mode_update service is empty!");
 
-    _srvForceModeStop = _nodehandle.advertiseService("force_mode_stop", &URServiceInterface::forceModeStopHandle, this);
-    ROS_ERROR_STREAM_COND(!_srvForceModeStop, "The force_mode_stop service is empty!");
+    srvForceModeStop_ = nodehandle_.advertiseService("force_mode_stop", &URServiceInterface::forceModeStopHandle, this);
+    ROS_ERROR_STREAM_COND(!srvForceModeStop_, "The force_mode_stop service is empty!");
 
-    if (_srvServoT && _srvServoQ && _srvForceModeStart && _srvForceModeUpdate && _srvForceModeStop) {
+    if (srvServoT_ && srvServoQ_ && srvForceModeStart_ && srvForceModeUpdate_ && srvForceModeStop_) {
         /* Everything seems to have been properly initialised */
     } else {
         ROS_ERROR_STREAM("The URService could not be properly initialised - one or more ros services may not be up and running or working as intended!");
@@ -51,30 +51,30 @@ bool URServiceInterface::configureURService() {
 }
 
 bool URServiceInterface::cleanupURService() {
-    if (_srvServoT) {
-        _srvServoT.shutdown();
+    if (srvServoT_) {
+        srvServoT_.shutdown();
     } else {
-        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvServoT was empty!");
+        ROS_ERROR_STREAM("While trying to cleanup the URService, srvServoT_ was empty!");
     }
-    if (_srvServoQ) {
-        _srvServoQ.shutdown();
+    if (srvServoQ_) {
+        srvServoQ_.shutdown();
     } else {
-        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvServoQ was empty!");
+        ROS_ERROR_STREAM("While trying to cleanup the URService, srvServoQ_ was empty!");
     }
-    if (_srvForceModeStart) {
-        _srvForceModeStart.shutdown();
+    if (srvForceModeStart_) {
+        srvForceModeStart_.shutdown();
     } else {
-        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeStart was empty!");
+        ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeStart_ was empty!");
     }
-    if (_srvForceModeUpdate) {
-        _srvForceModeUpdate.shutdown();
+    if (srvForceModeUpdate_) {
+        srvForceModeUpdate_.shutdown();
     } else {
-        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeUpdate was empty!");
+        ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeUpdate_ was empty!");
     }
-    if (_srvForceModeStop) {
-        _srvForceModeStop.shutdown();
+    if (srvForceModeStop_) {
+        srvForceModeStop_.shutdown();
     } else {
-        ROS_ERROR_STREAM("While trying to cleanup the URService, _srvForceModeStop was empty!");
+        ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeStop_ was empty!");
     }
 
     return true;

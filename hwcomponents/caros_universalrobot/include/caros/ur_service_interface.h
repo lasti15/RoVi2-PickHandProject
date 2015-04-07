@@ -76,13 +76,13 @@ private:
     bool forceModeStopHandle(caros_universalrobot::ur_service_force_mode_stop::Request& request, caros_universalrobot::ur_service_force_mode_stop::Response& response);
 
 protected:
-    ros::NodeHandle _nodehandle;
+    ros::NodeHandle nodehandle_;
 
-    ros::ServiceServer _srvServoT;
-    ros::ServiceServer _srvServoQ;
-    ros::ServiceServer _srvForceModeStart;
-    ros::ServiceServer _srvForceModeUpdate;
-    ros::ServiceServer _srvForceModeStop;
+    ros::ServiceServer srvServoT_;
+    ros::ServiceServer srvServoQ_;
+    ros::ServiceServer srvForceModeStart_;
+    ros::ServiceServer srvForceModeUpdate_;
+    ros::ServiceServer srvForceModeStop_;
 
 };
 

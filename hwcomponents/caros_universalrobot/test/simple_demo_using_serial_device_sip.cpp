@@ -17,46 +17,46 @@
 #include <cassert>
 
 bool doCollisionDetectionPrototype(const rw::math::Q &startConfiguration, const rw::math::Q &endConfiguration) {
-    ros::NodeHandle _nodehandle("~");
+    ros::NodeHandle nodehandle_("~");
 
-    rw::models::Device::Ptr _device;
-    rw::kinematics::State _state;
+    rw::models::Device::Ptr device_;
+    rw::kinematics::State state_;
 
-    rw::models::WorkCell::Ptr _workcell;
-    _workcell = caros::getWorkCell();
-    if (_workcell == NULL) {
+    rw::models::WorkCell::Ptr workcell_;
+    workcell_ = caros::getWorkCell();
+    if (workcell_ == NULL) {
         ROS_ERROR("No workcell was loaded - exiting...");
         return false;
     }
 
     std::string deviceName;
-    if (! _nodehandle.getParam("deviceName", deviceName)) {
-        ROS_FATAL_STREAM("The parameter '" << _nodehandle.getNamespace() << "/deviceName' was not present on the parameter server! This parameter has to be specified for this test-node to work properly.");
+    if (! nodehandle_.getParam("deviceName", deviceName)) {
+        ROS_FATAL_STREAM("The parameter '" << nodehandle_.getNamespace() << "/deviceName' was not present on the parameter server! This parameter has to be specified for this test-node to work properly.");
         return false;
     }
 
-    if (_workcell == NULL) {
+    if (workcell_ == NULL) {
         ROS_FATAL_STREAM("No workcell was provided!");
         return false;
     }
 
-    ROS_ASSERT(_workcell != NULL);
+    ROS_ASSERT(workcell_ != NULL);
     ROS_DEBUG_STREAM("Looking for the device '" << deviceName << "' in the workcell.");
-    _device = _workcell->findDevice(deviceName);
-    if (_device == NULL) {
+    device_ = workcell_->findDevice(deviceName);
+    if (device_ == NULL) {
         ROS_FATAL_STREAM("Unable to find device " << deviceName << " in the loaded workcell");
         return false;
     }
 
-    _state = _workcell->getDefaultState();
+    state_ = workcell_->getDefaultState();
 
     ROS_DEBUG_STREAM("Doing path collision checking...");
     /* TODO:
      * [ IMPORTANT ] Has to know the state of the other UR (UR2 also) in its live configuration, and not the configuration that was hardcoded within the scene/workcell.
      */
 
-    auto detector = rw::common::ownedPtr(new rw::proximity::CollisionDetector(_workcell, rwlibs::proximitystrategies::ProximityStrategyYaobi::make()));
-    const rw::pathplanning::PlannerConstraint plannerConstraint = rw::pathplanning::PlannerConstraint::make(detector, _device, _state);
+    auto detector = rw::common::ownedPtr(new rw::proximity::CollisionDetector(workcell_, rwlibs::proximitystrategies::ProximityStrategyYaobi::make()));
+    const rw::pathplanning::PlannerConstraint plannerConstraint = rw::pathplanning::PlannerConstraint::make(detector, device_, state_);
 
     // start configuration
     if (plannerConstraint.getQConstraint().inCollision(startConfiguration)) {

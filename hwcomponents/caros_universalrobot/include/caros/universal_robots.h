@@ -104,39 +104,39 @@ namespace caros {
         bool isPathCollisionFree(const rw::math::Q &endConfiguration);
 
     private:
-        ros::NodeHandle _nodehandle;
-//    ros::Rate _loopRate;
-        rw::models::WorkCell::Ptr _workcell;
-        rw::models::Device::Ptr _device;
-        rw::math::Q _qcurrent; /* Updated in runLoopHook() */
-        rw::kinematics::Frame* _ftFrame;
+        ros::NodeHandle nodehandle_;
+//    ros::Rate loopRate_;
+        rw::models::WorkCell::Ptr workcell_;
+        rw::models::Device::Ptr device_;
+        rw::math::Q qcurrent_; /* Updated in runLoopHook() */
+        rw::kinematics::Frame* ftFrame_;
 
-        rwhw::URCallBackInterface _ur; /* shared */
-        rwhw::UniversalRobotsRTLogging _urrt; /* shared */
+        rwhw::URCallBackInterface ur_; /* shared */
+        rwhw::UniversalRobotsRTLogging urrt_; /* shared */
 
-// [ not being initialised ] rwhw::NetFTLogging::Ptr _pNetFT;
-//    rwhw::FTCompensation::Ptr _pFTCompensation;
-        ros::Subscriber _subFTData;
-        std::queue<rw::math::Wrench6D<>> _wrenchDataQueue;
+// [ not being initialised ] rwhw::NetFTLogging::Ptr pNetFT_;
+//    rwhw::FTCompensation::Ptr pFTCompensation_;
+        ros::Subscriber subFTData_;
+        std::queue<rw::math::Wrench6D<>> wrenchDataQueue_;
 
-        rw::invkin::JacobianIKSolver::Ptr _iksolver;
-        rw::kinematics::State _state; /* Updated as needed by calling _device->setQ(_qcurrent, _state) or some other q-configuration */
+        rw::invkin::JacobianIKSolver::Ptr iksolver_;
+        rw::kinematics::State state_; /* Updated as needed by calling device_->setQ(qcurrent_, state_) or some other q-configuration */
 
-        bool _useFTCollisionDetection;
-//    double _driverTimeOffset;
+        bool useFTCollisionDetection_;
+//    double driverTimeOffset_;
 
-//    double _dt;
+//    double dt_;
 
-//    //rwlibs::algorithms::XQPController::Ptr _xqp;
-//    //rw::math::Transform3D<> _servoTarget;
-//    //rw::math::VelocityScrew6D<> _servoVelocity;
+//    //rwlibs::algorithms::XQPController::Ptr xqp_;
+//    //rw::math::Transform3D<> servoTarget_;
+//    //rw::math::VelocityScrew6D<> servoVelocity_;
 
 //    bool updateFTBias();
  
 //    //void servo();
-        rw::math::QMetric::Ptr _q2cmetric;
+        rw::math::QMetric::Ptr q2cmetric_;
 
-//    std::string _errorMsg;
+//    std::string errorMsg_;
 
 
 
