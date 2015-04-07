@@ -4,13 +4,13 @@
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "sdh");
+  ros::init(argc, argv, "sdh");
 
-    ros::NodeHandle nh("~");
+  ros::NodeHandle nh("~");
 
-    SDHNode sdhNode(nh);
+  SDHNode sdhNode(nh);
 
-    sdhNode.start();
+  sdhNode.start();
 
-    return 0;
+  return 0;
 }
