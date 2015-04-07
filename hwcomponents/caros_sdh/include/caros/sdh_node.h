@@ -1,5 +1,5 @@
-#ifndef CAROS_SDHNode_HPP
-#define CAROS_SDHNode_HPP
+#ifndef CAROS_SDH_SDH_NODE_H
+#define CAROS_SDH_SDH_NODE_H
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/gripper_service_interface.h>
@@ -45,7 +45,7 @@ public:
 
     /* TODO: Properly document the error codes */
     /* TODO: Consider better error codes for SDHNODE_INTERNAL_ERROR */
-    /* The enum order should not be changed, as recorded ROS sessions would then be invalidated */ 
+    /* The enum order should not be changed, as recorded ROS sessions would then be invalidated */
     enum SDHNODE_ERRORCODE { SDHNODE_SDH_DEVICE_ALREADY_ACTIVE = 1, SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL, SDHNODE_UNSUPPORTED_INTERFACE_TYPE, SDHNODE_SDH_DEVICE_CONNECT_FAILED, SDHNODE_INTERNAL_ERROR, SDHNODE_SDH_DEVICE_NO_CONNECTION, SDHNODE_NO_SDH_DEVICE, SDHNODE_UNSUPPORTED_Q_LENGTH };
 
 protected:
@@ -74,7 +74,7 @@ private:
     rw::math::Q _moveQ, _velQ, _currentQ, _lastQ;
 
     rwhw::SDHDriver *_sdh;
-    
+
     /* Variables that are to be fetched from a ROS parameter server */
     std::string _interfaceType;
     std::string _rs232Device;
@@ -86,4 +86,4 @@ private:
     double _canTimeout;
 };
 
-#endif /* CAROS_SDHNode_HPP */
+#endif /* include guard */

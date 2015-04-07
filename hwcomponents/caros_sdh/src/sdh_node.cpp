@@ -1,4 +1,4 @@
-#include <caros/SDHNode.hpp>
+#include <caros/sdh_node.h>
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/gripper_service_interface.h>
@@ -159,7 +159,7 @@ bool SDHNode::recoverHook() {
     /* Should state be put into the errors or the error system within CarosNodeServiceInterface? (It is not guaranteed that a locally tracked error state is not being superseded by another error cause somewhere else in the CAROS system - so such a solution would be prone to errors) */
 
     /* Remember to place the state machine in a proper state according to the recovery (e.g. WAIT) */
-    
+
     ROS_ERROR_STREAM("The recoverHook() has not been implemented yet!");
 
     return false;
@@ -188,7 +188,7 @@ void SDHNode::runLoopHook() {
          * Used as part of the workaround for the movement of the SDH fingers.
         ************************************************************************/
         double time = _velUpdateTimer.getTime();
-        
+
         if (_lastQ.size() != _currentQ.size()) {
             /* _lastq has not been set before (first time the runlookHook is being called), so set it to _currentQ */
             _lastQ = _currentQ;
@@ -219,13 +219,13 @@ void SDHNode::runLoopHook() {
         bool isMoving = (compare != dq) ? true : false;
         bool isBlocked = false;
         /* FIXME: This can possibly give a wrong report in the situation where a new moveQ has just been initiated - so the calculated distance between current position and target is greater than the threshold, but the measured/calculated velocity is still zero */
-	/* MBAND DEBUG */
-	ROS_INFO_STREAM("mband: _currentQ: " << _currentQ);
-	ROS_INFO_STREAM("mband: _moveQ: " << _moveQ);
-	/* TODO: FIXME:
-	 * Design flaw, that _moveQ is 0 (size() == 0) when no move has been initiated... so the distance can be anything depending on initialisation...
-	 */
-	/* MBAND END DEBUG */
+        /* MBAND DEBUG */
+        ROS_INFO_STREAM("mband: _currentQ: " << _currentQ);
+        ROS_INFO_STREAM("mband: _moveQ: " << _moveQ);
+        /* TODO: FIXME:
+         * Design flaw, that _moveQ is 0 (size() == 0) when no move has been initiated... so the distance can be anything depending on initialisation...
+         */
+        /* MBAND END DEBUG */
 #if 0
         if (!isMoving && (rw::math::MetricUtil::dist2(_currentQ, _moveQ) >= MOVE_DISTANCE_STOPPED_THRESHOLD)) {
             isBlocked = true;
@@ -254,7 +254,7 @@ void SDHNode::runLoopHook() {
             if (rw::math::MetricUtil::dist2(_currentQ, _moveQ) < MOVE_DISTANCE_STOPPED_THRESHOLD) {
                 /* Debug functionality to test the usage of _sdh->waitCmd(0) instead of looking at the remaining distance to the target */
                 ROS_DEBUG_STREAM_NAMED("move_wait", "_sdh->waitCmd(0) returned: " << _sdh->waitCmd(0));
-                
+
                 _sdh->stop();
                 _nextState = WAIT;
             } else if (_moveStartTimer.getTime() > MAX_TIME_WAITING_FOR_MOVE_TO_FINISH_BEFORE_INTERVENING) {

@@ -87,7 +87,7 @@ if (SHOULD_BUILD_CAROS_SDH)
   ########################################################################
   #### SDH Node
   ########################################################################
-  add_executable(sdh_node src/main_SDH.cpp src/SDHNode.cpp)
+  add_executable(sdh_node src/sdh_main.cpp src/sdh_node.cpp)
   target_link_libraries(sdh_node
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
