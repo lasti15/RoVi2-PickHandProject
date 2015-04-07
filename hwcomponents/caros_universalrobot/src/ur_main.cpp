@@ -11,24 +11,25 @@
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "universalrobots");
+  ros::init(argc, argv, "universalrobots");
 
-    ros::NodeHandle nh("~");
+  ros::NodeHandle nh("~");
 
-    /* TODO:
-     * This workcell setup can also be moved into the UniversalRobots.cpp class. Would that make more sense?
-     */
-    rw::models::WorkCell::Ptr workCell;
-    workCell = caros::getWorkCell();
-    if (workCell == NULL) {
-        ROS_ERROR("No workcell was loaded - exiting...");
-        return 1;
-    }
+  /* TODO:
+   * This workcell setup can also be moved into the UniversalRobots.cpp class. Would that make more sense?
+   */
+  rw::models::WorkCell::Ptr workCell;
+  workCell = caros::getWorkCell();
+  if (workCell == NULL)
+  {
+    ROS_ERROR("No workcell was loaded - exiting...");
+    return 1;
+  }
 
-    ROS_DEBUG("Workcell loaded - starting node.");
+  ROS_DEBUG("Workcell loaded - starting node.");
 
-    caros::UniversalRobots ur(nh, workCell);
-    ur.start();
+  caros::UniversalRobots ur(nh, workCell);
+  ur.start();
 
-    return 0;
+  return 0;
 }
