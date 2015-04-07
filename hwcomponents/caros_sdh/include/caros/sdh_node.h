@@ -65,25 +65,25 @@ private:
     bool verifyWorkingSDHDevice(const std::string& functionName);
     bool verifyQLength(const rw::math::Q& q, const std::string& functionName);
 
-    ros::NodeHandle _nodeHandle;
+    ros::NodeHandle nodeHandle_;
 
     enum SDH_STATE { WAIT, MOVE_WAIT };
-    SDH_STATE _currentState, _nextState;
+    SDH_STATE currentState_, nextState_;
 
-    rw::common::Timer _moveStartTimer, _velUpdateTimer;
-    rw::math::Q _moveQ, _velQ, _currentQ, _lastQ;
+    rw::common::Timer moveStartTimer_, velUpdateTimer_;
+    rw::math::Q moveQ_, velQ_, currentQ_, lastQ_;
 
-    rwhw::SDHDriver *_sdh;
+    rwhw::SDHDriver *sdh_;
 
     /* Variables that are to be fetched from a ROS parameter server */
-    std::string _interfaceType;
-    std::string _rs232Device;
-    int _rs232Port;
-    int _rs232BaudRate;
-    double _rs232Timeout;
-    std::string _canDevice;
-    int _canBaudRate;
-    double _canTimeout;
+    std::string interfaceType_;
+    std::string rs232Device_;
+    int rs232Port_;
+    int rs232BaudRate_;
+    double rs232Timeout_;
+    std::string canDevice_;
+    int canBaudRate_;
+    double canTimeout_;
 };
 
 #endif /* include guard */

@@ -36,23 +36,23 @@
 SDHNode::SDHNode(const ros::NodeHandle& nodehandle):
     caros::CarosNodeServiceInterface(nodehandle),
     caros::GripperServiceInterface(nodehandle),
-    _nodeHandle(nodehandle),
-    _currentState(SDHNode::WAIT),
-    _nextState(_currentState),
-    _sdh(0)
+    nodeHandle_(nodehandle),
+    currentState_(SDHNode::WAIT),
+    nextState_(currentState_),
+    sdh_(0)
 {
     /* Currently nothing specific should happen */
 }
 
 SDHNode::~SDHNode() {
-    if (_sdh != 0) {
-        if (_sdh->isConnected()) {
+    if (sdh_ != 0) {
+        if (sdh_->isConnected()) {
             ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
-            _sdh->stop();
-            _sdh->disconnect();
+            sdh_->stop();
+            sdh_->disconnect();
         }
-        delete _sdh;
-        _sdh = 0;
+        delete sdh_;
+        sdh_ = 0;
     } else {
         ROS_DEBUG_STREAM("There was no SDH device to destroy before deallocating/destroying the SDHNode object.");
     }
@@ -71,24 +71,24 @@ bool SDHNode::activateHook() {
 }
 
 bool SDHNode::configureSDHDevice() {
-    if (_sdh != 0) {
+    if (sdh_ != 0) {
         /* Could also just silently return true or false and ignore the error that configure is being invoked twice... */
         CAROS_FATALERROR("The SDH device is already active - trying to configure an already configured SDH node is a bug!", SDHNODE_SDH_DEVICE_ALREADY_ACTIVE);
         return false;
     }
-    _sdh = new rwhw::SDHDriver;
+    sdh_ = new rwhw::SDHDriver;
 
     /* Fetch parameters (if any) or use the defaults */
-    _nodeHandle.param("interface_type", _interfaceType, std::string("CAN"));
+    nodeHandle_.param("interface_type", interfaceType_, std::string("CAN"));
 
-    _nodeHandle.param("rs232_device", _rs232Device, std::string(""));
-    _nodeHandle.param("rs232_port", _rs232Port, 0);
-    _nodeHandle.param("rs232_baudrate", _rs232BaudRate, 115200);
-    _nodeHandle.param("rs232_timeout", _rs232Timeout, 0.5);
+    nodeHandle_.param("rs232_device", rs232Device_, std::string(""));
+    nodeHandle_.param("rs232_port", rs232Port_, 0);
+    nodeHandle_.param("rs232_baudrate", rs232BaudRate_, 115200);
+    nodeHandle_.param("rs232_timeout", rs232Timeout_, 0.5);
 
-    _nodeHandle.param("can_device", _canDevice, std::string("/dev/pcan0"));
-    _nodeHandle.param("can_baudrate", _canBaudRate, 1000000);
-    _nodeHandle.param("can_timeout", _canTimeout, 0.5);
+    nodeHandle_.param("can_device", canDevice_, std::string("/dev/pcan0"));
+    nodeHandle_.param("can_baudrate", canBaudRate_, 1000000);
+    nodeHandle_.param("can_timeout", canTimeout_, 0.5);
 
     /* TODO: Verify that the chosen interfaceType is valid? or just let it fail when the parameters are being set? */
 
@@ -102,10 +102,10 @@ bool SDHNode::configureSDHDevice() {
     /* TODO: This could be made part of the GripperServiceInterface - possibly as a message that is returned (or published) when a client asks for it.
      * If the hardware is intelligent enough to provide new values/boundaries according to position or grasping mode, then it could make sense to publish that information when it changes
      */
-    std::pair<rw::math::Q, rw::math::Q> positionLimits = _sdh->getPosLimits();
-    rw::math::Q velocityLimits = _sdh->getVelLimits();
+    std::pair<rw::math::Q, rw::math::Q> positionLimits = sdh_->getPosLimits();
+    rw::math::Q velocityLimits = sdh_->getVelLimits();
     /* There's also getAccLimits() */
-    rw::math::Q currentLimits = _sdh->getCurrentLimits();
+    rw::math::Q currentLimits = sdh_->getCurrentLimits();
 
     ROS_ERROR_STREAM_COND(positionLimits.first.size() != positionLimits.second.size(), "The sizes of the Q's in the position limit pair are not equal; first contains " << positionLimits.first.size() << " and second contains " << positionLimits.second.size() << " elements.");
 
@@ -119,32 +119,32 @@ bool SDHNode::configureSDHDevice() {
 }
 
 bool SDHNode::connectToSDHDevice() {
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
         return false;
     }
 
-    if (_sdh->isConnected()) {
+    if (sdh_->isConnected()) {
         ROS_ERROR_STREAM("'" << __PRETTY_FUNCTION__ << "' invoked even though a connection to the SDH device has already been established - this is a bug!"); 
         return false;
     }
 
     /* Connect according to interface type and configured parameters */
-    if (_interfaceType == "RS232") {
-        if (_rs232Device.empty()) {
-            _sdh->connect(_rs232Port, static_cast<unsigned long>(_rs232BaudRate), _rs232Timeout, NULL);
+    if (interfaceType_ == "RS232") {
+        if (rs232Device_.empty()) {
+            sdh_->connect(rs232Port_, static_cast<unsigned long>(rs232BaudRate_), rs232Timeout_, NULL);
         } else {
-            _sdh->connect(_rs232Port, static_cast<unsigned long>(_rs232BaudRate), _rs232Timeout, _rs232Device.c_str());
+            sdh_->connect(rs232Port_, static_cast<unsigned long>(rs232BaudRate_), rs232Timeout_, rs232Device_.c_str());
         }
-    } else if (_interfaceType == "CAN") {
-        _sdh->connect(_canDevice, _canBaudRate, _canTimeout);
+    } else if (interfaceType_ == "CAN") {
+        sdh_->connect(canDevice_, canBaudRate_, canTimeout_);
     } else {
-        CAROS_FATALERROR("The specified interface '" << _interfaceType << "' is not supported.", SDHNODE_UNSUPPORTED_INTERFACE_TYPE);
+        CAROS_FATALERROR("The specified interface '" << interfaceType_ << "' is not supported.", SDHNODE_UNSUPPORTED_INTERFACE_TYPE);
         return false;
     }
 
-    /* Verify that the connection to the SDH device has been established - this eliminates the need for verifying that the _sdh->connect() function calls actually succeed */
-    if (! _sdh->isConnected()) {
+    /* Verify that the connection to the SDH device has been established - this eliminates the need for verifying that the sdh_->connect() function calls actually succeed */
+    if (! sdh_->isConnected()) {
         /* Something went wrong when connecting */
         CAROS_FATALERROR("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
         return false;
@@ -167,12 +167,12 @@ bool SDHNode::recoverHook() {
 
 void SDHNode::runLoopHook() {
     try {
-        if (_sdh == 0) {
+        if (sdh_ == 0) {
             CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
             return;
         }
 
-        if (! _sdh->isConnected()) {
+        if (! sdh_->isConnected()) {
             CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
             return;
         }
@@ -181,26 +181,26 @@ void SDHNode::runLoopHook() {
          * Get Current Joint Positions
          * Currently used as part of the workaround for the movement of the SDH fingers.
         ************************************************************************/
-        _currentQ = _sdh->getQ();
+        currentQ_ = sdh_->getQ();
 
         /************************************************************************
          * Velocity Calculation
          * Used as part of the workaround for the movement of the SDH fingers.
         ************************************************************************/
-        double time = _velUpdateTimer.getTime();
+        double time = velUpdateTimer_.getTime();
 
-        if (_lastQ.size() != _currentQ.size()) {
-            /* _lastq has not been set before (first time the runlookHook is being called), so set it to _currentQ */
-            _lastQ = _currentQ;
+        if (lastQ_.size() != currentQ_.size()) {
+            /* lastq_ has not been set before (first time the runlookHook is being called), so set it to currentQ_ */
+            lastQ_ = currentQ_;
         } else if (time > MIN_TIME_THRESHOLD_FOR_CALCULATING_VELOCITY) {
             /* calculate velocity */
-            _velQ = (_lastQ-_currentQ)/time;
-            _lastQ = _currentQ;
-            _velUpdateTimer.resetAndResume();
-            ROS_DEBUG_STREAM_NAMED("velocity", "New calculated velocity: " << _velQ);
+            velQ_ = (lastQ_-currentQ_)/time;
+            lastQ_ = currentQ_;
+            velUpdateTimer_.resetAndResume();
+            ROS_DEBUG_STREAM_NAMED("velocity", "New calculated velocity: " << velQ_);
         }
-        ROS_DEBUG_STREAM_NAMED("velocity", "Calculated velocity: " << _velQ);
-        ROS_DEBUG_STREAM_NAMED("velocity", "SDH reported velocity: " << _sdh->getdQ());
+        ROS_DEBUG_STREAM_NAMED("velocity", "Calculated velocity: " << velQ_);
+        ROS_DEBUG_STREAM_NAMED("velocity", "SDH reported velocity: " << sdh_->getdQ());
 
         /************************************************************************
          * Publish SDH state
@@ -209,25 +209,25 @@ void SDHNode::runLoopHook() {
         /* The units of the reported values should match what is specified in the GripperState.msg specification.
          * The rwhw::SDHDriver constructor specifies the use of radians.
          */
-        rw::math::Q q = _currentQ;
-        /* Using the calculated velocity (FIXME: either continue to use _velQ or use _sdh->getdQ() if they report similar values - see the velocity debug messages) */
-        rw::math::Q dq = _velQ;
+        rw::math::Q q = currentQ_;
+        /* Using the calculated velocity (FIXME: either continue to use velQ_ or use sdh_->getdQ() if they report similar values - see the velocity debug messages) */
+        rw::math::Q dq = velQ_;
         /* FIXME: the current could be converted to a force, given it would make sense to do so - but it requires knowledge of the kinematics to calculate the force that is being applied e.g. at a particular fingertip or where the contact surface is. */
-        rw::math::Q force = _sdh->getQCurrent();
+        rw::math::Q force = sdh_->getQCurrent();
 
         rw::math::Q compare = rw::math::Q::zero(dq.size());
         bool isMoving = (compare != dq) ? true : false;
         bool isBlocked = false;
         /* FIXME: This can possibly give a wrong report in the situation where a new moveQ has just been initiated - so the calculated distance between current position and target is greater than the threshold, but the measured/calculated velocity is still zero */
         /* MBAND DEBUG */
-        ROS_INFO_STREAM("mband: _currentQ: " << _currentQ);
-        ROS_INFO_STREAM("mband: _moveQ: " << _moveQ);
+        ROS_INFO_STREAM("mband: currentQ_: " << currentQ_);
+        ROS_INFO_STREAM("mband: moveQ_: " << moveQ_);
         /* TODO: FIXME:
-         * Design flaw, that _moveQ is 0 (size() == 0) when no move has been initiated... so the distance can be anything depending on initialisation...
+         * Design flaw, that moveQ_ is 0 (size() == 0) when no move has been initiated... so the distance can be anything depending on initialisation...
          */
         /* MBAND END DEBUG */
 #if 0
-        if (!isMoving && (rw::math::MetricUtil::dist2(_currentQ, _moveQ) >= MOVE_DISTANCE_STOPPED_THRESHOLD)) {
+        if (!isMoving && (rw::math::MetricUtil::dist2(currentQ_, moveQ_) >= MOVE_DISTANCE_STOPPED_THRESHOLD)) {
             isBlocked = true;
         }
 #endif
@@ -244,30 +244,30 @@ void SDHNode::runLoopHook() {
          * State Machine
          * Used to apply workaround for the movement of the SDH fingers.
         ************************************************************************/
-        _currentState = _nextState;
-        switch (_currentState) {
+        currentState_ = nextState_;
+        switch (currentState_) {
         case WAIT:
             /* Do nothing */
             break;
         case MOVE_WAIT:
             /* Workaround to avoid having the SDH try to move the fingers until MAX_TIME_WAITING_FOR_MOVE_TO_FINISH_BEFORE_INTERVENING has passed, when the fingers are almost at their target - (there should be a "bug" causing the SDH to dissipate power when the target can't be reached according to the firmware) */
-            if (rw::math::MetricUtil::dist2(_currentQ, _moveQ) < MOVE_DISTANCE_STOPPED_THRESHOLD) {
-                /* Debug functionality to test the usage of _sdh->waitCmd(0) instead of looking at the remaining distance to the target */
-                ROS_DEBUG_STREAM_NAMED("move_wait", "_sdh->waitCmd(0) returned: " << _sdh->waitCmd(0));
+            if (rw::math::MetricUtil::dist2(currentQ_, moveQ_) < MOVE_DISTANCE_STOPPED_THRESHOLD) {
+                /* Debug functionality to test the usage of sdh_->waitCmd(0) instead of looking at the remaining distance to the target */
+                ROS_DEBUG_STREAM_NAMED("move_wait", "sdh_->waitCmd(0) returned: " << sdh_->waitCmd(0));
 
-                _sdh->stop();
-                _nextState = WAIT;
-            } else if (_moveStartTimer.getTime() > MAX_TIME_WAITING_FOR_MOVE_TO_FINISH_BEFORE_INTERVENING) {
+                sdh_->stop();
+                nextState_ = WAIT;
+            } else if (moveStartTimer_.getTime() > MAX_TIME_WAITING_FOR_MOVE_TO_FINISH_BEFORE_INTERVENING) {
                 ROS_DEBUG_STREAM_NAMED("move_wait", "Waited long enough to possible intervene.");
-                if (rw::math::MetricUtil::normInf(_velQ) < MINIMUM_VELOCITY_BEFORE_CONSIDERED_NOT_MOVING) {
+                if (rw::math::MetricUtil::normInf(velQ_) < MINIMUM_VELOCITY_BEFORE_CONSIDERED_NOT_MOVING) {
                     ROS_DEBUG_STREAM_NAMED("move_wait", "Intervening due to the fingers not being considered moving.");
-                    _sdh->stop();
-                    _nextState = WAIT;
+                    sdh_->stop();
+                    nextState_ = WAIT;
                 }
             }
             break;
         default:
-            ROS_FATAL_STREAM("Unknown state in the SDH state machine '" << _currentState << "' (a value is expected due to enum implementation) - This is a bug!");
+            ROS_FATAL_STREAM("Unknown state in the SDH state machine '" << currentState_ << "' (a value is expected due to enum implementation) - This is a bug!");
             /* This is considered a fatal error, but should never happen. */
             CAROS_FATALERROR("Unknown state in the SDH state machine", SDHNODE_INTERNAL_ERROR);
             break;
@@ -281,24 +281,24 @@ void SDHNode::runLoopHook() {
 
 void SDHNode::errorLoopHook() {
     /* Stop the SDH's current action(s) */
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         ROS_DEBUG_STREAM("The SDH device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
-        if (_sdh->isConnected()) {
-            _sdh->stop();
+        if (sdh_->isConnected()) {
+            sdh_->stop();
         }
     }
 }
 
 void SDHNode::fatalErrorLoopHook() {
     /* Stop the SDH's current action(s) */
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         ROS_DEBUG_STREAM("The SDH device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
     } else {
-        if (_sdh->isConnected()) {
-            _sdh->stop();
+        if (sdh_->isConnected()) {
+            sdh_->stop();
             /* A fatal error should disconnect the SDH device */
-            _sdh->disconnect();
+            sdh_->disconnect();
         }
     }
 }
@@ -307,7 +307,7 @@ void SDHNode::fatalErrorLoopHook() {
  * GripperServiceInterface
  ************************************************************************/
 /* Note:
- * The checks isInRunning(), (_sdh == 0) and (! _sdh->isConnected()) are not placed in one common function, because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty" function.
+ * The checks isInRunning(), (sdh_ == 0) and (! sdh_->isConnected()) are not placed in one common function, because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty" function.
  * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A preprocessor code generating macro is not exactly a nice and easily maintainable solution)
  */
 bool SDHNode::moveQ(const rw::math::Q& q) {
@@ -318,12 +318,12 @@ bool SDHNode::moveQ(const rw::math::Q& q) {
         return false;
     }
 
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (! _sdh->isConnected()) {
+    if (! sdh_->isConnected()) {
         CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
@@ -334,11 +334,11 @@ bool SDHNode::moveQ(const rw::math::Q& q) {
     }
 
     try {
-        _moveQ = q;
-        _moveStartTimer.resetAndResume();
+        moveQ_ = q;
+        moveStartTimer_.resetAndResume();
 
-        _sdh->moveCmd(_moveQ);
-        _nextState = MOVE_WAIT;
+        sdh_->moveCmd(moveQ_);
+        nextState_ = MOVE_WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
         CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
@@ -356,12 +356,12 @@ bool SDHNode::gripQ(const rw::math::Q& q) {
         return false;
     }
 
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (! _sdh->isConnected()) {
+    if (! sdh_->isConnected()) {
         CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
@@ -372,9 +372,9 @@ bool SDHNode::gripQ(const rw::math::Q& q) {
     }
 
     try {
-        _sdh->moveCmd(q);
+        sdh_->moveCmd(q);
         /* Do nothing; letting the SDH continue to apply force as part of its grasp */
-        _nextState = WAIT;
+        nextState_ = WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
         CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
@@ -393,12 +393,12 @@ bool SDHNode::setForceQ(const rw::math::Q& q) {
         return false;
     }
 
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (! _sdh->isConnected()) {
+    if (! sdh_->isConnected()) {
         CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
@@ -409,7 +409,7 @@ bool SDHNode::setForceQ(const rw::math::Q& q) {
     }
 
     try {
-        _sdh->setTargetQCurrent(q);
+        sdh_->setTargetQCurrent(q);
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
         CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
@@ -427,12 +427,12 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q) {
         return false;
     }
 
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (! _sdh->isConnected()) {
+    if (! sdh_->isConnected()) {
         CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
@@ -443,7 +443,7 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q) {
     }
 
     try {
-        _sdh->setTargetQVel(q);
+        sdh_->setTargetQVel(q);
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
         CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
@@ -459,19 +459,19 @@ bool SDHNode::stopMovement() {
         return false;
     }
 
-    if (_sdh == 0) {
+    if (sdh_ == 0) {
         CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
         return false;
     }
 
-    if (! _sdh->isConnected()) {
+    if (! sdh_->isConnected()) {
         CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
         return false;
     }
 
     try {
-        _sdh->stop();
-        _nextState = WAIT;
+        sdh_->stop();
+        nextState_ = WAIT;
     } catch (const rw::common::Exception& exp) {
         /* TODO: Digest the exp.what() string and find more appropriate error codes - or improve rwhw::SDHDriver to throw more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier to do error recovery. */
         CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
