@@ -10,6 +10,41 @@
 #include <vector>
 #include <tuple>
 
+namespace
+{
+/* FIXME:
+ * Remove hardcoded information regarding the targets and speeds are vectors or (random) indexing data structures  e.g.
+ * targets_t::size_t looping and such...
+ */
+template <typename targets_t, typename speeds_t, typename container_t>
+bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t& speeds, container_t& res)
+{
+  if (targets.size() != speeds.size())
+  {
+    ROS_WARN_STREAM("There are " << targets.size() << " targets and " << speeds.size()
+                                 << " speeds, but there should be the same amount of each!");
+    return false;
+  }
+
+  ROS_ASSERT(
+      targets.size() ==
+      speeds
+          .size()); /* Just an extra "safety" control to verify that our double indexing loop will behave as expected */
+  res.clear();
+  res.reserve(targets.size());
+
+  /* TODO:
+   * Perform the for-loop within a try-catch block to catch out-of-range access within the .at() call
+   */
+  for (typename targets_t::size_type index = 0; index < targets.size(); ++index)
+  {
+    res.push_back(std::make_tuple(caros::toRw(targets.at(index)), speeds.at(index)));
+  }
+
+  return true;
+}
+} // end namespace
+
 using namespace caros;
 
 SerialDeviceServiceInterface::SerialDeviceServiceInterface(ros::NodeHandle nodehandle)
@@ -113,38 +148,6 @@ bool SerialDeviceServiceInterface::initService()
 void SerialDeviceServiceInterface::publish(const caros_control_msgs::robot_state& state)
 {
   deviceStatePublisher_.publish(state);
-}
-
-/* FIXME:
- * Remove hardcoded information regarding the targets and speeds are vectors or (random) indexing data structures  e.g.
- * targets_t::size_t looping and such...
- */
-template <typename targets_t, typename speeds_t, typename container_t>
-bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t& speeds, container_t& res)
-{
-  if (targets.size() != speeds.size())
-  {
-    ROS_WARN_STREAM("There are " << targets.size() << " targets and " << speeds.size()
-                                 << " speeds, but there should be the same amount of each!");
-    return false;
-  }
-
-  ROS_ASSERT(
-      targets.size() ==
-      speeds
-          .size()); /* Just an extra "safety" control to verify that our double indexing loop will behave as expected */
-  res.clear();
-  res.reserve(targets.size());
-
-  /* TODO:
-   * Perform the for-loop within a try-catch block to catch out-of-range access within the .at() call
-   */
-  for (typename targets_t::size_type index = 0; index < targets.size(); ++index)
-  {
-    res.push_back(std::make_tuple(caros::toRw(targets.at(index)), speeds.at(index)));
-  }
-
-  return true;
 }
 
 /************************************************************************
