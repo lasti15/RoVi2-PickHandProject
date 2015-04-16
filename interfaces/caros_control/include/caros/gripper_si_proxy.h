@@ -1,12 +1,14 @@
 #ifndef CAROS_CONTROL_GRIPPER_SI_PROXY_H
 #define CAROS_CONTROL_GRIPPER_SI_PROXY_H
 
-#include <caros/exceptions.h>
+#include <caros/caros_service_client.h>
 #include <caros_control_msgs/gripper_state.h>
 
 #include <rw/math/Q.hpp>
 
 #include <ros/ros.h>
+
+#include <string>
 
 namespace caros
 {
@@ -20,8 +22,9 @@ class GripperSIProxy
    * @brief Constructor
    * @param[in] nodehandle
    * @param[in] devname The name of the CAROS gripper node
+   * @param[in] usePersistentConnections Define usage of persistent connections
    */
-  GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname);
+  GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
 
   //! Destructor
   virtual ~GripperSIProxy();
@@ -79,6 +82,13 @@ class GripperSIProxy
   bool stopMovement();
 
   /**
+   * @brief Close established (persistent) connections.
+   *
+   * @note Is mainly intended for debug purposes, to verify that the reconnect functionality is working as intended.
+   */
+  void closePersistentConnections();
+
+  /**
    * @brief Get the last reported joint configuration \b Q from the gripper
    * @returns The reported joint configuration of the gripper
    */
@@ -110,22 +120,21 @@ class GripperSIProxy
    *   Should something be protected instead of private?
    *   - What use cases would benefit from being able to access the service clients or the nodeHandle?
    */
- private:
+ protected:
+  ros::NodeHandle nodehandle_;
+  bool usePersistentConnections_;
+  std::string rosNamespace_;
+
   // services
-  ros::ServiceClient srvMoveQ_;
-  ros::ServiceClient srvGripQ_;
-  ros::ServiceClient srvSetForceQ_;
-  ros::ServiceClient srvSetVelocityQ_;
-  ros::ServiceClient srvStopMovement_;
+  caros::carosServiceClient srvMoveQ_;
+  caros::carosServiceClient srvGripQ_;
+  caros::carosServiceClient srvSetForceQ_;
+  caros::carosServiceClient srvSetVelocityQ_;
+  caros::carosServiceClient srvStopMovement_;
 
   // states
-  ros::Subscriber subGripperState_;
-
- private:
   void handleGripperState(const caros_control_msgs::gripper_state& state);
-
-  ros::NodeHandle nodeHnd_;
-
+  ros::Subscriber subGripperState_;
   // pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being
   // implemented within the SIProxy.
   caros_control_msgs::gripper_state pSV_gripperState_;
