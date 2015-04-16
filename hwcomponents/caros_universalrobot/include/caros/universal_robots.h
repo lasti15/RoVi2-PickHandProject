@@ -78,16 +78,16 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
    ************************************************************************/
   //! @copydoc caros::SerialDeviceServiceInterface::moveLin
   bool moveLin(const TransformAndSpeedContainer_t& targets);
-  //! @copydoc caros::SerialDeviceServiceInterface::movePTP
-  bool movePTP(const QAndSpeedContainer_t& targets);
-  //! @copydoc caros::SerialDeviceServiceInterface::movePTP_T
-  bool movePTP_T(const TransformAndSpeedContainer_t& targets);
+  //! @copydoc caros::SerialDeviceServiceInterface::movePtp
+  bool movePtp(const QAndSpeedContainer_t& targets);
+  //! @copydoc caros::SerialDeviceServiceInterface::movePtpT
+  bool movePtpT(const TransformAndSpeedContainer_t& targets);
   //! @copydoc caros::SerialDeviceServiceInterface::moveVelQ
   bool moveVelQ(const rw::math::Q& q_vel);
   //! @copydoc caros::SerialDeviceServiceInterface::moveVelT
   bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel);
-  //! @copydoc caros::SerialDeviceServiceInterface::moveLinFC
-  bool moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
+  //! @copydoc caros::SerialDeviceServiceInterface::moveLinFc
+  bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                  const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoQ
   bool moveServoQ(const QAndSpeedContainer_t& targets);

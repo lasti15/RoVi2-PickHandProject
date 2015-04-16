@@ -15,11 +15,11 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
   const std::string& getMostRecentFunctionCalled() const;
 
   bool moveLin(const TransformAndSpeedContainer_t& targets);
-  bool movePTP(const QAndSpeedContainer_t& targets);
-  bool movePTP_T(const TransformAndSpeedContainer_t& targets);
+  bool movePtp(const QAndSpeedContainer_t& targets);
+  bool movePtpT(const TransformAndSpeedContainer_t& targets);
   bool moveVelQ(const rw::math::Q& q_vel);
   bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel);
-  bool moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
+  bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                  const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain);
 
   bool moveServoQ(const QAndSpeedContainer_t& targets);

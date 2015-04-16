@@ -34,7 +34,7 @@ bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer
   return returnValue_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t& targets)
+bool SerialDeviceServiceInterfaceDummy::movePtp(const QAndSpeedContainer_t& targets)
 {
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
@@ -44,7 +44,7 @@ bool SerialDeviceServiceInterfaceDummy::movePTP(const QAndSpeedContainer_t& targ
   return returnValue_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::movePTP_T(const TransformAndSpeedContainer_t& targets)
+bool SerialDeviceServiceInterfaceDummy::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
@@ -74,7 +74,7 @@ bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D
   return returnValue_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::moveLinFC(const rw::math::Transform3D<>& posTarget,
+bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<>& posTarget,
                                                   const rw::math::Transform3D<>& offset,
                                                   const rw::math::Wrench6D<>& wrenchTarget,
                                                   const rw::math::Q& controlGain)
