@@ -23,6 +23,7 @@ class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
  private:
   bool returnValue_;
   bool causeError_;
+  std::string causingErrorMsg_;
   std::string mostRecentFunctionCalled_;
 };
 

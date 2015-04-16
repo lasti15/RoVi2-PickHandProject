@@ -1,10 +1,12 @@
 #include "serial_device_service_interface_dummy.h"
 #include <gtest/gtest.h>
-#include <stdexcept>
 
 SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue,
                                                                      const bool causeError)
-    : caros::SerialDeviceServiceInterface(nodehandle), returnValue_(returnValue), causeError_(causeError)
+    : caros::SerialDeviceServiceInterface(nodehandle),
+      returnValue_(returnValue),
+      causeError_(causeError),
+      causingErrorMsg_("Intentionally causing error - please ignore it")
 {
   /* make ROS publish the services */
   if (not SerialDeviceServiceInterface::configureInterface())
@@ -29,7 +31,7 @@ bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -39,7 +41,7 @@ bool SerialDeviceServiceInterfaceDummy::movePtp(const QAndSpeedContainer_t& targ
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -49,7 +51,7 @@ bool SerialDeviceServiceInterfaceDummy::movePtpT(const TransformAndSpeedContaine
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -59,7 +61,7 @@ bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q& q_vel)
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -69,7 +71,7 @@ bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -82,7 +84,7 @@ bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<>&
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -92,7 +94,7 @@ bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t& t
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -102,7 +104,7 @@ bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContai
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -112,7 +114,7 @@ bool SerialDeviceServiceInterfaceDummy::moveStart()
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -122,7 +124,7 @@ bool SerialDeviceServiceInterfaceDummy::moveStop()
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -132,7 +134,7 @@ bool SerialDeviceServiceInterfaceDummy::movePause()
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
@@ -142,7 +144,7 @@ bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(const bool value)
   mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
   if (causeError_)
   {
-    throw std::runtime_error("Causing error");
+    throw std::runtime_error(causingErrorMsg_);
   }
   return returnValue_;
 }
