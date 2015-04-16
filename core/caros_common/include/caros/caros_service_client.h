@@ -134,10 +134,10 @@ class carosServiceClient
       }
       createNewConnection = true;
     }
-    /* TODO: This also catches the case where a new persistent connection is to be created (it's falsely believing that
-     * the non-initialised connection was a non-persistent connection) */
     /* Switch from non-persistent to persistent connection */
-    else if (not serviceClient_.isPersistent() && usePersistentConnection_)
+    /* the .isValid() test is to make sure that this case is not wrongly chosen when a new persistent connection should
+     * be created */
+    else if (not serviceClient_.isPersistent() && serviceClient_.isValid() && usePersistentConnection_)
     {
       ROS_DEBUG_STREAM("Switching from non-persistent to persistent connection (id: " << connectionIdentifier_ << ")");
       createNewConnection = true;
@@ -171,6 +171,6 @@ class carosServiceClient
   bool usePersistentConnection_;
 };
 
-} // end namespace
+}  // end namespace
 
 #endif  // include guard
