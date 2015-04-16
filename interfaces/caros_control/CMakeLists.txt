@@ -100,6 +100,9 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest_gtest(serial_device_service_interface_proxy_unavailable_service test/serial_device_service_interface_proxy_unavailable_service.test test/serial_device_service_interface_proxy_unavailable_service.cpp test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_unavailable_service ${library_name} ${catkin_LIBRARIES})
 
+  add_rostest_gtest(serial_device_service_interface_proxy_persistent_connection test/serial_device_service_interface_proxy_persistent_connection.test test/serial_device_service_interface_proxy_persistent_connection.cpp test/serial_device_service_interface_dummy.cpp)
+  target_link_libraries(serial_device_service_interface_proxy_persistent_connection ${library_name} ${catkin_LIBRARIES})
+
   # GripperSIProxy
   add_rostest_gtest(gripper_service_interface_proxy test/gripper_service_interface_proxy.test test/gripper_service_interface_proxy.cpp test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy ${library_name} ${catkin_LIBRARIES})

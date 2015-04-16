@@ -176,8 +176,7 @@ class SerialDeviceSIProxy
   /**
    * @brief Close established (persistent) connections.
    *
-   * @note Is mainly intended for debug purposes, to verify that the connection reestablish functionality is working as
-   *intended.
+   * @note Is mainly intended for debug purposes, to verify that the reconnect functionality is working as intended.
    */
   void closePersistentConnections();
 
