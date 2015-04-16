@@ -1,3 +1,6 @@
+#ifndef CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
+#define CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
+
 #include <caros/proxy_services_test_setup.h>
 
 #include <caros/serial_device_si_proxy.h>
@@ -47,33 +50,6 @@ const services_t servicesToTest = {
 
 typedef SerialDeviceServiceInterfaceDummy D_t;
 typedef caros::SerialDeviceSIProxy P_t;
-}  // end namespace
-
-TEST(SerialDeviceSIProxy, servicesSuccess)
-{
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::ReturnTrue);
 }
 
-TEST(SerialDeviceSIProxy, servicesFailure)
-{
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::ReturnFalse);
-}
-
-TEST(SerialDeviceSIProxy, unavailableService)
-{
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::UnavailableService);
-}
-
-TEST(SerialDeviceSIProxy, badServiceCall)
-{
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::BadServiceCall);
-}
-
-int main(int argc, char *argv[])
-{
-  ros::init(argc, argv, "serial_device_service_interface_proxy");
-
-  testing::InitGoogleTest(&argc, argv);
-
-  return RUN_ALL_TESTS();
-}
+#endif  // include guard
