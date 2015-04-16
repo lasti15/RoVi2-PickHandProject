@@ -43,17 +43,22 @@ caros_common_msgs::rw_state toRos(const rw::kinematics::State& state)
   {
     caros_common_msgs::rw_state_data resData;
     resData.name = data->getName();
-    resData.size = data->size() * sizeof(double); /* This hardcoded sizeof should be provided by the 'data->' object, as the type used for storing the state data is highly implementation specific */
+    resData.size =
+        data->size() * sizeof(double); /* This hardcoded sizeof should be provided by the 'data->' object, as the type
+                                          used for storing the state data is highly implementation specific */
     ROS_DEBUG_STREAM("resData name: " << resData.name);
-    ROS_DEBUG_STREAM("resData size: " << resData.size << " where data->size = " << data->size() << " and sizeof(double) = " << sizeof(double));
+    ROS_DEBUG_STREAM("resData size: " << resData.size << " where data->size = " << data->size()
+                                      << " and sizeof(double) = " << sizeof(double));
     /* Preallocate the size */
     resData.data.reserve(resData.size);
 
     for (std::size_t index = 0; index < resData.size; ++index)
     {
-      /* Converting to uint8_t because the data in the state should just be considered a memory space and not necessarily consist of doubles, as it could as well be booleans and other sort of types */
+      /* Converting to uint8_t because the data in the state should just be considered a memory space and not
+       * necessarily consist of doubles, as it could as well be booleans and other sort of types */
       std::uint8_t binaryData = reinterpret_cast<const std::uint8_t*>(data->getData(state))[index];
-      ROS_DEBUG_STREAM("binaryData[" << index << "] = " << std::hex << std::setw(2) << static_cast<std::uint32_t>(binaryData));
+      ROS_DEBUG_STREAM("binaryData[" << index << "] = " << std::hex << std::setw(2)
+                                     << static_cast<std::uint32_t>(binaryData));
       resData.data.push_back(binaryData);
     }
     res.state_data.push_back(resData);
@@ -78,13 +83,18 @@ void toRw(const caros_common_msgs::rw_state& stateRos, rw::kinematics::State& st
       for (std::size_t index = 0; index < stateRosData.data.size(); ++index)
       {
         rawData[index] = stateRosData.data.at(index);
-        ROS_DEBUG_STREAM("rawData[" << index << "] = " << std::hex << std::setw(2) << static_cast<std::uint32_t>(rawData[index]));
+        ROS_DEBUG_STREAM("rawData[" << index << "] = " << std::hex << std::setw(2)
+                                    << static_cast<std::uint32_t>(rawData[index]));
       }
-      data->setData(state, reinterpret_cast<const double *>(rawData));
+      data->setData(state, reinterpret_cast<const double*>(rawData));
     }
     else
     {
-      ROS_ERROR_STREAM("Mismatch in data (i.e. payload) lengths between current state and the serialised state from ROS: ros_state_name=" << stateRosData.name << " ros_state_size=" << stateRosData.data.size() * sizeof(double) << " current_state_size=" << data->size());
+      ROS_ERROR_STREAM(
+          "Mismatch in data (i.e. payload) lengths between current state and the serialised state from ROS: "
+          "ros_state_name="
+          << stateRosData.name << " ros_state_size=" << stateRosData.data.size() * sizeof(double)
+          << " current_state_size=" << data->size());
     }
   }
   ROS_DEBUG_STREAM("ROS rw_state to RobWork state -end-");
@@ -177,8 +187,7 @@ geometry_msgs::Pose toRosPose(const rw::math::Transform3D<>& transform)
 rw::math::Transform3D<> toRw(const geometry_msgs::Pose& pose)
 {
   rw::math::Vector3D<> p(pose.position.x, pose.position.y, pose.position.z);
-  rw::math::Quaternion<> q(pose.orientation.x, pose.orientation.y, pose.orientation.z,
-                           pose.orientation.w);
+  rw::math::Quaternion<> q(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w);
   return rw::math::Transform3D<>(p, q);
 }
 
