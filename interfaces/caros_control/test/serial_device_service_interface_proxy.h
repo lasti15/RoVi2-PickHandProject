@@ -50,6 +50,6 @@ const services_t servicesToTest = {
 
 typedef SerialDeviceServiceInterfaceDummy D_t;
 typedef caros::SerialDeviceSIProxy P_t;
-}
+}  // end namespace
 
 #endif  // include guard

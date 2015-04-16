@@ -104,7 +104,19 @@ if(CATKIN_ENABLE_TESTING)
   target_link_libraries(serial_device_service_interface_proxy_persistent_connection ${library_name} ${catkin_LIBRARIES})
 
   # GripperSIProxy
-  add_rostest_gtest(gripper_service_interface_proxy test/gripper_service_interface_proxy.test test/gripper_service_interface_proxy.cpp test/gripper_service_interface_dummy.cpp)
-  target_link_libraries(gripper_service_interface_proxy ${library_name} ${catkin_LIBRARIES})
+  add_rostest_gtest(gripper_service_interface_proxy_services_success test/gripper_service_interface_proxy_services_success.test test/gripper_service_interface_proxy_services_success.cpp test/gripper_service_interface_dummy.cpp)
+  target_link_libraries(gripper_service_interface_proxy_services_success ${library_name} ${catkin_LIBRARIES})
+
+  add_rostest_gtest(gripper_service_interface_proxy_services_failure test/gripper_service_interface_proxy_services_failure.test test/gripper_service_interface_proxy_services_failure.cpp test/gripper_service_interface_dummy.cpp)
+  target_link_libraries(gripper_service_interface_proxy_services_failure ${library_name} ${catkin_LIBRARIES})
+
+  add_rostest_gtest(gripper_service_interface_proxy_bad_service_call test/gripper_service_interface_proxy_bad_service_call.test test/gripper_service_interface_proxy_bad_service_call.cpp test/gripper_service_interface_dummy.cpp)
+  target_link_libraries(gripper_service_interface_proxy_bad_service_call ${library_name} ${catkin_LIBRARIES})
+
+  add_rostest_gtest(gripper_service_interface_proxy_unavailable_service test/gripper_service_interface_proxy_unavailable_service.test test/gripper_service_interface_proxy_unavailable_service.cpp test/gripper_service_interface_dummy.cpp)
+  target_link_libraries(gripper_service_interface_proxy_unavailable_service ${library_name} ${catkin_LIBRARIES})
+
+  add_rostest_gtest(gripper_service_interface_proxy_persistent_connection test/gripper_service_interface_proxy_persistent_connection.test test/gripper_service_interface_proxy_persistent_connection.cpp test/gripper_service_interface_dummy.cpp)
+  target_link_libraries(gripper_service_interface_proxy_persistent_connection ${library_name} ${catkin_LIBRARIES})
 
 endif()

@@ -1,3 +1,6 @@
+#ifndef CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_PROXY_H
+#define CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_PROXY_H
+
 #include <caros/proxy_services_test_setup.h>
 
 #include <caros/gripper_si_proxy.h>
@@ -10,8 +13,6 @@
 #include <functional>
 #include <tuple>
 #include <string>
-
-using namespace caros::test;
 
 namespace
 {
@@ -34,31 +35,4 @@ typedef GripperServiceInterfaceDummy D_t;
 typedef caros::GripperSIProxy P_t;
 }  // end namespace
 
-TEST(GripperSIProxy, servicesSuccess)
-{
-  testServices<D_t, P_t, services_t>(servicesToTest, TestType::ReturnTrue);
-}
-
-TEST(GripperSIProxy, servicesFailure)
-{
-  testServices<D_t, P_t, services_t>(servicesToTest, TestType::ReturnFalse);
-}
-
-TEST(GripperSIProxy, unavailableService)
-{
-  testServices<D_t, P_t, services_t>(servicesToTest, TestType::UnavailableService);
-}
-
-TEST(GripperSIProxy, badServiceCall)
-{
-  testServices<D_t, P_t, services_t>(servicesToTest, TestType::BadServiceCall);
-}
-
-int main(int argc, char *argv[])
-{
-  ros::init(argc, argv, "gripper_service_interface_proxy");
-
-  testing::InitGoogleTest(&argc, argv);
-
-  return RUN_ALL_TESTS();
-}
+#endif // include guard
