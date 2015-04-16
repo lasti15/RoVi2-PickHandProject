@@ -14,35 +14,8 @@
 #include <caros_control_msgs/serial_device_move_servo_q.h>
 #include <caros_control_msgs/serial_device_move_servo_t.h>
 
-#include <sstream>
-#include <cmath>
-
 #define SPEED_MIN 0.0f
 #define SPEED_MAX 100.0f
-
-namespace
-{
-/* If doing this as a do {...} while(0) macro, then there wouldn't be any type enforcement */
-/* Throw an appropriate exception if the value is not within [min;max] */
-void verifyValueIsWithin(const float& value, const float& min, const float& max)
-{
-  ROS_DEBUG_STREAM("Verifying that the value '" << value << "' is within [" << min << ";" << max << "]");
-  if (std::isnan(min) || std::isnan(max))
-  {
-    throw std::invalid_argument("Make sure both min and max are not NaN's");
-  }
-  else if (std::isnan(value))
-  {
-    throw std::invalid_argument("The value is considered NaN");
-  }
-  else if (not(std::isgreaterequal(value, min) && std::islessequal(value, max)))
-  {
-    std::ostringstream oss;
-    oss << "The value is not within [" << min << ";" << max << "]";
-    throw std::range_error(oss.str());
-  }
-}
-}  // end namespace
 
 using namespace caros;
 

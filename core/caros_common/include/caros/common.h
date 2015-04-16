@@ -13,6 +13,8 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
 
+#include <stdexcept>
+
 /**
  * \brief CAROS specific functionality
  */
@@ -144,6 +146,19 @@ rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname);
  * @return pointer to new state or NULL if no state information is available.
  */
 rw::common::Ptr<rw::kinematics::State> getState();
+
+/**
+ * @brief Verify that the value is within the range [min;max]. If the value is not within the range, then appropriate
+exceptions will be thrown - behaving mostly as a runtime assertion.
+ * @param[in] value the value to be compared
+ * @param[in] min the lower boundary of the range
+ * @param[in] max the upper boundary of the range
+ *
+ * @throws std::invalid_argument if any of the supplied values are NaN's
+ * @throws std::range_error if the value is not within the specified range [min;max]
+ */
+/* Not doing this as a do {...} while(0) macro, as there then wouldn't be any type enforcement */
+void verifyValueIsWithin(const float& value, const float& min, const float& max);
 
 }  // namespace
 

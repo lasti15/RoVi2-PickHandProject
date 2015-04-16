@@ -15,6 +15,8 @@
 #include <ros/ros.h>
 
 #include <cstdint>
+#include <cmath>
+#include <sstream>
 
 namespace caros
 {
@@ -340,6 +342,28 @@ rw::common::Ptr<rw::kinematics::State> getState()
   rw::kinematics::State state = caros::toRw(service.response.state, wc);
 
   return ownedPtr(new rw::kinematics::State(state));
+}
+
+/************************************************************************
+ * Utility
+ ************************************************************************/
+void verifyValueIsWithin(const float& value, const float& min, const float& max)
+{
+  ROS_DEBUG_STREAM("Verifying that the value '" << value << "' is within [" << min << ";" << max << "]");
+  if (std::isnan(min) || std::isnan(max))
+  {
+    throw std::invalid_argument("Make sure both min and max are not NaN's");
+  }
+  else if (std::isnan(value))
+  {
+    throw std::invalid_argument("The value is considered NaN");
+  }
+  else if (not(std::isgreaterequal(value, min) && std::islessequal(value, max)))
+  {
+    std::ostringstream oss;
+    oss << "The value is not within [" << min << ";" << max << "]";
+    throw std::range_error(oss.str());
+  }
 }
 
 }  // namespace
