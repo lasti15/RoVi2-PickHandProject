@@ -58,7 +58,7 @@ bool UniversalRobots::activateHook()
   /* TODO:
    * FIXME:
    * Should ftFrameName default to WORLD or should the ROS parameter be explicitly set if ftFrame_ is to be used (i.e.
-   * the moveLinFC function controls whether ftFrame_ is NULL or not before doing anything...)?
+   * the moveLinFc function controls whether ftFrame_ is NULL or not before doing anything...)?
    */
   std::string ftFrameName;
   nodehandle_.param("FTFrame", ftFrameName, std::string("WORLD"));
@@ -133,7 +133,7 @@ bool UniversalRobots::activateHook()
   {
     /* TODO:
      * Should this be a fatal error or should it just be a warning and then have the actual functionality supporting
-     * this (i.e. moveLinFC) verify that ftFrame_ is indeed not NULL?
+     * this (i.e. moveLinFc) verify that ftFrame_ is indeed not NULL?
      */
     CAROS_FATALERROR("Couldn't find the ftFrame '" << ftFrameName << "' in the workcell!", URNODE_NO_SUCH_FRAME);
     return false;
@@ -409,9 +409,9 @@ bool UniversalRobots::moveLin(const TransformAndSpeedContainer_t& targets)
   return true;
 }
 
-bool UniversalRobots::movePTP(const QAndSpeedContainer_t& targets)
+bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
 {
-  ROS_DEBUG_STREAM("movePTP with " << targets.size() << " target(s).");
+  ROS_DEBUG_STREAM("movePtp with " << targets.size() << " target(s).");
 
   for (const auto& target : targets)
   {
@@ -421,7 +421,7 @@ bool UniversalRobots::movePTP(const QAndSpeedContainer_t& targets)
   return true;
 }
 
-bool UniversalRobots::movePTP_T(const TransformAndSpeedContainer_t& targets)
+bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
   /* FIXME:
    * [ If locking is necessary ] Replace the boost mutex scoped_lock with std::unique_lock (and the mutex_ type, etc. to
@@ -441,7 +441,7 @@ bool UniversalRobots::movePTP_T(const TransformAndSpeedContainer_t& targets)
     std::vector<rw::math::Q> solutions = iksolver_->solve(transform, state_);
     if (solutions.empty())
     {
-      ROS_WARN_STREAM("movePTP_T: Unable to find IK solution for: " << transform << " with qcurrent: " << qcurrent_);
+      ROS_WARN_STREAM("movePtpT: Unable to find IK solution for: " << transform << " with qcurrent: " << qcurrent_);
       return false;
     }
     ur_.moveQ(solutions.front(), std::get<1>(target));
@@ -497,7 +497,7 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
 }
 
 /* Forwarding the movement to the URServiceInterface function servoT */
-bool UniversalRobots::moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
+bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                                 const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain)
 {
   ROS_ERROR_STREAM(

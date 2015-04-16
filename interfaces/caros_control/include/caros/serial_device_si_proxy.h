@@ -1,14 +1,12 @@
 #ifndef CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
 #define CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
 
-#include <caros/exceptions.h>
+#include <caros/caros_service_client.h>
 #include <caros_control_msgs/robot_state.h>
 
 #include <rw/math.hpp>
 
 #include <ros/ros.h>
-
-#include <stdexcept>
 
 /* TODO:
  * Could make the 'caros_control_msgs::robot_state pRobotState_' available to the user (as a copy), so if this SIP is
@@ -30,8 +28,10 @@ class SerialDeviceSIProxy
    * @brief Constructor
    * @param[in] nodehandle
    * @param[in] devname The name of the CAROS serialdevice node
+   * @param[in] usePersistentConnections Define usage of persistent connections
    */
-  SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname);
+  SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                      const bool usePersistentConnections = true);
 
   //! destructor
   virtual ~SerialDeviceSIProxy();
@@ -60,7 +60,7 @@ class SerialDeviceSIProxy
    *serial device is not fully working, or the serial device has not announced this service yet.
    * @throws badServiceCall when an error happened while communicating with the serial device.
    */
-  bool movePTP(const rw::math::Q& target, const float speed = 100.0f, const float blend = 0.0f);
+  bool movePtp(const rw::math::Q& target, const float speed = 100.0f, const float blend = 0.0f);
 
   /**
    * @brief move robot from point to point but using a pose as target (requires invkin)
@@ -73,7 +73,7 @@ class SerialDeviceSIProxy
    *serial device is not fully working, or the serial device has not announced this service yet.
    * @throws badServiceCall when an error happened while communicating with the serial device.
    */
-  bool movePTP_T(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
+  bool movePtpT(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
 
   /**
    * @brief move robot by some implementation specific distance based on the provided joint velocities
@@ -139,7 +139,7 @@ class SerialDeviceSIProxy
    *serial device is not fully working, or the serial device has not announced this service yet.
    * @throws badServiceCall when an error happened while communicating with the serial device.
    */
-  bool moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
+  bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                  const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain);
 
   /**
@@ -174,10 +174,17 @@ class SerialDeviceSIProxy
   bool setSafeModeEnabled(const bool enable);
 
   /**
+   * @brief Close established (persistent) connections.
+   *
+   * @note Is mainly intended for debug purposes, to verify that the reconnect functionality is working as intended.
+   */
+  void closePersistentConnections();
+
+  /**
    * @brief Get the last reported joint configuration
    *
    * @returns the joint configuration (the type of values are very implementation specific, but as a guideline it's
-   *recommended to keep angles in radians, and distances in meters)
+   *highly recommended to keep angles in radians, and distances in meters)
    *
    * @note Make sure to look at getTimeStamp for ensuring the sample is "current enough"
    */
@@ -212,30 +219,29 @@ class SerialDeviceSIProxy
 
  protected:
   ros::NodeHandle nodehandle_;
-  ros::ServiceClient servoService_;
+
+  bool usePersistentConnections_;
+  std::string rosNamespace_;
 
   // services
-  ros::ServiceClient srvStop_;
-  ros::ServiceClient srvStart_;
-  ros::ServiceClient srvPause_;
+  caros::carosServiceClient srvMoveLinFc_;
+  caros::carosServiceClient srvMoveLin_;
+  caros::carosServiceClient srvMovePtp_;
+  caros::carosServiceClient srvMovePtpT_;
+  caros::carosServiceClient srvMoveServoQ_;
+  caros::carosServiceClient srvMoveServoT_;
+  caros::carosServiceClient srvMoveVelQ_;
+  caros::carosServiceClient srvMoveVelT_;
 
-  ros::ServiceClient srvMovePTP_;
-  ros::ServiceClient srvMovePTP_T_;
-  ros::ServiceClient srvMoveLin_;
-  ros::ServiceClient srvMoveLinFC_;
-  ros::ServiceClient srvMoveVelQ_;
-  ros::ServiceClient srvMoveVelT_;
-  ros::ServiceClient srvMoveServoQ_;
-  ros::ServiceClient srvMoveServoT_;
+  caros::carosServiceClient srvPause_;
+  caros::carosServiceClient srvStart_;
+  caros::carosServiceClient srvStop_;
 
-  ros::ServiceClient srvSetSafeModeEnabled_;
+  caros::carosServiceClient srvSetSafeModeEnabled_;
 
   // states
-  ros::Subscriber subRobotState_;
-
- private:
   void handleRobotState(const caros_control_msgs::robot_state& state);
-
+  ros::Subscriber subRobotState_;
   caros_control_msgs::robot_state pRobotState_;
 };
 }

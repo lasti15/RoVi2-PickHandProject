@@ -72,8 +72,8 @@ bool SerialDeviceServiceInterface::configureInterface()
 
 bool SerialDeviceServiceInterface::initService()
 {
-  if (srvMoveLin_ || srvMovePTP_ || srvMovePTP_T_ || srvMoveVelQ_ || srvMoveVelT_ || srvMoveServoQ_ || srvMoveServoT_ ||
-      srvMoveLinFC_ || srvMoveStart_ || srvMoveStop_ || srvMovePause_ || srvSetSafeModeEnabled_ ||
+  if (srvMoveLin_ || srvMovePtp_ || srvMovePtpT_ || srvMoveVelQ_ || srvMoveVelT_ || srvMoveServoQ_ || srvMoveServoT_ ||
+      srvMoveLinFc_ || srvMoveStart_ || srvMoveStop_ || srvMovePause_ || srvSetSafeModeEnabled_ ||
       deviceStatePublisher_)
   {
     ROS_WARN_STREAM(
@@ -92,11 +92,11 @@ bool SerialDeviceServiceInterface::initService()
   srvMoveLin_ = nodehandle_.advertiseService("move_lin", &SerialDeviceServiceInterface::moveLinHandle, this);
   ROS_ERROR_STREAM_COND(!srvMoveLin_, "The move_lin service is empty!");
 
-  srvMovePTP_ = nodehandle_.advertiseService("move_ptp", &SerialDeviceServiceInterface::movePTPHandle, this);
-  ROS_ERROR_STREAM_COND(!srvMovePTP_, "The move_ptp service is empty!");
+  srvMovePtp_ = nodehandle_.advertiseService("move_ptp", &SerialDeviceServiceInterface::movePtpHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMovePtp_, "The move_ptp service is empty!");
 
-  srvMovePTP_T_ = nodehandle_.advertiseService("move_ptp_t", &SerialDeviceServiceInterface::movePTP_THandle, this);
-  ROS_ERROR_STREAM_COND(!srvMovePTP_T_, "The move_ptp_t service is empty!");
+  srvMovePtpT_ = nodehandle_.advertiseService("move_ptp_t", &SerialDeviceServiceInterface::movePtpTHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMovePtpT_, "The move_ptp_t service is empty!");
 
   srvMoveVelQ_ = nodehandle_.advertiseService("move_vel_q", &SerialDeviceServiceInterface::moveVelQHandle, this);
   ROS_ERROR_STREAM_COND(!srvMoveVelQ_, "The move_vel_q service is empty!");
@@ -110,8 +110,8 @@ bool SerialDeviceServiceInterface::initService()
   srvMoveServoT_ = nodehandle_.advertiseService("move_servo_t", &SerialDeviceServiceInterface::moveServoTHandle, this);
   ROS_ERROR_STREAM_COND(!srvMoveServoT_, "The move_servo_t service is empty!");
 
-  srvMoveLinFC_ = nodehandle_.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFCHandle, this);
-  ROS_ERROR_STREAM_COND(!srvMoveLinFC_, "The move_lin_fc service is empty!");
+  srvMoveLinFc_ = nodehandle_.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFcHandle, this);
+  ROS_ERROR_STREAM_COND(!srvMoveLinFc_, "The move_lin_fc service is empty!");
 
   srvMoveStart_ = nodehandle_.advertiseService("move_start", &SerialDeviceServiceInterface::moveStartHandle, this);
   ROS_ERROR_STREAM_COND(!srvMoveStart_, "The move_start service is empty!");
@@ -126,8 +126,8 @@ bool SerialDeviceServiceInterface::initService()
       "set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
   ROS_ERROR_STREAM_COND(!srvSetSafeModeEnabled_, "The set_safe_mode_enabled service is empty!");
 
-  if (srvMoveLin_ && srvMovePTP_ && srvMovePTP_T_ && srvMoveVelQ_ && srvMoveVelT_ && srvMoveServoQ_ && srvMoveServoT_ &&
-      srvMoveLinFC_ && srvMoveStart_ && srvMoveStop_ && srvMovePause_ && srvSetSafeModeEnabled_ &&
+  if (srvMoveLin_ && srvMovePtp_ && srvMovePtpT_ && srvMoveVelQ_ && srvMoveVelT_ && srvMoveServoQ_ && srvMoveServoT_ &&
+      srvMoveLinFc_ && srvMoveStart_ && srvMoveStop_ && srvMovePause_ && srvSetSafeModeEnabled_ &&
       deviceStatePublisher_)
   {
     /* Everything seems to be properly initialised */
@@ -175,13 +175,13 @@ bool SerialDeviceServiceInterface::moveLinHandle(caros_control_msgs::serial_devi
   return true;
 }
 
-bool SerialDeviceServiceInterface::movePTPHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
+bool SerialDeviceServiceInterface::movePtpHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
                                                  caros_control_msgs::serial_device_move_ptp::Response& response)
 {
   QAndSpeedContainer_t res;
   if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res))
   {
-    response.success = movePTP(res);
+    response.success = movePtp(res);
   }
   else
   {
@@ -191,13 +191,13 @@ bool SerialDeviceServiceInterface::movePTPHandle(caros_control_msgs::serial_devi
   return true;
 }
 
-bool SerialDeviceServiceInterface::movePTP_THandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
+bool SerialDeviceServiceInterface::movePtpTHandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
                                                    caros_control_msgs::serial_device_move_ptp_t::Response& response)
 {
   TransformAndSpeedContainer_t res;
   if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res))
   {
-    response.success = movePTP_T(res);
+    response.success = movePtpT(res);
   }
   else
   {
@@ -262,7 +262,7 @@ bool SerialDeviceServiceInterface::moveServoTHandle(caros_control_msgs::serial_d
   return true;
 }
 
-bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
+bool SerialDeviceServiceInterface::moveLinFcHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
                                                    caros_control_msgs::serial_device_move_lin_fc::Response& response)
 {
   rw::math::Transform3D<> posTarget = caros::toRw(request.pos_target);
@@ -290,7 +290,7 @@ bool SerialDeviceServiceInterface::moveLinFCHandle(caros_control_msgs::serial_de
                         request.ctrl_gains.at(2), request.ctrl_gains.at(3), request.ctrl_gains.at(4),
                         request.ctrl_gains.at(5));
 
-  response.success = moveLinFC(posTarget, offset, wrenchTarget, selection);
+  response.success = moveLinFc(posTarget, offset, wrenchTarget, selection);
 
   return true;
 }

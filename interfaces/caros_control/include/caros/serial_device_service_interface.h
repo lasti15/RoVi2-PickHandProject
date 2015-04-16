@@ -71,15 +71,15 @@ class SerialDeviceServiceInterface
   //! @brief move robot in a linear Cartesian path
   virtual bool moveLin(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from point to point
-  virtual bool movePTP(const QAndSpeedContainer_t& targets) = 0;
+  virtual bool movePtp(const QAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from point to point but using a pose as target (require invkin)
-  virtual bool movePTP_T(const TransformAndSpeedContainer_t& targets) = 0;
+  virtual bool movePtpT(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief move robot in a servoing fasion specifying joint velocity targets
   virtual bool moveVelQ(const rw::math::Q& q_vel) = 0;
   //! @brief move robot in a servoing fasion specifying a velocity screw in tool coordinates
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
   //! @brief move robot with a hybrid position/force control
-  virtual bool moveLinFC(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
+  virtual bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                          const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain) = 0;
 
   /* TODO:
@@ -127,10 +127,10 @@ class SerialDeviceServiceInterface
   bool moveLinHandle(caros_control_msgs::serial_device_move_lin::Request& request,
                      caros_control_msgs::serial_device_move_lin::Response& response);
 
-  bool movePTPHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
+  bool movePtpHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
                      caros_control_msgs::serial_device_move_ptp::Response& response);
 
-  bool movePTP_THandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
+  bool movePtpTHandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
                        caros_control_msgs::serial_device_move_ptp_t::Response& response);
 
   bool moveVelQHandle(caros_control_msgs::serial_device_move_vel_q::Request& request,
@@ -145,7 +145,7 @@ class SerialDeviceServiceInterface
   bool moveServoTHandle(caros_control_msgs::serial_device_move_servo_t::Request& request,
                         caros_control_msgs::serial_device_move_servo_t::Response& response);
 
-  bool moveLinFCHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
+  bool moveLinFcHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
                        caros_control_msgs::serial_device_move_lin_fc::Response& response);
 
   bool moveStartHandle(caros_common_msgs::empty_srv::Request& request,
@@ -166,11 +166,11 @@ class SerialDeviceServiceInterface
   ros::Publisher deviceStatePublisher_;
 
   ros::ServiceServer srvMoveLin_;
-  ros::ServiceServer srvMovePTP_;
-  ros::ServiceServer srvMovePTP_T_;
+  ros::ServiceServer srvMovePtp_;
+  ros::ServiceServer srvMovePtpT_;
   ros::ServiceServer srvMoveVelQ_;
   ros::ServiceServer srvMoveVelT_;
-  ros::ServiceServer srvMoveLinFC_;
+  ros::ServiceServer srvMoveLinFc_;
   ros::ServiceServer srvMoveServoQ_;
   ros::ServiceServer srvMoveServoT_;
 
