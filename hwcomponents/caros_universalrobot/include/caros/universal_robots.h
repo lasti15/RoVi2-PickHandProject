@@ -123,7 +123,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
 
  private:
   ros::NodeHandle nodehandle_;
-  //    ros::Rate loopRate_;
+
   rw::models::WorkCell::Ptr workcell_;
   rw::models::Device::Ptr device_;
   rw::math::Q qcurrent_; /* Updated in runLoopHook() */
@@ -142,20 +142,8 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
       state_; /* Updated as needed by calling device_->setQ(qcurrent_, state_) or some other q-configuration */
 
   bool useFTCollisionDetection_;
-  //    double driverTimeOffset_;
 
-  //    double dt_;
-
-  //    //rwlibs::algorithms::XQPController::Ptr xqp_;
-  //    //rw::math::Transform3D<> servoTarget_;
-  //    //rw::math::VelocityScrew6D<> servoVelocity_;
-
-  //    bool updateFTBias();
-
-  //    //void servo();
   rw::math::QMetric::Ptr q2cmetric_;
-
-  //    std::string errorMsg_;
 };
 }
 #endif  // include guard
