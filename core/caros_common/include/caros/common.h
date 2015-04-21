@@ -120,7 +120,13 @@ void toRw(const caros_common_msgs::rw_state& stateRos, rw::kinematics::State& st
 rw::kinematics::State toRw(const caros_common_msgs::rw_state& state, const rw::models::WorkCell::Ptr wc);
 
 /**
- * @} end of group
+ * @}
+ */
+
+/**
+ * \addtogroup Utility CAROS Utility Functions
+ * Utility functions for various CAROS related tasks, such as obtaining a workcell
+ * @{
  */
 
 /**
@@ -163,6 +169,9 @@ exceptions will be thrown - behaving mostly as a runtime assertion.
 /* Not doing this as a do {...} while(0) macro, as there then wouldn't be any type enforcement */
 void verifyValueIsWithin(const float& value, const float& min, const float& max);
 
+/**
+ * @}
+ */
 }  // namespace
 
 #endif /* CAROS_COMMON_COMMON_H */
