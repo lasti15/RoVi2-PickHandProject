@@ -12,10 +12,10 @@
   </group>
 
   <group>
-    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo_using_SerialDeviceSIP">
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo_using_serial_device_sip">
       <arg name="deviceName" value="UR1" />
     </include>
-    <node pkg="caros_universalrobot" type="simple_caros_universalrobot_demo_using_SerialDeviceSIP" name="caros_universalrobot_simple_demo_using_SerialDeviceSIP" required="true">
+    <node pkg="caros_universalrobot" type="simple_caros_universalrobot_demo_using_serial_device_sip" name="caros_universalrobot_simple_demo_using_serial_device_sip" required="true">
       <param name="qChange" type="double" value="0.3" /> <!-- This could be split into each joint -->
       <param name="steps" type="int" value="20" />
       <param name="movements" type="int" value="5" />

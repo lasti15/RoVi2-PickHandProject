@@ -456,9 +456,9 @@ bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel)
   ROS_ERROR_STREAM("Current implementation does not follow the specification!");
   return false;
 
-/************************************************************************
- * Old implementation
- ************************************************************************/
+/******************************
+ * Old Implementation
+ ******************************/
 #if 0
     /* TODO:
      * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
@@ -474,9 +474,9 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
   ROS_ERROR_STREAM("Current implementation has not been verified to follow the specification!");
   return false;
 
-/************************************************************************
- * Old implementation
- ************************************************************************/
+/******************************
+ * Old Implementation
+ ******************************/
 #if 0
     /* FIXME: Use c++11 mutex and unique_lock */
 //	boost::mutex::scoped_lock lock(mutex_);
@@ -504,9 +504,9 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
       "Current implementation has not been verified to follow the specification nor been tested in CAROS!");
   return false;
 
-/************************************************************************
- * Implementation
- ************************************************************************/
+/******************************
+ * Old Implementation
+ ******************************/
 #if 0
     if (ftFrame_ == NULL) {
         ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
