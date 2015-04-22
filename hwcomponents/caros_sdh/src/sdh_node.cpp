@@ -399,7 +399,7 @@ void SDHNode::fatalErrorLoopHook()
 /* Note:
  * The checks isInRunning(), (sdh_ == 0) and (! sdh_->isConnected()) are not placed in one common function, because the
  * CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty" function.
- * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A
+ * When a more appropriate method that can reduce this code duplication is found, then it should be implemented! (A
  * preprocessor code generating macro is not exactly a nice and easily maintainable solution)
  */
 bool SDHNode::moveQ(const rw::math::Q& q)
