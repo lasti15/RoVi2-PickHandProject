@@ -21,7 +21,7 @@ class carosServiceClient
 {
  public:
   /**
-   * @breif Constructor
+   * @brief Constructor
    * @param[in] nodehandle used to obtain/create ros::ServiceClient object (could be converted into a version that
    * doesn't require a nodehandle)
    * @param[in] connectionIdentifier specifying the service name to connect to (excluding the namespace)

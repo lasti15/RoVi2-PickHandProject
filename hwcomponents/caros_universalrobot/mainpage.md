@@ -1,62 +1,80 @@
-
 \mainpage
-\htmlinclude manifest.html
 
 [TOC]
 
-This component enables the stereo calibration of kinect cameras using the standard 
-stereo calibration component from ros (camera__calibration).
+caros_universalrobot is a ROS node for controlling a physical UniversalRobot. A few interfaces are available for controlling the robot.
 
-Since the kinect cannot stream both at the same time this component will buffer one stream
-and forward the other stream. It will also allow one to switch between which stream is forwarded 
-and which stream is buffered. Finally, it allows one to grab a single image from the buffered 
-stream which will be synchronized with the forwarded stream. 
+# Interfaces - how to use this node #
+A few interfaces (i.e. ways to control the robot through ROS services) are supported.
+## caros::SerialDeviceServiceInterface ##
+The @ref caros::SerialDeviceServiceInterface interface is supported to some extent. The functionalities that have not been tested or verified are disabled (i.e. they will not respond with a proper acknowledgment and output a ROS ERROR message). The status of the missing services can be seen below:
+| Service | Disabled | Not Implemented |
+| ------- | :------: | :-------------: |
+| move_vel_q  | x |   |
+| move_vel_t  |   | x |
+| move_lin_fc | x |   |
+| move_start  |   | x |
+| move_pause  |   | x |
+| set_safe_mode_enabled |   | x |
 
-This firstly enables one to use the standard ros stereo calibration gui but also allow
-one to more clearly control which images to use in the stereo calibration. 
+## URServiceInterface ##
+The @ref URServiceInterface interface is supported, but most of the functionalities, especially the force mode functions, have not been tested yet.
 
+# Requirements #
+RobWorkHardware with the *universalrobots* component enabled, is required and can be obtained from http://www.robwork.dk
 
-# Generic kinect calibration process # 
+# Launching the node #
+The CAROS UniversalRobot node can be launched by using the following:
 
-First use openni to start the kinect camera drivers 
+    roslaunch caros_universalrobot caros_ur.launch
 
-	roslaunch openni__launch openni.launch
+Currently the launch script is complaining if no scene (workcell) is provided. The scene should be specified on the parameter server according to @ref caros::getWorkCell. To use the scene specified through the parameter server, then use:
 
-This should initialize the camera and start publishing images on /camera/rgb and /camera/ir.
+    roslaunch caros_universalrobot caros_ur.launch set_workcell:=0
 
-Next start the kinect__calibration component.
+Or specify the scene to use, when launching the node:
 
-	rosrun kinect__calibration kinect__stereo__camera
+    roslaunch caros_universalrobot caros_ur.launch workcell_path:=/path/to/the/scene_or_workcell.xml
 
-This component will start publishing two new image streams /camera/right and /camera/left, where
-right is the rgb camera and ir is the left camera. The terminal in which this component
-runs will be used for controlling the image streams.
+## Parameters ##
+The following parameters are supported:
+| Parameter | Description |
+| --------- | ----------- |
+| deviceName | The name of the robot device within the scene |
+| FTFrame | The name of the force/torque frame in the scene |
+| IP | IP of the robot to control |
+| callbackPort | Port (on the computer/host) to be used for communicating with the robot |
+| callbackIP | The IP of the computer/host that should communicate with the robot |
+| WrenchTopic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) |
 
-Finally start the standard ros stereo calibration component and remember to edit the --size 
-and --square attributes to fit the physical attributes of your calibration plate. See 
-[ROS stereo calibration](http://www.ros.org/wiki/camera_calibration/Tutorials/StereoCalibration) for 
-more details.     
+# Small demo(s) #
+To quickly and easily verify that the communication with the robot is working, then there are one or more simple demos that can be run. The expected behaviour should be both observed and verified by the user.
+## Available demo(s) ##
+| Demo | Expected behaviour | Notes |
+| ---- | ------------------ | ----- |
+| simple_demo_using_serial_device_sip | Moving the robot arm forth and back linearly in the joint-configuration space. | None |
 
-	rosrun camera__calibration cameracalibrator.py --size 4x6 --square 0.0518 
-		   right:=/camera/right/image left:=/camera/left/image right__camera:=/camera/right left__camera:=/camera/left 
+### simple_demo_using_serial_device_sip ###
+| Parameter | Description |
+| --------- | ----------- |
+| qChange | The overall change in the joint-configuration space |
+| steps | The number of steps to take while traversing the path |
+| movements | The number of repetitions to perform |
 
-Now the stereo camera view should startup and you should see something like:
+## Launching the demo(s) ##
+In order to make ROS properly find the demos, then the <your_catkin_workspace>/devel/setup.bash file should be sourced. If standing in your catkin workspace then it's as simple as (if you are using BASH or similar shell - default on Ubuntu):
 
-![RGB view of stereo calibration](images/first-view-stereo.png)
+    source devel/setup.bash
 
-Now go to the terminal of kinect__calibration and press s. This should switch the streaming from 
-RGB to IR as in the following image:
+To launch the demos:
 
-![IR view of stereo calibration](images/second-view-stereo.png)
+    roslaunch caros_universalrobot <demo name>.test
 
-Now if the calibration board is detected in both image streams press 'g'. This will publish the buffered image 
-for roughly 1 second which is enough for the stereo calibration to add a sample. If a sample was added an output 
-similar to the following should be displayed in the camera__calibration terminal 
-	
-	...
-	*** Added sample 1, p_x = 0.383, p_y = 0.549, p_size = 0.165, skew = 0.008
-	...
- 
+For example to launch the simple_demo_using_serial_device_sip:
 
-# Marvin kinect calibration process #
+    roslaunch caros_universalrobot simple_demo_using_serial_device_sip.test
 
+### Using debug verbosity ###
+To enable debug verbosity and thus hopefully make it easier to diagnose issues, then a rosconsole debug configuration file has to be present (see https://gitlab.com/caro-sdu/caros/wikis/Tests#example-rosconsole_debug-conf):
+
+    ROSCONSOLE_CONFIG_FILE=/path/to/rosconsole_debug.conf roslaunch caros_universalrobot simple_demo_using_serial_device_sip.test
