@@ -138,10 +138,10 @@ bool SDHNode::configureSDHDevice()
                             << positionLimits.first.size() << " and second contains " << positionLimits.second.size()
                             << " elements.");
 
-  ROS_INFO_STREAM("Lower position limits: " << positionLimits.first);
-  ROS_INFO_STREAM("Upper position limits: " << positionLimits.second);
-  ROS_INFO_STREAM("Velocity limits: " << velocityLimits);
-  ROS_INFO_STREAM("Current limits: " << currentLimits);
+  ROS_DEBUG_STREAM("Lower position limits: " << positionLimits.first);
+  ROS_DEBUG_STREAM("Upper position limits: " << positionLimits.second);
+  ROS_DEBUG_STREAM("Velocity limits: " << velocityLimits);
+  ROS_DEBUG_STREAM("Current limits: " << currentLimits);
 
   /* TODO: Debug information on what was configured accoringly to the parameter server? */
   return true;
