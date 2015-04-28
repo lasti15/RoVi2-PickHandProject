@@ -4,8 +4,9 @@ project(caros_sdh)
 ########################################################################
 #### Local Variables
 ########################################################################
-set(library_name ${PROJECT_NAME})
+set(node_name "${PROJECT_NAME}_node")
 set(SHOULD_BUILD_CAROS_SDH 1)
+
 
 ########################################################################
 #### Catkin Packages
@@ -84,11 +85,9 @@ if (SHOULD_BUILD_CAROS_SDH)
     ${catkin_INCLUDE_DIRS}
     )
 
-  ########################################################################
-  #### SDH Node
-  ########################################################################
-  add_executable(sdh_node src/sdh_main.cpp src/sdh_node.cpp)
-  target_link_libraries(sdh_node
+  add_executable(${node_name} src/sdh_main.cpp src/sdh_node.cpp)
+
+  target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${SDH_LIBRARY}
@@ -98,7 +97,7 @@ if (SHOULD_BUILD_CAROS_SDH)
     ${catkin_LIBRARIES}
     )
   # Add dependencies on the caros_common and caros_control targets (those are the make-targets for producing the libraries that are being linked with)
-  add_dependencies(sdh_node
+  add_dependencies(${node_name}
     caros_common
     caros_control
     )
