@@ -1,7 +1,7 @@
 #ifndef CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_PROXY_H
 #define CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_PROXY_H
 
-#include <caros/proxy_services_test_setup.h>
+#include <caros/service_interface_proxy_test_setup.h>
 
 #include <caros/gripper_si_proxy.h>
 #include "gripper_service_interface_dummy.h"
