@@ -30,8 +30,8 @@ The following parameters are supported:
 | can_baudrate | The baudrate |
 | can_timeout | Timeout (e.g. 0.5) |
 
-### RS232 status ###
+### Status of RS232 support ###
 The node has not yet been tested using RS232 communication.
 
-### Using debug verbosity ###
+## Using debug verbosity ##
 To enable debug verbosity and thus hopefully make it easier to diagnose issues, then a rosconsole debug configuration file has to be present and specified - see https://gitlab.com/caro-sdu/caros/wikis/Tests#example-rosconsole_debug-conf for more information.
