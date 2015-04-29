@@ -5,6 +5,14 @@
 #include <string>
 #include <sstream>
 
+/**
+ * \addtogroup Exceptions CAROS Exceptions
+ * Use the THROW_CAROS_<...> macros to throw the corresponding exceptions.
+ *
+ * THROW_CAROS_UNAVAILABLE_SERVICE(...) and THROW_CAROS_BAD_SERVICE_CALL(...) are primarily for use within service interface proxies (SIP), and the corresponding exceptions are to be caught in the client code making use of the SIP.
+ * @{
+ */
+
 /*
  * @brief Throw an unavailableService exception with the message \b ostreamExpression.
  *
@@ -37,12 +45,21 @@
     throw caros::badServiceCall(CAROS__message.str());  \
   } while (0)
 
+/**
+ * @}
+ */
+
 namespace caros
 {
 /**
- * @brief unavailableService exception.
+ * \addtogroup Exceptions
+ * @{
+ */
+
+/**
+ * @brief unavailable service exception.
  *
- * TODO: How, what and why
+ * Used when the requested service is unavailable.
  */
 class unavailableService : public std::runtime_error
 {
@@ -59,9 +76,9 @@ class unavailableService : public std::runtime_error
 };
 
 /**
- * @brief badServiceCall exception.
+ * @brief bad service call exception.
  *
- * TODO: How, what and why
+ * Used when an (unknown) error occured while requesting a service.
  */
 class badServiceCall : public std::runtime_error
 {
@@ -75,6 +92,11 @@ class badServiceCall : public std::runtime_error
     /* Empty */
   }
 };
+
+/**
+ * @}
+ */
+
 }
 
 #endif /* CAROS_COMMON_EXCEPTIONS_H */
