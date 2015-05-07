@@ -12,6 +12,10 @@
 namespace caros
 {
 /**
+ * \addtogroup SIP CAROS SIP Functionality
+ */
+/**
+ * \ingroup SIP
  * @brief this class implements a wrapper around the ros::ServiceClient class/object and provide builtin reconnection
  *functionality for persistent connections.
  *
