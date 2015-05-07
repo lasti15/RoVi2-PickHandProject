@@ -8,12 +8,31 @@ documentation_output_dir="$(pwd)/generated"
 [ -d "${documentation_output_dir}" ] || mkdir "${documentation_output_dir}"
 documentation_utils_output_dir="$(pwd)/generated-utils"
 [ -d "${documentation_utils_output_dir}" ] || mkdir "${documentation_utils_output_dir}"
+documentation_output_assets_dir="$(pwd)/generated/assets"
+[ -d "${documentation_output_assets_dir}" ] || mkdir "${documentation_output_assets_dir}"
+
 
 yaml_collection_of_tagfiles="${documentation_utils_output_dir}/collection_of_tagfiles.yaml"
 yaml_collection_of_tagfiles_excluding_current_package="${documentation_utils_output_dir}/collection_of_tagfiles_excluding_current_package.yaml"
 # Clean out the collection of tagfiles
 [ -f "${yaml_collection_of_tagfiles}" ] && rm "${yaml_collection_of_tagfiles}"
 [ -f "${yaml_collection_of_tagfiles_excluding_current_package}" ] && rm "${yaml_collection_of_tagfiles_excluding_current_package}"
+
+#$1=package_path
+function generate_assets () {
+    # Generate GraphViz dot files (hardcoded to be layed out with dot)
+    # Could also use 'rosls ${1}/assets' - but then the directory can't easily be verified to exist
+    pkg_path="$(rospack find ${1})"
+    if [ -d "${pkg_path}/assets" ]; then
+	for f in $(cd ${pkg_path}/assets/; ls *.gv); do
+	    echo "asset: ${f}"
+	    asset_name="$(echo ${f} | sed -e 's/\.gv$//')"
+	    dot -Tpng ${pkg_path}/assets/${f} -o${documentation_output_assets_dir}/${asset_name}.png
+	done
+    else
+	echo "${pkg_path}/assets doesn't exist - skipping creating assets"
+    fi
+}
 
 #$1=package_path
 function extract_package_name_from_package_path () {
@@ -63,6 +82,14 @@ package_names=""
 # Get package names
 for found_package in ${found_packages}; do
     package_names="${package_names} $(extract_package_name_from_package_path ${found_package})"
+done
+
+# Generate documentation assets
+for package_name in ${package_names}; do
+    echo "------------------------------------------------------------------------"
+    echo "Generating documentation assets for ${package_name}"
+    echo "------------------------------------------------------------------------"
+    generate_assets "${package_name}" > "${documentation_utils_output_dir}/${package_name}_assets.log" 2>&1
 done
 
 # Generate documentation and tagfiles

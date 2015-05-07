@@ -15,9 +15,47 @@
  * - Error codes: Make use of a "singleton counter" and the parameter
  *                server to handle the distribution of error codes and
  *                their corresponding human-friendly description.
- * - [IMPORTANT] Update the documentation according to the new simplified
- *   statemachine.
  ************************************************************************/
+
+/**
+ * \addtogroup CAROS_NODE_SI CAROS Node Service Interface
+ *
+ * The CAROS Node Service Interface consists of a statemachine that eases the process of creating a ROS node, also
+ *called a CAROS node because it follows the CAROS conventions.
+ * It mainly consists of the following state machine:
+ * ![statemachine](../../../assets/caros_node_statemachine.png "CAROS Node statemachine")
+ *
+ * And is supposed to streamline the error functionality and reporting of CAROS nodes.
+ *
+ * The \link caros::CarosNodeServiceInterface::start() start()\endlink function is used for handing over the control to
+ *the state machine, which will try to transition the node into the running state. In doing so, the \link
+ *caros::CarosNodeServiceInterface::activateHook() activateHook()\endlink function is being invoked and allows for the
+ *specific node implementation to e.g. establish connection to hardware device(s) and configure the supported service
+ *interfaces, and otherwise do whatever is necessary to get into a running / live state (for more information see \link
+ *caros::CarosNodeServiceInterface::activateHook() activateHook()\endlink)
+ *
+ * Error recovery is done through the ROS service *recover*, which invokes the \link
+ *caros::CarosNodeServiceInterface::recoverHook() recoverHook()\endlink, allowing the node to react according to the
+ *error codes. This has not been fully implemented yet nor has the supporting facilities for better error reporting been
+ *properly designed yet.
+ *
+ * Loop hooks (e.g. \link caros::CarosNodeServiceInterface::runLoopHook() runLoopHook()\endlink) are invoked at the
+ *frequency specified through the \link
+ *caros::CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle&, const double) constructor\endlink
+ *or \link caros::CarosNodeServiceInterface::setLoopRateFrequency() setLoopRateFrequency()\endlink. They allow for
+ *having functionality be executed periodically, such as sampling from
+ *the connected device/sensor and/or publish information regarding the current status of the node (see the actual node
+ *implementations for more concrete examples).
+ *
+ * \link CAROS_ERROR CAROS_ERROR(...)\endlink, are errors meant to be somewhat autonomously corrected (e.g. another node
+ *has to be notified of the error and possibly recover depending on the situation).
+ *
+ * \link CAROS_FATALERROR CAROS_FATALERROR(...)\endlink, are errors that require human intervention and can't be
+ *autonomously corrected, such as a broken connection to the device. Solving the error should also result in the node
+ *being restarted/respawned.
+ *
+ * @{
+ */
 
 /**
  * @brief Emit an CAROS node error. It will also be emitted to ROS_ERROR
@@ -55,10 +93,14 @@ CAROS_FATALERROR("The value of x is " << x << ". x must not be less than zero.",
     fatalError(FATALERROR__stream.str(), errorCode);                                                        \
   } while (0)
 
+/**
+ * @}
+ */
 namespace caros
 {
 namespace CAROS_NODE_ERRORCODES
 {
+//! \ingroup CAROS_NODE_SI
 enum CAROS_NODE_ERRORCODE
 {
   CAROS_NODE_NO_ERROR_CODE_SUPPLIED = 0
@@ -68,34 +110,9 @@ typedef CAROS_NODE_ERRORCODES::CAROS_NODE_ERRORCODE CAROS_NODE_ERRORCODE;
 
 /* FIXME: the description below is now outdated */
 /**
+ * \ingroup CAROS_NODE_SI
  * @brief A node service interface that defines a simple statemachine from which
  * the node can be controlled.
- *
- * [ FIXME This information is outdated FIXME ]
- *
- * There are 5 states: init, stopped, running, error, fatalerror
- *
- * The following transitions are legal
- * init: (configure)
- * ->fatalerror (through configure)
- * ->stopped (through configure)
- * stopped: (cleanup, start, error, ferror)
- * ->init (through cleanup)
- * ->running (through start)
- * ->error( through error)
- * ->fatalerror(through ferror)
- * running: (stop,error,ferror)
- * ->stopped (through stop)
- * ->error (through error)
- * ->fatalerror (through ferror)
- * error: (cleanup, retry)
- * ->running(retry)
- * ->init(through cleanup)
- * ->stopped(through retry)
- *
- *
- *
- *
  */
 class CarosNodeServiceInterface
 {
@@ -128,8 +145,8 @@ class CarosNodeServiceInterface
   {
     PREINIT = 0,
     RUNNING,
-    INERROR,
-    INFATALERROR
+    ERROR,
+    FATALERROR
   };
 
  protected:
@@ -149,7 +166,8 @@ class CarosNodeServiceInterface
    *invoking start()
    *
    * This hook should be used to establish connections to the hardware and activate the hardware.
-   * It is also here that other interfaces should be initialised (e.g. the CAROS GripperServiceInterface), together with
+   * It is also here that other interfaces should be initialised (e.g. the
+   *caros::GripperServiceInterface::configureInterface()), together with
    *advertising ROS services and publishers that are specific to the node.
    * If an error occurs, then either error() or fatalError() should be called depending on the severity of the error,
    *and false returned.
@@ -175,13 +193,18 @@ class CarosNodeServiceInterface
    *through setLoopRateFrequency().
    */
   /** @{ */
+  /* TODO: API documentation describing an example scenario on what should happen once they are fired/invoked */
   virtual void runLoopHook() = 0;
-  virtual void errorLoopHook() {/* Empty */};
-  virtual void fatalErrorLoopHook() {/* Empty */};
+  virtual void errorLoopHook(){/* Empty */
+  };
+  virtual void fatalErrorLoopHook(){/* Empty */
+  };
   /** @} */
 
-  void error(const std::string& msg, const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
-  void fatalError(const std::string& msg, const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+  void error(const std::string& msg,
+             const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+  void fatalError(const std::string& msg,
+                  const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
 
   NodeState getState()
   {
@@ -199,11 +222,11 @@ class CarosNodeServiceInterface
   }
   bool isInError()
   {
-    return nodeState_ == INERROR;
+    return nodeState_ == ERROR;
   }
   bool isInFatalError()
   {
-    return nodeState_ == INFATALERROR;
+    return nodeState_ == FATALERROR;
   }
   /** @} */
 
@@ -253,11 +276,11 @@ class CarosNodeServiceInterface
    * @brief Recover from an error.
    *
    * If it's possible to recover then the node will transition back into the state that the node was in before entering
-   *the INERROR state.
+   *the ERROR state.
    *
-   * @pre In INERROR state
+   * @pre In ERROR state
    * @post Success: in the previous state
-   * @post Failure: In INERROR state [ TODO: Settle on a strategy possibly involving INFATALERROR ]
+   * @post Failure: In ERROR state [ TODO: Settle on a strategy possibly involving FATALERROR ]
    */
   bool recoverNode();
   /** @} */
@@ -298,7 +321,8 @@ class CarosNodeServiceInterface
   ros::Rate loopRate_;
 
   std::string errorMsg_;
-  /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::caros_node_state message
+  /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::caros_node_state
+   * message
    */
   int64_t errorCode_;
 };

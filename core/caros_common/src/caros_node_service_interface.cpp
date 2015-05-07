@@ -19,7 +19,7 @@ namespace caros
 namespace
 {
 /* The order of the states _has_ to be the same as the order defined in CarosNodeServiceInterface.hpp for NodeState */
-static std::string CarosStateString[] = {"PREINIT", "RUNNING", "INERROR", "INFATALERROR"};
+static std::string CarosStateString[] = {"PREINIT", "RUNNING", "ERROR", "FATALERROR"};
 }
 
 CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency)
@@ -67,13 +67,13 @@ void CarosNodeServiceInterface::start()
       runLoopHook();
     }
     /* Process errors if any occurred */
-    if (nodeState_ == INERROR)
+    if (nodeState_ == ERROR)
     {
       errorLoopHook();
     }
     /* Also process fatal error state (if an error becomes a fatal error, then it will also be processed in the same ROS
      * cycle) */
-    if (nodeState_ == INFATALERROR)
+    if (nodeState_ == FATALERROR)
     {
       fatalErrorLoopHook();
     }
@@ -119,18 +119,18 @@ bool CarosNodeServiceInterface::activateNode()
 
 bool CarosNodeServiceInterface::recoverNode()
 {
-  // can only be called when in INERROR state
-  if (nodeState_ != INERROR)
+  // can only be called when in ERROR state
+  if (nodeState_ != ERROR)
   {
-    ROS_WARN_STREAM("Recover can only be called from " << CarosStateString[INERROR] << " state. The node was in "
+    ROS_WARN_STREAM("Recover can only be called from " << CarosStateString[ERROR] << " state. The node was in "
                                                        << CarosStateString[nodeState_] << ".");
     return false;
   }
 
   if (recoverHook())
   {
-    ROS_ERROR_STREAM_COND(previousState_ == INFATALERROR, "A successful recovery brings the node back into the "
-                                                              << CarosStateString[INFATALERROR]
+    ROS_ERROR_STREAM_COND(previousState_ == FATALERROR, "A successful recovery brings the node back into the "
+                                                              << CarosStateString[FATALERROR]
                                                               << " state - This is a bug!");
     changeState(previousState_);
   }
@@ -155,7 +155,7 @@ void CarosNodeServiceInterface::error(const std::string& msg, const int64_t erro
   /* keep a copy of the error message so it can be published */
   errorMsg_ = msg;
   errorCode_ = errorCode;
-  changeState(INERROR);
+  changeState(ERROR);
 }
 
 void CarosNodeServiceInterface::fatalError(const std::string& msg, const int64_t errorCode)
@@ -164,7 +164,7 @@ void CarosNodeServiceInterface::fatalError(const std::string& msg, const int64_t
   /* keep a copy of the (fatal) error message so it can be published */
   errorMsg_ = msg;
   errorCode_ = errorCode;
-  changeState(INFATALERROR);
+  changeState(FATALERROR);
 }
 
 void CarosNodeServiceInterface::setLoopRateFrequency(const double frequency)
@@ -226,7 +226,7 @@ void CarosNodeServiceInterface::publishNodeState(const bool stateChanged)
 {
   caros_common_msgs::caros_node_state state;
   state.state = CarosStateString[nodeState_];
-  state.inError = nodeState_ == INERROR || nodeState_ == INFATALERROR;
+  state.inError = nodeState_ == ERROR || nodeState_ == FATALERROR;
   if (state.inError)
   {
     state.errorMsg = errorMsg_;
