@@ -42,7 +42,7 @@ class GripperServiceInterface
    */
   virtual ~GripperServiceInterface();
 
-  /* FIXME: apidoc documentation */
+  /* TODO: apidoc documentation */
   bool configureInterface();
 
   /**

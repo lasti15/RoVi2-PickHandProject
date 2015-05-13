@@ -31,22 +31,12 @@
 
 namespace caros
 {
-/* TODO:
- * Should this interface also contain a cleanupInterface (or private cleanupService() and public deconfigureInterface()
- * or shutdownInterface()) ?
- * ^- The GripperServiceInterface contains these sort of functions
- * ^^-- But the interfaces could also just be converted to RAII style and have them enabled by default without the
- * option to switch them off - ros::spin[all] (or similar) has to be called anyway for the processing of the service
- * requests, so it's not like the services can be called before the node is ready to process them anyway.
- */
-
 /**
- * @brief this is the top level robot arm interface. It defines the
- * minimum interface that a joint based robotic arm device needs
- * to implement.
+ * @brief This is the serial device interface. It defines the (minimum) interface that a joint based robotic device
+ *needs to implement.
  *
- * The namespace of the nodehandle/service_name is used and it is important that
- * not two RobotArmServiceInterfaces are running in the same namespace.
+ * In ROS the namespace of the node is used and it is important that not two GripperServiceInterfaces are running in the
+ *same namespace.
  */
 class SerialDeviceServiceInterface
 {
@@ -65,9 +55,6 @@ class SerialDeviceServiceInterface
    * that it was a valid action (i.e. same amount of targets and speeds, and that IK solutions could be found).
    */
   /* Not supporting blends at the moment! */
-  /* FIXME:
-   * Add API documentation for these functions (see the "old" version of this file for hints)
-   */
   //! @brief move robot in a linear Cartesian path
   virtual bool moveLin(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from point to point
@@ -131,7 +118,7 @@ class SerialDeviceServiceInterface
                      caros_control_msgs::serial_device_move_ptp::Response& response);
 
   bool movePtpTHandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
-                       caros_control_msgs::serial_device_move_ptp_t::Response& response);
+                      caros_control_msgs::serial_device_move_ptp_t::Response& response);
 
   bool moveVelQHandle(caros_control_msgs::serial_device_move_vel_q::Request& request,
                       caros_control_msgs::serial_device_move_vel_q::Response& response);
