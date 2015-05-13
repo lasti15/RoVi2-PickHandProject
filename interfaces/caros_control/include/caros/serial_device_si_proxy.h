@@ -111,7 +111,7 @@ class SerialDeviceSIProxy
   bool moveServoQ(const rw::math::Q& target, const float speed = 100.0f);
 
   /**
-   * @brief move robot in a servoing fasion using pose configurations
+   * @brief move robot in a servoing fashion using pose configurations
    * @param[in] target The pose configuration to move it
    * @param[in] speed The movement speed (a value between 0 and 100 is expected)
    *

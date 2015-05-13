@@ -61,9 +61,9 @@ class SerialDeviceServiceInterface
   virtual bool movePtp(const QAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from point to point but using a pose as target (require invkin)
   virtual bool movePtpT(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot in a servoing fasion specifying joint velocity targets
+  //! @brief move robot in a servoing fashion specifying joint velocity targets
   virtual bool moveVelQ(const rw::math::Q& q_vel) = 0;
-  //! @brief move robot in a servoing fasion specifying a velocity screw in tool coordinates
+  //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
   //! @brief move robot with a hybrid position/force control
   virtual bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
@@ -75,9 +75,9 @@ class SerialDeviceServiceInterface
    * As far as I understand it, then servoing is supposed to just move to the newest configuration and throw away all
    * the intermediate configurations as they are irrelevant and won't be used as waypoints.
    */
-  //! @brief move robot in a servoing fasion specifying a joint configuration
+  //! @brief move robot in a servoing fashion specifying a joint configuration
   virtual bool moveServoQ(const QAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot in a servoing fasion specifying a pose
+  //! @brief move robot in a servoing fashion specifying a pose
   virtual bool moveServoT(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief start the robot
   virtual bool moveStart() = 0;
