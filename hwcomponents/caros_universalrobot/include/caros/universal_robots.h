@@ -142,8 +142,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
       state_; /* Updated as needed by calling device_->setQ(qcurrent_, state_) or some other q-configuration */
 
   bool useFTCollisionDetection_;
-
-  rw::math::QMetric::Ptr q2cmetric_;
 };
 }
 #endif  // include guard

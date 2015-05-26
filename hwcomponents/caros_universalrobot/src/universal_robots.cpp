@@ -169,18 +169,6 @@ bool UniversalRobots::activateHook()
   ur_.startCommunication(callbackIP, numericCallbackPort);
   urrt_.start();
 
-  /* TODO:
-   * Where do these weights come from?
-   */
-  rw::math::Q weights(6);
-  weights(0) = 0.85;
-  weights(1) = 0.85;
-  weights(2) = 0.45;
-  weights(3) = 0.30;
-  weights(4) = 0.20;
-  weights(5) = 0.20;
-  q2cmetric_ = rw::math::MetricFactory::makeWeightedEuclidean(weights);
-
   if (!configureURService())
   {
     CAROS_FATALERROR("The URService could not be configured correctly.", URNODE_URSERVICE_CONFIGURE_FAIL);
