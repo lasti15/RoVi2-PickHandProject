@@ -163,9 +163,8 @@ bool UniversalRobots::activateHook()
      * Go into some error mode?
      */
   }
-  /* TODO:
-   * Does the ordering of these two start[Interface](...) functions actually matter?
-   */
+
+  /* The order of starting ur_ and urrt_ doesn't seem to matter */
   ur_.startCommunication(callbackIP, numericCallbackPort);
   urrt_.start();
 
