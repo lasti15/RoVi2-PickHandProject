@@ -4,7 +4,6 @@
 
 #include <caros/common.h>
 
-using namespace rw::common;
 using namespace caros;
 
 ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodeHnd) :

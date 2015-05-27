@@ -20,6 +20,7 @@
   <depend>caros_control_msgs</depend>
   <depend>caros_common_msgs</depend>
   <depend>caros_common</depend>
+  <depend>caros_common_robwork</depend>
   <depend>caros_control</depend>
 
   <exec_depend>message_runtime</exec_depend>

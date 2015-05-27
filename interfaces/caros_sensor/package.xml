@@ -17,6 +17,7 @@
   <depend>geometry_msgs</depend>
   <depend>caros_common_msgs</depend>
   <depend>caros_common</depend>
+  <depend>caros_common_robwork</depend>
   <depend>caros_sensor_msgs</depend>
 
   <exec_depend>message_runtime</exec_depend>

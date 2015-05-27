@@ -16,6 +16,8 @@
   <depend>std_msgs</depend>
   <depend>roscpp</depend>
   <depend>caros_common</depend>
+  <depend>caros_common_robwork_msgs</depend>
+  <depend>caros_common_robwork</depend>
   <depend>caros_control</depend>
   <depend>caros_sensor</depend>
   <depend>pcl_ros</depend>

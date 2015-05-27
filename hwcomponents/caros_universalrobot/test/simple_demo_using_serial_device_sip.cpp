@@ -1,5 +1,5 @@
 #include <caros/serial_device_si_proxy.h>
-#include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/loaders/WorkCellLoader.hpp>

@@ -6,7 +6,7 @@ project(caros_grasp_selection)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS 
     message_generation roscpp std_msgs 
-    geometry_msgs sensor_msgs caros_common
+    geometry_msgs sensor_msgs caros_common caros_common_robwork caros_common_robwork_msgs
     pcl_ros)
 
 ################################################
@@ -33,7 +33,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common
+  CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common caros_common_robwork
 )
 
 ########################################################################

@@ -3,6 +3,7 @@
 #include <caros/gripper_service_interface.h> /* provides GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE and the different msg \
                                                 and srv types*/
 #include <caros/common.h>
+#include <caros/common_robwork.h>
 #include <caros/exceptions.h>
 
 #include <caros_control_msgs/gripper_state.h>

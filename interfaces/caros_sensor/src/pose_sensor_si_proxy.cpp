@@ -5,7 +5,7 @@
 #include <rw/common/Ptr.hpp>
 #include <boost/foreach.hpp>
 
-#include <caros/common.h>
+#include <caros/common_robwork.h>
 
 using namespace rw::common;
 using namespace rw::math;

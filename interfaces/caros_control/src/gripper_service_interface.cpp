@@ -1,5 +1,6 @@
 #include <caros/gripper_service_interface.h>
 #include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <caros_control_msgs/gripper_state.h>
 

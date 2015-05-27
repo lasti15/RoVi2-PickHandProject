@@ -1,6 +1,7 @@
 #include <caros/ur_service_interface.h>
 
 #include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
