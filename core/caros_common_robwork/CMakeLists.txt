@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(caros_common)
+project(caros_common_robwork)
 
 ########################################################################
 #### Local Variables
@@ -21,8 +21,16 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   std_msgs
   roscpp
+  caros_common
   caros_common_msgs
+  caros_common_robwork_msgs
 )
+
+########################################################################
+#### RobWork
+########################################################################
+set(RW_ROOT "$ENV{RW_ROOT}")
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}" "${RW_ROOT}/cmake")
 
 ########################################################################
 #### Declare ROS Messages, Services and Actions
@@ -45,26 +53,28 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common_msgs
+  CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common caros_common_msgs caros_common_robwork_msgs
+  DEPENDS RobWork
   CFG_EXTRAS "use-c++11.cmake"
 )
 
 include_directories(
   include
+  ${ROBWORK_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
 add_library(${library_name}
-  src/common.cpp
-  src/caros_node_service_interface.cpp
+  src/common_robwork.cpp
 )
 
 target_link_libraries(${library_name}
+  ${ROBWORK_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 
 add_dependencies(${library_name}
-  caros_common_msgs_generate_messages_cpp
+  caros_common_robwork_msgs_generate_messages_cpp
 )
 
 ########################################################################
@@ -72,6 +82,6 @@ add_dependencies(${library_name}
 ########################################################################
 if(CATKIN_ENABLE_TESTING)
   # Using WORKING_DIRECTORY to allow specifying a relative path to the test data that is being used.
-  catkin_add_gtest(type_conversion test/type_conversion.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
-  target_link_libraries(type_conversion ${library_name} ${catkin_LIBRARIES})
+  catkin_add_gtest(type_conversion_robwork test/type_conversion_robwork.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
+  target_link_libraries(type_conversion_robwork ${library_name} ${ROBWORK_LIBRARIES} ${catkin_LIBRARIES})
 endif()

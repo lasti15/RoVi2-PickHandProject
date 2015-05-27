@@ -17,7 +17,7 @@ include("cmake/use-c++11.cmake")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs roscpp rosconsole caros_common_msgs caros_common caros_control caros_control_msgs)
+find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs roscpp rosconsole caros_common_msgs caros_common caros_common_robwork caros_control caros_control_msgs)
 
 ########################################################################
 #### RobWork and RobWorkSim
@@ -55,7 +55,7 @@ else()
   ###################################
   catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS message_runtime std_msgs geometry_msgs roscpp caros_common_msgs caros_common caros_control caros_control_msgs
+    CATKIN_DEPENDS message_runtime std_msgs geometry_msgs roscpp caros_common_msgs caros_common caros_common_robwork caros_control caros_control_msgs
     DEPENDS RobWork RobWorkHardware
     CFG_EXTRAS "use-c++11.cmake"
     )
@@ -83,6 +83,7 @@ else()
 
   add_dependencies(${node_name}
     caros_common
+    caros_common_robwork
     caros_control
     )
 

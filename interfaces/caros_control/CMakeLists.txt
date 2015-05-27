@@ -17,7 +17,7 @@ include("cmake/use-c++11.cmake")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_control_msgs)
+find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_control_msgs)
 
 ########################################################################
 #### RobWork
@@ -46,7 +46,7 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_control_msgs
+  CATKIN_DEPENDS message_runtime std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_control_msgs
   DEPENDS RobWork
   CFG_EXTRAS "use-c++11.cmake"
 )

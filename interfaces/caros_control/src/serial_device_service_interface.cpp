@@ -1,6 +1,7 @@
 /**/
 #include <caros/serial_device_service_interface.h>
 #include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <caros_control_msgs/robot_state.h>
 

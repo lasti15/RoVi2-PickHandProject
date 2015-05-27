@@ -3,7 +3,7 @@
  */
 #include <caros/universal_robots.h>
 
-#include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <rw/loaders/WorkCellLoader.hpp>
 

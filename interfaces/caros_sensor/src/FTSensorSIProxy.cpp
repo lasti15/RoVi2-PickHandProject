@@ -5,7 +5,7 @@
  *      Author: thomas
  */
 
-#include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <caros/FTSensorSIProxy.hpp>
 

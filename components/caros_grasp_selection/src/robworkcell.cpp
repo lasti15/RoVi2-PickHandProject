@@ -10,10 +10,10 @@
 #include <rw/models/Device.hpp>
 //#include <caros_grasp_selection/SelectGrasps.hpp>
 #include "GraspDBRepository.hpp"
-#include <caros/common.h>
+#include <caros/common_robwork.h>
 
 #include <caros_grasp_selection/SelectGrasps.h>
-#include <caros_common_msgs/get_rw_state.h>
+#include <caros_common_robwork_msgs/get_rw_state.h>
 
 #include <rwlibs/task.hpp>
 
@@ -82,7 +82,7 @@ public:
 };
 
 State::Ptr stateptr;
-bool rwstatecallback(caros_common_msgs::get_rw_state::Request& request, caros_common_msgs::get_rw_state::Response& response){
+bool rwstatecallback(caros_common_robwork_msgs::get_rw_state::Request& request, caros_common_robwork_msgs::get_rw_state::Response& response){
 	response.state = caros::toRos( *stateptr );
 	return true;
 }

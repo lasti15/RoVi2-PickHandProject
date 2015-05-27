@@ -2,6 +2,7 @@
 
 #include <caros/serial_device_service_interface.h>
 #include <caros/common.h>
+#include <caros/common_robwork.h>
 #include <caros_common_msgs/stop.h>
 #include <caros_common_msgs/pause.h>
 #include <caros_common_msgs/config_bool.h>
