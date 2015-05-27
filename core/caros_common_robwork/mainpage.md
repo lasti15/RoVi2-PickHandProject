@@ -2,6 +2,6 @@
 
 [TOC]
 
-caros_common_robwork is a collection of common and convenience functionality that is used by the various CAROS nodes when operating on, or with, RobWork.
+caros_common_robwork is a collection of RobWork oriented, or related, functionality that is used by the various CAROS nodes.
 
 See [modules](modules.html) for the different categories.
