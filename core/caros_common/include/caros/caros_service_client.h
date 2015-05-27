@@ -16,7 +16,7 @@ namespace caros
  */
 /**
  * \ingroup SIP
- * @brief this class implements a wrapper around the ros::ServiceClient class/object and provide builtin reconnection
+ * @brief this class implements a wrapper around the ros::ServiceClient class/object and provides builtin reconnection
  *functionality for persistent connections.
  *
  * Connections are not created before they are actually being used (e.g. one of the call functions)
