@@ -4,7 +4,7 @@ caros_universalrobot is a ROS node for controlling a physical UniversalRobot. A 
 
 # Interfaces - how to use this node #
 A few interfaces (i.e. ways to control the robot through ROS services) are supported.
-## caros::SerialDeviceServiceInterface ##
+## Serial Device Service Interface ##
 The @ref caros::SerialDeviceServiceInterface interface is supported to some extent. The functionalities that have not been tested or verified are disabled (i.e. they will not respond with a proper acknowledgment and output a ROS ERROR message). The status of the missing services can be seen below:
 | Service | Disabled | Not Implemented |
 | ------- | :------: | :-------------: |
@@ -15,7 +15,7 @@ The @ref caros::SerialDeviceServiceInterface interface is supported to some exte
 | move_pause  |   | x |
 | set_safe_mode_enabled |   | x |
 
-## URServiceInterface ##
+## UR Service Interface ##
 The @ref URServiceInterface interface is supported, but most of the functionalities, especially the force mode functions, have not been tested yet.
 
 ## Warning ##
@@ -53,14 +53,8 @@ To quickly and easily verify that the communication with the robot is working, t
 ## Available demo(s) ##
 | Demo | Expected behaviour | Notes |
 | ---- | ------------------ | ----- |
-| simple_demo_using_serial_device_sip | Moving the robot arm forth and back linearly in the joint-configuration space. | None |
-
-### simple_demo_using_serial_device_sip ###
-| Parameter | Description |
-| --------- | ----------- |
-| qChange | The overall change in the joint-configuration space |
-| steps | The number of steps to take while traversing the path |
-| movements | The number of repetitions to perform |
+| simple_demo_using_move_ptp | Moving the robot arm forth and back linearly in the joint-configuration space. | None |
+| simple_demo_using_move_servo_q | Moving the robot arm forth and back linearly in the joint-configuration space. | The faster the servoing targets are supplied to the node, the more continous the movement will be. For the default setup, the movement should appear to be continous. |
 
 ## Launching the demo(s) ##
 In order to make ROS properly find the demos, then the <your_catkin_workspace>/devel/setup.bash file should be sourced. If standing in your catkin workspace then it's as simple as (if you are using BASH or similar shell - default on Ubuntu):
@@ -71,11 +65,11 @@ To launch the demos:
 
     roslaunch caros_universalrobot <demo name>.test
 
-For example to launch the simple_demo_using_serial_device_sip:
+For example to launch the simple_demo_using_move_ptp:
 
-    roslaunch caros_universalrobot simple_demo_using_serial_device_sip.test
+    roslaunch caros_universalrobot simple_demo_using_move_ptp.test
 
 ### Using debug verbosity ###
 To enable debug verbosity and thus hopefully make it easier to diagnose issues, then a rosconsole debug configuration file has to be present (see https://gitlab.com/caro-sdu/caros/wikis/Tests#example-rosconsole_debug-conf):
 
-    ROSCONSOLE_CONFIG_FILE=/path/to/rosconsole_debug.conf roslaunch caros_universalrobot simple_demo_using_serial_device_sip.test
+    ROSCONSOLE_CONFIG_FILE=/path/to/rosconsole_debug.conf roslaunch caros_universalrobot simple_demo_using_move_ptp.test
