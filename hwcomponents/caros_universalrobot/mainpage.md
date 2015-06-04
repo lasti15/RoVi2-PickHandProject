@@ -1,7 +1,5 @@
 \mainpage
 
-[TOC]
-
 caros_universalrobot is a ROS node for controlling a physical UniversalRobot. A few interfaces are available for controlling the robot.
 
 # Interfaces - how to use this node #
@@ -19,6 +17,9 @@ The @ref caros::SerialDeviceServiceInterface interface is supported to some exte
 
 ## URServiceInterface ##
 The @ref URServiceInterface interface is supported, but most of the functionalities, especially the force mode functions, have not been tested yet.
+
+## Warning ##
+The @ref caros::UniversalRobots::servoT (implementation of @ref caros::SerialDeviceServiceInterface::moveServoT) and @ref caros::UniversalRobots::movePtpT (implementation of @ref caros::SerialDeviceServiceInterface::movePtpT) are using inverse kinematics to find the joint positions from the supplied targets. Because of this, **the movement is not guaranteed to be collision free**, even though the *obvious* path between the supplied targets is collision free.
 
 # Requirements #
 RobWorkHardware with the *universalrobots* component enabled, is required and can be obtained from http://www.robwork.dk
