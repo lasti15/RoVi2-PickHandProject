@@ -1,0 +1,21 @@
+<launch>
+  <!-- Hardcoded workcell path... This should not be hardcoded, else the test should be CARO/MARVIN specific - the hardcoded q-configuration is also sort of scene specific... -->
+  <param name="/caros/workcell" value="/data/mband/shared_resources/marvin/apps/marvin/scene/Marvin.model.wc.xml" />
+
+  <group>
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="ur_simple_demo_node">
+      <arg name="deviceName" value="UR1" />
+    </include>
+    <node pkg="caros_universalrobot" type="caros_universalrobot_node" name="ur_simple_demo_node" required="true">
+      <!-- Nothing -->
+    </node>
+  </group>
+
+  <group>
+    <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo">
+      <arg name="deviceName" value="UR1" />
+    </include>
+    <node pkg="caros_universalrobot" type="simple_caros_universalrobot_demo_using_move_ptp" name="caros_universalrobot_simple_demo" required="true">
+    </node>
+  </group>
+</launch>
