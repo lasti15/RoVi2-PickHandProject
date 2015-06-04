@@ -91,8 +91,11 @@ else()
   #### Testing
   ########################################################################
   if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_${PROJECT_NAME}_demo_using_serial_device_sip test/simple_demo_using_serial_device_sip.cpp)
-    target_link_libraries(simple_${PROJECT_NAME}_demo_using_serial_device_sip ${catkin_LIBRARIES})
+    add_executable(simple_${PROJECT_NAME}_demo_using_move_servo_q test/simple_demo_using_move_servo_q.cpp)
+    target_link_libraries(simple_${PROJECT_NAME}_demo_using_move_servo_q ${catkin_LIBRARIES})
+
+    add_executable(simple_${PROJECT_NAME}_demo_using_move_ptp test/simple_demo_using_move_ptp.cpp)
+    target_link_libraries(simple_${PROJECT_NAME}_demo_using_move_ptp ${catkin_LIBRARIES})
   endif()
 
 endif()
