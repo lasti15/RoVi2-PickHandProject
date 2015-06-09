@@ -168,7 +168,7 @@ bool UniversalRobots::activateHook()
   ur_.startCommunication(callbackIP, numericCallbackPort);
   urrt_.start();
 
-  if (!configureURService())
+  if (!URServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The URService could not be configured correctly.", URNODE_URSERVICE_CONFIGURE_FAIL);
     return false;

@@ -37,12 +37,7 @@ class URServiceInterface
   /**
    * @brief setup the ROS services for this interface
    */
-  bool configureURService();
-
-  /**
-   * @brief teardown the ROS services for this interface
-   */
-  bool cleanupURService();
+  bool configureInterface();
 
   /**
    * @brief move robot using a pose as target (requires inverse kinematics)

@@ -21,7 +21,7 @@ URServiceInterface::~URServiceInterface()
   /* Currently no special things to clean up */
 }
 
-bool URServiceInterface::configureURService()
+bool URServiceInterface::configureInterface()
 {
   if (srvUrServoT_ || srvUrServoQ_ || srvUrForceModeStart_ || srvUrForceModeUpdate_ || srvUrForceModeStop_)
   {
@@ -57,52 +57,6 @@ bool URServiceInterface::configureURService()
         "The URService could not be properly initialised - one or more ros services may not be up and running or "
         "working as intended!");
     return false;
-  }
-
-  return true;
-}
-
-bool URServiceInterface::cleanupURService()
-{
-  if (srvServoT_)
-  {
-    srvServoT_.shutdown();
-  }
-  else
-  {
-    ROS_ERROR_STREAM("While trying to cleanup the URService, srvServoT_ was empty!");
-  }
-  if (srvServoQ_)
-  {
-    srvServoQ_.shutdown();
-  }
-  else
-  {
-    ROS_ERROR_STREAM("While trying to cleanup the URService, srvServoQ_ was empty!");
-  }
-  if (srvForceModeStart_)
-  {
-    srvForceModeStart_.shutdown();
-  }
-  else
-  {
-    ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeStart_ was empty!");
-  }
-  if (srvForceModeUpdate_)
-  {
-    srvForceModeUpdate_.shutdown();
-  }
-  else
-  {
-    ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeUpdate_ was empty!");
-  }
-  if (srvForceModeStop_)
-  {
-    srvForceModeStop_.shutdown();
-  }
-  else
-  {
-    ROS_ERROR_STREAM("While trying to cleanup the URService, srvForceModeStop_ was empty!");
   }
 
   return true;
