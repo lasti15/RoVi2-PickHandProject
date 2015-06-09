@@ -309,7 +309,7 @@ void UniversalRobots::addFTData(const caros_common_msgs::wrench_data::ConstPtr s
 /************************************************************************
  * URServiceInterface functions
  ************************************************************************/
-bool UniversalRobots::servoT(const rw::math::Transform3D<>& target)
+bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 {
   ROS_DEBUG_STREAM("servoT: " << target);
   device_->setQ(qcurrent_, state_);
@@ -329,7 +329,7 @@ bool UniversalRobots::servoT(const rw::math::Transform3D<>& target)
   return true;
 }
 
-bool UniversalRobots::servoQ(const rw::math::Q& q)
+bool UniversalRobots::urServoQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM("ServoQ: " << q);
 
@@ -338,7 +338,7 @@ bool UniversalRobots::servoQ(const rw::math::Q& q)
   return true;
 }
 
-bool UniversalRobots::forceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
+bool UniversalRobots::urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
                                      const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits)
 {
   ROS_DEBUG_STREAM("ForceModeStart arguments begin:");
@@ -364,7 +364,7 @@ bool UniversalRobots::forceModeStart(const rw::math::Transform3D<>& refToffset, 
   return true;
 }
 
-bool UniversalRobots::forceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
+bool UniversalRobots::urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
 {
   ROS_DEBUG_STREAM("New wrench target for forceModeUpdate: " << wrenchTarget);
 
@@ -372,7 +372,7 @@ bool UniversalRobots::forceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
   return true;
 }
 
-bool UniversalRobots::forceModeStop()
+bool UniversalRobots::urForceModeStop()
 {
   ur_.forceModeEnd();
   return true;
@@ -451,7 +451,7 @@ bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel)
      * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
      * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
      */
-    return servoQ(qcurrent_ + q_vel*0.1);
+    return urServoQ(qcurrent_ + q_vel*0.1);
 #endif
 }
 
@@ -479,7 +479,7 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
          * Could use some more documentation on why the factor of 0.1 is being used (see todo comment for moveVelQ)
          */
         rw::math::Q qtarget = qcurrent_ + (jacInv*t_vel)*0.1;
-	return servoQ(qtarget);
+	return urServoQ(qtarget);
 #endif
 }
 
@@ -546,7 +546,7 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
 
     rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
 
-    return servoT(baseTtarget2);
+    return urServoT(baseTtarget2);
 #endif
 }
 
@@ -560,7 +560,7 @@ bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
   bool res = false;
   for (const auto& target : targets)
   {
-    res = servoQ(std::get<0>(target));
+    res = urServoQ(std::get<0>(target));
     if (!res)
     {
       break;
@@ -576,7 +576,7 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
   /* Throwing away the speed */
   for (const auto& target : targets)
   {
-    res = servoT(std::get<0>(target));
+    res = urServoT(std::get<0>(target));
     if (!res)
     {
       break;
