@@ -589,12 +589,8 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 bool UniversalRobots::moveStart()
 {
   ROS_ERROR_STREAM("Currently not implemented!");
-  return false;
 
-  /* TODO:
-   * Does this make sense? - how to start the robot and what if it's already started?
-   * ^- Isn't it already being started when launching this node?
-   */
+  return false;
 }
 
 bool UniversalRobots::moveStop()

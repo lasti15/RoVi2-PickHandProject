@@ -16,16 +16,8 @@
 
 #include <rwhw/universalrobots/URCallBackInterface.hpp>
 #include <rwhw/universalrobots/UniversalRobotsRTLogging.hpp>
-//#include <rwhw/netft/NetFTLogging.hpp>
-//#include <rwhw/netft/FTCompensation.hpp>
 
 #include <queue>
-//#include <boost/thread.hpp>
-//#include <vector>
-
-/* TODO:
- * Add const to the members that aren't modifying the state of this object.
- */
 
 namespace caros
 {
@@ -107,10 +99,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
  private:
   //! @brief Support function for capturing published wrench data
   void addFTData(const caros_common_msgs::wrench_data::ConstPtr state);
-
-  //! @brief Simple collision detector on the linear configuration space path from current configuration to the
-  //specified end configuration
-  bool isPathCollisionFree(const rw::math::Q& endConfiguration);
 
  private:
   ros::NodeHandle nodehandle_;
