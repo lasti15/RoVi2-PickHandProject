@@ -8,8 +8,9 @@ geometry_msgs/Wrench wrench_target
 # determining the gains.
 float32[6] ctrl_gains
 
-#Path to be executed
+# offset
 geometry_msgs/Transform offset
 
 ---
+# If the service request was acknowledged
 bool success
