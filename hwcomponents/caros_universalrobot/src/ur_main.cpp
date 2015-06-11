@@ -1,6 +1,3 @@
-/* TODO:
- * Properly document the parameters that this node supports/uses.
- */
 #include <caros/universal_robots.h>
 
 #include <caros/common_robwork.h>
@@ -15,8 +12,7 @@ int main(int argc, char *argv[])
 
   ros::NodeHandle nh("~");
 
-  /* TODO:
-   * This workcell setup can also be moved into the UniversalRobots.cpp class. Would that make more sense?
+  /* This workcell setup could also be moved into the UniversalRobots.cpp class - but leaving it as it is for now.
    */
   rw::models::WorkCell::Ptr workCell;
   workCell = caros::getWorkCell();

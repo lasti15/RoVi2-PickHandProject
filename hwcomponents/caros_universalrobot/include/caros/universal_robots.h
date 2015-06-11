@@ -37,8 +37,8 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
     URNODE_SERIALDEVICESERVICE_CONFIGURE_FAIL,
     URNODE_MISSING_WORKCELL,
     URNODE_NO_SUCH_DEVICE,
-    URNODE_NO_SUCH_FRAME,
-    URNODE_FAULTY_SUBSCRIBER
+    URNODE_FAULTY_SUBSCRIBER,
+    URNODE_INVALID_CALLBACKPORT
   };
 
   /************************************************************************

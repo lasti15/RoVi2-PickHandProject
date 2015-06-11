@@ -16,10 +16,6 @@
 
 #define URSERVICEINTERFACE_SUB_NAMESPACE "ur_service_interface"
 
-/* TODO:
- * Should this be placed inside a namespace, and should it be caros, caros::ur or just ur?
- */
-
 class URServiceInterface
 {
  public:
