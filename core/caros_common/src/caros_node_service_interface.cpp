@@ -5,17 +5,8 @@
 
 #include <string>
 
-/************************************************************************
- * TODO:
- * - Should the publish rate on the NodeState be lowered to maybe 1 or
- *   2 Hz when in an error state?
- * - Make it possible to configure the loopRate_ through the parameter
- *   server.
- ************************************************************************/
-
 namespace caros
 {
-
 namespace
 {
 /* The order of the states _has_ to be the same as the order defined in CarosNodeServiceInterface.hpp for NodeState */
@@ -28,12 +19,9 @@ CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& node
       loopRateFrequency_(loopRateFrequency),
       loopRate_(loopRateFrequency_)
 {
-  if (initCarosNode())
+  if (not initCarosNode())
   {
-    /* TODO:
-     * FIXME:
-     *   How to react on an unsuccessful initialisation? - zombie object or throw an exception
-     */
+    throw std::runtime_error("Could not properly initialise the required basic services and/or publishers.");
   }
 }
 
@@ -83,8 +71,10 @@ void CarosNodeServiceInterface::start()
     /* Sleep in order to run approximately at the specified frequency */
     loopRate_.sleep();
     /* TODO:
-     * Add debug statements regarding the return value of the sleep() - it should return true if the desired rate was
-     * met for this cycle, else false
+     * Replace this sleeping using a ros::Rate with a ros::Timer using a callback function - that is the recommended way
+     * to do it according to http://wiki.ros.org/roscpp/Overview/Time#Sleeping_and_Rates
+     * Also output some debug information related to how well the scheduling is going, so delays can easily be seen in
+     * the logs.
      */
   }
 }
@@ -105,12 +95,17 @@ bool CarosNodeServiceInterface::activateNode()
   }
   else
   {
-    ROS_DEBUG_STREAM("activateHook() failed.");
-    /* TODO:
-     * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke error()
-     * and possibly output a warning stating that the node/user should implement proper error handling code before
-     * returning false from the startHook()
-     */
+    /* It is considered a fatal error if the activateHook() failed and this object was not placed in an error state! */
+    NodeState currentState = getState();
+    if (currentState != ERROR && currentState != FATALERROR)
+    {
+      ROS_FATAL_STREAM("activateHook() failed and the CAROS node was never put into an error state - this is a bug!");
+    }
+    else
+    {
+      ROS_DEBUG_STREAM("activateHook() failed.");
+    }
+
     return false;
   }
 
@@ -130,19 +125,14 @@ bool CarosNodeServiceInterface::recoverNode()
   if (recoverHook())
   {
     ROS_ERROR_STREAM_COND(previousState_ == FATALERROR, "A successful recovery brings the node back into the "
-                                                              << CarosStateString[FATALERROR]
-                                                              << " state - This is a bug!");
+                                                            << CarosStateString[FATALERROR]
+                                                            << " state - This is a bug!");
     changeState(previousState_);
   }
   else
   {
     ROS_DEBUG_STREAM("recoverHook() failed.");
-    /* TODO:
-     * What to do if the recovery fails? Go into fatalError? or is that up to the node implementer to entirely decide?
-     * Should verify that the node has been put into an (fatal)error state. If that didn't happen then invoke
-     * (fatal)error() and possibly output a warning stating that the node/user should implement proper error handling
-     * code before returning false from the recoverHook()
-     */
+
     return false;
   }
 

@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 
   ros::NodeHandle nh("~");
   std::string name = nh.getNamespace();
-  Robotiq3Node hand(name);
+  caros::Robotiq3Node hand(name);
   hand.start();
 
   return 0;

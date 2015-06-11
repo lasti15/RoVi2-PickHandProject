@@ -16,16 +16,8 @@
 
 #include <rwhw/universalrobots/URCallBackInterface.hpp>
 #include <rwhw/universalrobots/UniversalRobotsRTLogging.hpp>
-//#include <rwhw/netft/NetFTLogging.hpp>
-//#include <rwhw/netft/FTCompensation.hpp>
 
 #include <queue>
-//#include <boost/thread.hpp>
-//#include <vector>
-
-/* TODO:
- * Add const to the members that aren't modifying the state of this object.
- */
 
 namespace caros
 {
@@ -38,15 +30,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
 
   virtual ~UniversalRobots();
 
-  /* TODO:
-   * Consider the use of a prefix for the interface functions e.g. URServiceServoT - else if the servoT function exist
-   * in both URServiceInterface and SerialDeviceServiceInterface AND the argument(s) are the same, then there will be
-   * trouble
-   *  ^- Would another solution simply be to create the specified interface object (making it non-abstract) and then
-   * have this UniversalRobots object register callbacks (maybe even at run-time?) in the interface object?
-   *  ^- Or use composition - Creating (inherited) inferface objects, which results in a bit more modular node.
-   */
-
   enum URNODE_ERRORCODE
   {
     URNODE_MISSING_PARAMETER = 1,
@@ -54,24 +37,24 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
     URNODE_SERIALDEVICESERVICE_CONFIGURE_FAIL,
     URNODE_MISSING_WORKCELL,
     URNODE_NO_SUCH_DEVICE,
-    URNODE_NO_SUCH_FRAME,
-    URNODE_FAULTY_SUBSCRIBER
+    URNODE_FAULTY_SUBSCRIBER,
+    URNODE_INVALID_CALLBACKPORT
   };
 
   /************************************************************************
    * URServiceInterface functions
    ************************************************************************/
   //! @copydoc URServiceInterface::servoT
-  bool servoT(const rw::math::Transform3D<>& target);
+  bool urServoT(const rw::math::Transform3D<>& target);
   //! @copydoc URServiceInterface::servoQ
-  bool servoQ(const rw::math::Q& target);
+  bool urServoQ(const rw::math::Q& target);
   //! @copydoc URServiceInterface::forceModeStart
-  bool forceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
+  bool urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
                       const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits);
   //! @copydoc URServiceInterface::forceModeUpdate
-  bool forceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget);
+  bool urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget);
   //! @copydoc URServiceInterface::forceModeStop
-  bool forceModeStop();
+  bool urForceModeStop();
 
   /************************************************************************
    * SerialDeviceServiceInterface functions
@@ -116,10 +99,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
  private:
   //! @brief Support function for capturing published wrench data
   void addFTData(const caros_common_msgs::wrench_data::ConstPtr state);
-
-  //! @brief Simple collision detector on the linear configuration space path from current configuration to the
-  //specified end configuration
-  bool isPathCollisionFree(const rw::math::Q& endConfiguration);
 
  private:
   ros::NodeHandle nodehandle_;

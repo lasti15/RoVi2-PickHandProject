@@ -20,13 +20,6 @@
 /* Notes:
  * This node is designed to be run in a single thread that doesn't allow concurrently processing of the set-commands
  * and/or the runLoopHook - eliminating the possibility of race conditions.
- * [ FIXME: invalidated by removal of configureHook() ] The GripperServiceInterface commands (and other services that
- * are configured/advertised in the configureHook()) can be called even when the CarosNode is in a non-running state.
- * This is due to the design choice that all the services and publishers should be broadcasted/available once the
- * CarosNode has been configured. This will avoid hiding (some of) the capabilities/interface of the node when it's not
- * in certain states. However this requires more defensive programming on the interface methods, to make sure that they
- * will only work when the CarosNode has been put in the running state (and connections to the hardware/device has been
- * established or similar).
  */
 
 /* TODO:
@@ -34,15 +27,14 @@
  *in RobWorkHardware or simply removed (requires collecting the debug data and comparing with the SDH temperature).
  * Add support for emergency stop. This can be triggered either through CarosNodeServiceInterface or directly to this
  *node. The SDH library contains a function for emergency stop, which should be used and called immediately.
- *   - Also handle emergency stop properly in the SDHGripperServiceInterface.
  *   - What is required to actually release the emergencystop (within the rwhw::SDHDriver / SDHLibrary)?
- *
- * Allow specification of what interface to use/configure through the parameter server.
  *
  * Could keep track of whether the services/commands (moveQ, gripQ, etc.) finish executing before new commands are
  *received (it's not an error, but maybe it would be nice to get some debug/info information regarding this. Hopefully
  *it would make it easier to reason/debug "what just happened").
  */
+
+using namespace caros;
 
 SDHNode::SDHNode(const ros::NodeHandle& nodehandle)
     : caros::CarosNodeServiceInterface(nodehandle),
@@ -86,6 +78,35 @@ bool SDHNode::activateHook()
     return false;
   }
 
+  if (not GripperServiceInterface::configureInterface())
+  {
+    CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
+                     SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
+    return false;
+  }
+
+  /* Outputting information on supported value ranges */
+  /* TODO: This could be made part of the GripperServiceInterface - possibly as a message that is returned (or
+   * published) when a client asks for it.
+   * If the hardware is intelligent enough to provide new values/boundaries according to position or grasping mode, then
+   * it could make sense to publish that information when it changes
+   */
+  std::pair<rw::math::Q, rw::math::Q> positionLimits = sdh_->getPosLimits();
+  rw::math::Q velocityLimits = sdh_->getVelLimits();
+  rw::math::Q accelerationLimits = sdh_->getAccLimits();
+  rw::math::Q currentLimits = sdh_->getCurrentLimits();
+
+  ROS_ERROR_STREAM_COND(positionLimits.first.size() != positionLimits.second.size(),
+                        "The sizes of the Q's in the position limit pair are not equal; first contains "
+                            << positionLimits.first.size() << " and second contains " << positionLimits.second.size()
+                            << " elements.");
+
+  ROS_DEBUG_STREAM("Lower position limits: " << positionLimits.first);
+  ROS_DEBUG_STREAM("Upper position limits: " << positionLimits.second);
+  ROS_DEBUG_STREAM("Velocity limits: " << velocityLimits);
+  ROS_DEBUG_STREAM("Acceleration limits: " << accelerationLimits);
+  ROS_DEBUG_STREAM("Current limits: " << currentLimits);
+
   return true;
 }
 
@@ -111,37 +132,6 @@ bool SDHNode::configureSDHDevice()
   nodeHandle_.param("can_device", canDevice_, std::string("/dev/pcan0"));
   nodeHandle_.param("can_baudrate", canBaudRate_, 1000000);
   nodeHandle_.param("can_timeout", canTimeout_, 0.5);
-
-  /* TODO: Verify that the chosen interfaceType is valid? or just let it fail when the parameters are being set? */
-
-  /* TODO: Could make the use of the gripper service, configurable through the parameter server. */
-  if (not GripperServiceInterface::configureInterface())
-  {
-    CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
-                     SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
-    return false;
-  }
-
-  /* Outputting information on supported value ranges */
-  /* TODO: This could be made part of the GripperServiceInterface - possibly as a message that is returned (or
-   * published) when a client asks for it.
-   * If the hardware is intelligent enough to provide new values/boundaries according to position or grasping mode, then
-   * it could make sense to publish that information when it changes
-   */
-  std::pair<rw::math::Q, rw::math::Q> positionLimits = sdh_->getPosLimits();
-  rw::math::Q velocityLimits = sdh_->getVelLimits();
-  /* There's also getAccLimits() */
-  rw::math::Q currentLimits = sdh_->getCurrentLimits();
-
-  ROS_ERROR_STREAM_COND(positionLimits.first.size() != positionLimits.second.size(),
-                        "The sizes of the Q's in the position limit pair are not equal; first contains "
-                            << positionLimits.first.size() << " and second contains " << positionLimits.second.size()
-                            << " elements.");
-
-  ROS_DEBUG_STREAM("Lower position limits: " << positionLimits.first);
-  ROS_DEBUG_STREAM("Upper position limits: " << positionLimits.second);
-  ROS_DEBUG_STREAM("Velocity limits: " << velocityLimits);
-  ROS_DEBUG_STREAM("Current limits: " << currentLimits);
 
   /* TODO: Debug information on what was configured accoringly to the parameter server? */
   return true;
@@ -200,12 +190,6 @@ bool SDHNode::connectToSDHDevice()
 
 bool SDHNode::recoverHook()
 {
-  /* TODO: */
-  /* Maybe the connection to the SDH device needs to be reestablished */
-  /* Should state be put into the errors or the error system within CarosNodeServiceInterface? (It is not guaranteed
-   * that a locally tracked error state is not being superseded by another error cause somewhere else in the CAROS
-   * system - so such a solution would be prone to errors) */
-
   /* Remember to place the state machine in a proper state according to the recovery (e.g. WAIT) */
 
   ROS_ERROR_STREAM("The recoverHook() has not been implemented yet!");
@@ -261,9 +245,9 @@ void SDHNode::runLoopHook()
      * Publish SDH state
      ************************************************************************/
     /* Publishing the SDH state before the state machine because then the measured/sampled values will (probably) have
-     * the best match with the current SDH action(s). Reporting a speed and having isstop being true is sort of
-     * inconsistent. */
-    /* The units of the reported values should match what is specified in the GripperState.msg specification.
+     *the best match with the current SDH action(s).
+     *
+     * The units of the reported values should match what is specified in the GripperState.msg specification.
      * The rwhw::SDHDriver constructor specifies the use of radians.
      */
     rw::math::Q q = currentQ_;
@@ -278,22 +262,17 @@ void SDHNode::runLoopHook()
     rw::math::Q compare = rw::math::Q::zero(dq.size());
     bool isMoving = (compare != dq) ? true : false;
     bool isBlocked = false;
-    /* FIXME: This can possibly give a wrong report in the situation where a new moveQ has just been initiated - so the
+    /* TODO: This can possibly give a wrong report in the situation where a new moveQ has just been initiated - so the
      * calculated distance between current position and target is greater than the threshold, but the
-     * measured/calculated velocity is still zero */
-    /* MBAND DEBUG */
-    ROS_INFO_STREAM("mband: currentQ_: " << currentQ_);
-    ROS_INFO_STREAM("mband: moveQ_: " << moveQ_);
-/* TODO: FIXME:
- * Design flaw, that moveQ_ is 0 (size() == 0) when no move has been initiated... so the distance can be anything
- * depending on initialisation...
- */
-/* MBAND END DEBUG */
-#if 0
-        if (!isMoving && (rw::math::MetricUtil::dist2(currentQ_, moveQ_) >= MOVE_DISTANCE_STOPPED_THRESHOLD)) {
-            isBlocked = true;
-        }
-#endif
+     * measured/calculated velocity is still zero (and isMoving is "falsely" set to false) */
+    /* Only calculate the distance when moveQ_ has the same length/size as currentQ_. */
+    if (moveQ_.size() == currentQ_.size())
+    {
+      if (!isMoving && (rw::math::MetricUtil::dist2(currentQ_, moveQ_) >= MOVE_DISTANCE_STOPPED_THRESHOLD))
+      {
+        isBlocked = true;
+      }
+    }
     bool isStopped = true;
     /* If not moving nor blocked, then it must be stopped (i.e. reached the target (see GripperState.msg specification))
      */
@@ -302,7 +281,7 @@ void SDHNode::runLoopHook()
       isStopped = false;
     }
     /* TODO: properly handle isEmergencyStopped - the logic to register whether an emergency stop is activated or
-     * deactivated is missing. Returning false or true in this situation is not recommended though... */
+     * deactivated is missing. */
     bool isEmergencyStopped = false;
     publishState(q, dq, force, isMoving, isBlocked, isStopped, isEmergencyStopped);
 

@@ -4,4 +4,5 @@
 geometry_msgs/Twist vel
 
 ---
+# If the service request was acknowledged
 bool success

@@ -23,10 +23,8 @@
 #include <string>
 #include <tuple>
 
-/* TODO:
- * The publisher queue size was specified to be 10, but why 10 and not just the latest?
- */
-#define SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE 10
+/* Always publish the latest serial device state */
+#define SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE 1
 #define SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE "caros_serial_device_service_interface"
 
 namespace caros
@@ -48,13 +46,7 @@ class SerialDeviceServiceInterface
   typedef std::vector<std::tuple<const rw::math::Transform3D<>, const float>> TransformAndSpeedContainer_t;
   typedef std::vector<std::tuple<const rw::math::Q, const float>> QAndSpeedContainer_t;
 
-  /* FIXME:
-   * Streamline the .srv descriptions and comments to have the same wording (especially for the speeds part)
-   * ^- Also look at the return/response fields and make sure they are streamlined (currently they should only return a
-   * boolean based on the success of the ROS service call (not whether the actually action has been done or not - just
-   * that it was a valid action (i.e. same amount of targets and speeds, and that IK solutions could be found).
-   */
-  /* Not supporting blends at the moment! */
+  /* TODO: Not supporting blends at the moment! */
   //! @brief move robot in a linear Cartesian path
   virtual bool moveLin(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from point to point
@@ -69,15 +61,15 @@ class SerialDeviceServiceInterface
   virtual bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
                          const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain) = 0;
 
-  /* TODO:
-   * Does it make sense that the servoQ and servoT are taking in multiple targets, instead of 1 target for each
-   * invocation?
-   * As far as I understand it, then servoing is supposed to just move to the newest configuration and throw away all
-   * the intermediate configurations as they are irrelevant and won't be used as waypoints.
+  /**
+   * @brief move robot in a servoing fashion specifying a joint configuration
+   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
-  //! @brief move robot in a servoing fashion specifying a joint configuration
   virtual bool moveServoQ(const QAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot in a servoing fashion specifying a pose
+  /**
+   * @brief move robot in a servoing fashion specifying a pose
+   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified target is chosen. Make sure to look at the specific implementation for the node you are using.
+   */
   virtual bool moveServoT(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief start the robot
   virtual bool moveStart() = 0;
@@ -87,19 +79,18 @@ class SerialDeviceServiceInterface
    * be able to perform the full trajectory) */
   //! @brief pause the robot, should be able to continue trajectory
   virtual bool movePause() = 0;
-  /* TODO:
-   * Is there a better name or multiple methods e.g. enable and disable for the following functionality?
-   * Also make sure to properly setup the arguments according to the above decisions
-   */
   //! @brief enable safe mode, so that robot stops when collisions are detected
   virtual bool moveSetSafeModeEnabled(const bool value) = 0;
 
  protected:
-  /* FIXME: add api documentation */
+  /**
+   * @brief Initialise this interface, such that the ROS services and publishers become available.
+   * @returns a boolean indicating whether all the ROS services and publishers were successfully made available.
+   */
   bool configureInterface();
 
   //! publish robot state
-  void publish(const caros_control_msgs::robot_state& state);
+  void publishState(const caros_control_msgs::robot_state& state);
 
  private:
   /**

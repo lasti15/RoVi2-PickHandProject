@@ -14,11 +14,6 @@ namespace caros
  * @{
  */
 
-/* TODO:
- * Better conversion descriptions? But it also is bad to hardcode the exact types in the documentation, so it has to be
- * changed if e.g. the ROS/CAROS package is changed.
- */
-
 //! convert double to double
 double toRos(const double value);
 

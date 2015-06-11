@@ -55,13 +55,10 @@ bool UniversalRobots::activateHook()
                      URNODE_MISSING_PARAMETER);
     return false;
   }
-  /* TODO:
-   * FIXME:
-   * Should ftFrameName default to WORLD or should the ROS parameter be explicitly set if ftFrame_ is to be used (i.e.
-   * the moveLinFc function controls whether ftFrame_ is NULL or not before doing anything...)?
-   */
+
   std::string ftFrameName;
   nodehandle_.param("FTFrame", ftFrameName, std::string("WORLD"));
+
   std::string ip;
   if (!nodehandle_.getParam("IP", ip))
   {
@@ -105,13 +102,6 @@ bool UniversalRobots::activateHook()
     }
   }
 
-  /* TODO:
-   * [ as of this writing ] There is no way to get a working workcell without restarting this URNode, as the
-   * functionality to obtain a workcell from the ROS parameter server is placed in ur_main...
-   * ^- Consider if this should cause this node to just go into a FATAL_ERROR state instead and make it possible to
-   * obtain the workcell from the parameter server through the recover functionality or simply by restarting the node -
-   * instead of having the node quit/restart without ending up in the CAROS FATAL ERROR?
-   */
   if (workcell_ == NULL)
   {
     CAROS_FATALERROR("No workcell was provided!", URNODE_MISSING_WORKCELL);
@@ -131,11 +121,10 @@ bool UniversalRobots::activateHook()
   ftFrame_ = workcell_->findFrame(ftFrameName);
   if (ftFrame_ == NULL)
   {
-    /* TODO:
-     * Should this be a fatal error or should it just be a warning and then have the actual functionality supporting
-     * this (i.e. moveLinFc) verify that ftFrame_ is indeed not NULL?
+    /* Just a warning since only a single function makes use of the frame.
+     * However currently it requires a node restart to reinitialise the parameters, workcell and finding the ftFrame.
      */
-    CAROS_FATALERROR("Couldn't find the ftFrame '" << ftFrameName << "' in the workcell!", URNODE_NO_SUCH_FRAME);
+    ROS_WARN_STREAM("Couldn't find the ftFrame '" << ftFrameName << "' in the workcell!");
     return false;
   }
 
@@ -150,25 +139,18 @@ bool UniversalRobots::activateHook()
   {
     numericCallbackPort = std::stoul(callbackPort);
   }
-  catch (std::invalid_argument& e)
+  catch (std::exception& e)
   {
-    /* The conversion could not be performed */
-    /* TODO:
-     * Go into some error mode?
-     */
-  }
-  catch (std::out_of_range& e)
-  {
-    /* TODO:
-     * Go into some error mode?
-     */
+    CAROS_FATALERROR("The supplied callbackPort could not be converted to a numeric value.",
+                     URNODE_INVALID_CALLBACKPORT);
+    return false;
   }
 
   /* The order of starting ur_ and urrt_ doesn't seem to matter */
   ur_.startCommunication(callbackIP, numericCallbackPort);
   urrt_.start();
 
-  if (!configureURService())
+  if (!URServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The URService could not be configured correctly.", URNODE_URSERVICE_CONFIGURE_FAIL);
     return false;
@@ -186,10 +168,7 @@ bool UniversalRobots::activateHook()
 
 bool UniversalRobots::recoverHook()
 {
-  /* TODO:
-   * Consider just redoing the activateHook() if e.g. a parameter was missing.
-   * ^- Anything that should be cleaned up before trying to reactivate/initialise this node?
-   */
+  /* TODO: Missing handling the different scenarios. */
   return false;
 }
 
@@ -206,14 +185,8 @@ void UniversalRobots::runLoopHook()
   }
 
   rwhw::URRTData urrtData = urrt_.getLastData();
-  /* TODO:
-   * Place the UniversalRobotsData within the rwhw namespace (the file is from RobWorkHardware)
-   */
-  UniversalRobotsData purData = ur_.getPrimaryInterface().getLastData();
+  rwhw::UniversalRobotsData purData = ur_.getPrimaryInterface().getLastData();
 
-  /* TODO:
-   * How much of this information and these messages are to be given as INFO, WARNING or DEBUG?
-   */
   ROS_DEBUG_STREAM("E-stop: '" << purData.emergencyStopped << "' Security-stop: '" << purData.securityStopped
                                << "' Running: '" << purData.programRunning << "'");
 
@@ -250,16 +223,12 @@ void UniversalRobots::runLoopHook()
 
     /* TODO:
      * isColliding is hardcoded to be false....
-     * ^- Look at the uncommented code in the MARVIN version for hints on how the collision detection was done (if it's
-     * desirable to bring back that functionality)
+     * ^- Look at the old out-commented code in the MARVIN version for hints on how the collision detection was done (if
+     * it's desirable to bring back that functionality)
      */
     robotState.isColliding = false;
 
-    /* TODO:
-     * Is there a better way to publish robotState - maybe look into the new RWstate that has been added to
-     * caros_common.
-     */
-    SerialDeviceServiceInterface::publish(robotState);
+    SerialDeviceServiceInterface::publishState(robotState);
   }
   else
   {
@@ -268,7 +237,8 @@ void UniversalRobots::runLoopHook()
      * fatalerror)?
      */
     ROS_WARN_STREAM("The size of urrtData.qActual is '" << urrtData.qActual.size() << "' but should be '"
-                                                        << URRTDATA_QACTUAL_SIZE << "'!");
+                                                        << URRTDATA_QACTUAL_SIZE << "'!"
+                                                        << " - Not publishing robot state!");
   }
 }
 
@@ -309,7 +279,7 @@ void UniversalRobots::addFTData(const caros_common_msgs::wrench_data::ConstPtr s
 /************************************************************************
  * URServiceInterface functions
  ************************************************************************/
-bool UniversalRobots::servoT(const rw::math::Transform3D<>& target)
+bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 {
   ROS_DEBUG_STREAM("servoT: " << target);
   device_->setQ(qcurrent_, state_);
@@ -329,7 +299,7 @@ bool UniversalRobots::servoT(const rw::math::Transform3D<>& target)
   return true;
 }
 
-bool UniversalRobots::servoQ(const rw::math::Q& q)
+bool UniversalRobots::urServoQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM("ServoQ: " << q);
 
@@ -338,8 +308,8 @@ bool UniversalRobots::servoQ(const rw::math::Q& q)
   return true;
 }
 
-bool UniversalRobots::forceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
-                                     const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits)
+bool UniversalRobots::urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
+                                       const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits)
 {
   ROS_DEBUG_STREAM("ForceModeStart arguments begin:");
   ROS_DEBUG_STREAM("refToffset: " << refToffset);
@@ -364,7 +334,7 @@ bool UniversalRobots::forceModeStart(const rw::math::Transform3D<>& refToffset, 
   return true;
 }
 
-bool UniversalRobots::forceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
+bool UniversalRobots::urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
 {
   ROS_DEBUG_STREAM("New wrench target for forceModeUpdate: " << wrenchTarget);
 
@@ -372,7 +342,7 @@ bool UniversalRobots::forceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget)
   return true;
 }
 
-bool UniversalRobots::forceModeStop()
+bool UniversalRobots::urForceModeStop()
 {
   ur_.forceModeEnd();
   return true;
@@ -410,17 +380,6 @@ bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
 
 bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
-  /* FIXME:
-   * [ If locking is necessary ] Replace the boost mutex scoped_lock with std::unique_lock (and the mutex_ type, etc. to
-   *get rid of boost dependencies that are unnecessary). <- if locking should be done! (probably useful due to the
-   *qcurrent_ and state_ variables being global within this class...)
-   *
-   * Look at the implementation of moveLin - it seems to just use ur_.moveT(std::get<0>(target), std::get<1>(target))
-   *compatible things - no need to convert the transform targets into q-space using an inverse kinematic solver... -
-   *Seems more efficient and easier...
-   */
-  //    boost::mutex::scoped_lock lock(mutex_);
-
   for (const auto& target : targets)
   {
     device_->setQ(qcurrent_, state_);
@@ -451,7 +410,7 @@ bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel)
      * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
      * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
      */
-    return servoQ(qcurrent_ + q_vel*0.1);
+    return urServoQ(qcurrent_ + q_vel*0.1);
 #endif
 }
 
@@ -465,8 +424,6 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
  * Old Implementation
  ******************************/
 #if 0
-    /* FIXME: Use c++11 mutex and unique_lock */
-//	boost::mutex::scoped_lock lock(mutex_);
 	device_->setQ(qcurrent_, state_);
 	rw::math::Jacobian jac = device_->baseJend(state_);
         /* TODO:
@@ -479,7 +436,7 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
          * Could use some more documentation on why the factor of 0.1 is being used (see todo comment for moveVelQ)
          */
         rw::math::Q qtarget = qcurrent_ + (jacInv*t_vel)*0.1;
-	return servoQ(qtarget);
+	return urServoQ(qtarget);
 #endif
 }
 
@@ -496,6 +453,7 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
  ******************************/
 #if 0
     if (ftFrame_ == NULL) {
+      /* It is also possible to go into an error state due to the missing ftFrame, and have a recover scenario handle fetching a the ftFrame name from the parameter server and try to find it in the workcell again. */
         ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
         return false;
     }
@@ -546,21 +504,19 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
 
     rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
 
-    return servoT(baseTtarget2);
+    return urServoT(baseTtarget2);
 #endif
 }
 
 bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 {
-  /* TODO:
-   * Throwing away the speed:
-   * RobWorkHardware doesn't support specifying the speed when servoing (because the Universal Robot didn't or doesn't
-   * support user specified speeds when doing servoing.
+  /* Throwing away the speed:
+   * RobWorkHardware doesn't support specifying the speed when servoing
    */
   bool res = false;
   for (const auto& target : targets)
   {
-    res = servoQ(std::get<0>(target));
+    res = urServoQ(std::get<0>(target));
     if (!res)
     {
       break;
@@ -576,7 +532,7 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
   /* Throwing away the speed */
   for (const auto& target : targets)
   {
-    res = servoT(std::get<0>(target));
+    res = urServoT(std::get<0>(target));
     if (!res)
     {
       break;
@@ -589,12 +545,8 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 bool UniversalRobots::moveStart()
 {
   ROS_ERROR_STREAM("Currently not implemented!");
-  return false;
 
-  /* TODO:
-   * Does this make sense? - how to start the robot and what if it's already started?
-   * ^- Isn't it already being started when launching this node?
-   */
+  return false;
 }
 
 bool UniversalRobots::moveStop()

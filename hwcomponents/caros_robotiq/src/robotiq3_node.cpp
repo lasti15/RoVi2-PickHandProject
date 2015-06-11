@@ -3,6 +3,7 @@
 
 USE_ROBWORK_NAMESPACE
 
+using namespace caros;
 using namespace robwork;
 
 Robotiq3Node::Robotiq3Node(const ros::NodeHandle& node_handle)

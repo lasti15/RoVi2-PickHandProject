@@ -6,16 +6,9 @@
 #include <std_srvs/Empty.h>
 
 #include <string>
+#include <stdexcept>
 
 #define CAROS_NODE_SERVICE_INTERFACE_SUB_NAMESPACE "caros_node"
-
-/************************************************************************
- * TODO:
- * - Add apidoc documentation
- * - Error codes: Make use of a "singleton counter" and the parameter
- *                server to handle the distribution of error codes and
- *                their corresponding human-friendly description.
- ************************************************************************/
 
 /**
  * \addtogroup CAROS_NODE_SI CAROS Node Service Interface
@@ -108,7 +101,6 @@ enum CAROS_NODE_ERRORCODE
 }
 typedef CAROS_NODE_ERRORCODES::CAROS_NODE_ERRORCODE CAROS_NODE_ERRORCODE;
 
-/* FIXME: the description below is now outdated */
 /**
  * \ingroup CAROS_NODE_SI
  * @brief A node service interface that defines a simple statemachine from which
@@ -122,6 +114,8 @@ class CarosNodeServiceInterface
    * @param[in] nodehandle The nodehandle to use for ROS services and publishers.
    * @param[in] loopRateFrequency Optional parameter that specifies the frequency [Hz] of this ROS node - see
    * setLoopRateFrequency() for more information.
+   *
+   * @throws std::runtime_error if the basic functionality can't be properly initialised.
    */
   CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency = 30);
 
@@ -150,11 +144,6 @@ class CarosNodeServiceInterface
   };
 
  protected:
-  /* TODO:
-   * Should the Hook description mention something about deriving/child classes?
-   * These apidocs contains a lot of duplicated information - should that be deduplicated or is there a better
-   * alternative?
-   */
   /**
    * @name ROS Service Hooks
    * @brief These hooks needs to be implemented in the deriving node, allowing for a common interface for controlling
@@ -169,7 +158,8 @@ class CarosNodeServiceInterface
    * It is also here that other interfaces should be initialised (e.g. the
    *caros::GripperServiceInterface::configureInterface()), together with
    *advertising ROS services and publishers that are specific to the node.
-   * If an error occurs, then either error() or fatalError() should be called depending on the severity of the error,
+   * If an error occurs, then either @ref caros::CAROS_ERROR or @ref caros::CAROS_FATALERROR should be called depending
+   *on the severity of the error,
    *and false returned.
    */
   virtual bool activateHook() = 0;
@@ -178,7 +168,8 @@ class CarosNodeServiceInterface
    * @brief This is called as part of a recovery process that is invoked through the ROS service "recover".
    *
    * This hook should be used to perform any necessary steps to recover from the error.
-   * The design of the recovery process is to be considered incomplete. Some things are missing such as the ability to
+   * @note The design of the recovery process is to be considered incomplete. Some things are missing such as the
+   *ability to
    *properly see what error the node has been told to recover from (it's available in the CarosNodeService, but how to
    *properly use it when recovering is undecided).
    */
@@ -193,23 +184,35 @@ class CarosNodeServiceInterface
    *through setLoopRateFrequency().
    */
   /** @{ */
-  /* TODO: API documentation describing an example scenario on what should happen once they are fired/invoked */
+  /**
+   * @brief This is invoked in the RUNNING state.
+   */
   virtual void runLoopHook() = 0;
+  /**
+   * @brief This is invoked in the ERROR state.
+   */
   virtual void errorLoopHook(){/* Empty */
   };
+  /**
+   * @brief This is invoked in the FATALERROR state.
+   */
   virtual void fatalErrorLoopHook(){/* Empty */
   };
   /** @} */
 
-  void error(const std::string& msg,
-             const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
-  void fatalError(const std::string& msg,
-                  const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
-
+  /**
+   * @brief Get current state.
+   * @returns the current state.
+   */
   NodeState getState()
   {
     return nodeState_;
   }
+
+  /**
+   * @brief Get the previous state.
+   * @returns the previous state.
+   */
   NodeState getPreviousState()
   {
     return previousState_;
@@ -251,6 +254,18 @@ class CarosNodeServiceInterface
     return loopRateFrequency_;
   }
 
+  /**
+   * @brief error function, should not be invoked directly but through the @ref caros::CAROS_ERROR macro.
+   */
+  void error(const std::string& msg,
+             const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+
+  /**
+   * @brief fatal error function, should not be invoked directly but through the @ref caros::CAROS_FATALERROR macro.
+   */
+  void fatalError(const std::string& msg,
+                  const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+
  private:
   /**
    * @brief private default constructor.
@@ -289,7 +304,7 @@ class CarosNodeServiceInterface
    * @brief internal GripperServiceInterface function to properly advertise the services using ROS and setup the
    *callbacks.
    *
-   * This should not be called directly.
+   * @note This should not be called directly.
    */
   bool initCarosNode();
 
@@ -300,8 +315,18 @@ class CarosNodeServiceInterface
   bool recoverHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
   /** @} */
 
+  /**
+   * @brief Change the state.
+   *
+   * @note Supposed to be called internally.
+   */
   void changeState(const NodeState newState);
 
+  /**
+   * @brief Publishes the state of this CAROS node.
+   *
+   * @note Supposed to be called internally.
+   */
   void publishNodeState(const bool stateChanged = false);
 
  private:
@@ -314,9 +339,6 @@ class CarosNodeServiceInterface
   NodeState nodeState_;
   NodeState previousState_;
 
-  /* TODO:
-   * Should the loopRateFrequency_ be settable through the CarosNodeServiceInterface that is exposed as ROS services?
-   */
   double loopRateFrequency_;
   ros::Rate loopRate_;
 

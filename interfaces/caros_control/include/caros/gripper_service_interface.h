@@ -42,9 +42,6 @@ class GripperServiceInterface
    */
   virtual ~GripperServiceInterface();
 
-  /* TODO: apidoc documentation */
-  bool configureInterface();
-
   /**
    * @brief signal the gripper to move into a specific configuration Q.
    * @param q
@@ -82,6 +79,12 @@ class GripperServiceInterface
   virtual bool stopMovement(void) = 0;
 
  protected:
+  /**
+   * @brief Initialise this interface, such that the ROS services and publishers become available.
+   * @returns a boolean indicating whether all the ROS services and publishers were successfully made available.
+   */
+  bool configureInterface();
+
   /**
    * @brief publish the state of the gripper. Uses GripperState messages
    * @param[in] q joint configuration

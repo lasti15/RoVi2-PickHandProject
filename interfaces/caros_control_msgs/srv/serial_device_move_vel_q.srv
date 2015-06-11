@@ -2,4 +2,5 @@
 caros_common_msgs/q vel
 
 ---
+# If the service request was acknowledged
 bool success
