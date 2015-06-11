@@ -113,7 +113,8 @@ bool UniversalRobots::activateHook()
   device_ = workcell_->findDevice(deviceName);
   if (device_ == NULL)
   {
-    CAROS_FATALERROR("Unable to find device " << deviceName << " in the loaded workcell", URNODE_NO_SUCH_DEVICE);
+    CAROS_FATALERROR("Unable to find device " << deviceName << " in the loaded workcell",
+                     URNODE_NO_SUCH_DEVICE_IN_WORKCELL);
     return false;
   }
 
