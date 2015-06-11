@@ -12,8 +12,8 @@
  * Could make the 'caros_control_msgs::robot_state pRobotState_' available to the user (as a copy), so if this SIP is
  * being updated automatically in a thread, then it's not certain that a call to getTimeStamp and isMoving will be
  * reading from the same robot state
- * Maybe even pack it into it's own structure with a c++/rw interface/types returned instead of the ROS types. The getQ,
- * getQd, isMoving and getTimeStamp functions could be moved to become member functions of that struct/class.
+ * Maybe even pack it into it's own structure with a c++/rw interface/types returned instead of the ROS types.
+ * The getQ, getQd, isMoving and getTimeStamp functions could be moved to become member functions of that struct/class.
  */
 
 namespace caros
@@ -123,13 +123,10 @@ class SerialDeviceSIProxy
   /* There is no blend parameter, as it is irrelevent when doing servoing. */
   bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100.0f);
 
-  /* TODO:
-   * Update the parameter description - especially for offset
-   */
   /**
    * @brief move robot with a hybrid position/force control
    * @param[in] posTarget the target pose configuration
-   * @param[in] offset ...
+   * @param[in] offset offset
    * @param[in] wrenchTarget wrench
    * @param[in] controlGain Control gains for the force control. 0 means 100% position control, while values != 0 means
    *force control with the numerical value.

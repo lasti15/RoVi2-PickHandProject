@@ -1,7 +1,8 @@
 #include <caros/gripper_si_proxy.h>
 
-#include <caros/gripper_service_interface.h> /* provides GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE and the different msg \
-                                                and srv types*/
+/* Provides GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE and the different msg and srv types*/
+#include <caros/gripper_service_interface.h>
+
 #include <caros/common.h>
 #include <caros/common_robwork.h>
 #include <caros/exceptions.h>
@@ -9,51 +10,12 @@
 #include <caros_control_msgs/gripper_state.h>
 
 /* TODO:
- * - Does it make sense to have a nodehandle or just use the non-object/instance versions of the function calls?
- *  ^--< With this simple implementation, where the subscribed callback will only be called when the user of this proxy
- *calls spin or otherwise invoke the callback handling, then it makes plenty of sense to enforce the user to provide a
- *nodehandle - otherwise this functionality will not work as intended.
- *  ^-- This also makes it the user's responsibility to ensure that the calls to getTimeStamp() and other interesting
- *getters are done on the same received GripperState i.e. not calling any spin or processing of the subscribing callback
- *queue... otherwise the data may be inconsistent.
- *  ^-- If using a thread to run the handleGripperState callback, then it would make sense to expose the reported
- *gripperState to the user or create a struct holding the same fields just with converted types such as rw::math::Q
- *instead of caros_common_msgs/q.
- *
- * - Would it make sense to default to persistent connections? and automatic reconnection?
- *
- * - See http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning for more information on turning this proxy into
- *a "selfhosted" ros node - so it spawns a thread that spins and handle the subscribed queue/callback - this can make it
- *possible to fully eliminate the knowledge of ROS from the user of this proxy (given that the ros::Time (header,
- *timestamp) type is eliminated by finding another type to represent the timestamps).
- * ^-- Also document these assumptions, so that users of this proxy easily understand how to properly use it.
- *
- * What to do when no gripper state data has been acquired yet?
- *   - Simply throw an exception stating that the data is invalid?
- *   - or how to properly signal that the data has not been updated at all?
- *   - what about timestamps?
- *
- * How to diagnose if the subscription is still valid and reinitiate a subscription? [ use subGripperState_() != 0 or
- *similar, but reinitiating requires creating a new object or is that supposed to never ever happen so the functionality
- *is missing? [ possibly interesting functions: getNumPublishers() and/or getTopic() ... ]
- * - Should there be a function to verify the subscription state/condition, and/or have every function that is being
- *invoked verify the state/condition of this object? Or should it just be the getters that verify that the subscription
- *is still active?
- *
- * The service calls can be extended with http://docs.ros.org/api/roscpp/html/classros_1_1ServiceClient.html :
- *waitForExistence(...) - taking an optional parameter specifying the timeout or just a boolean specifying whether or
- *not to block until the service becomes available...
- *
- * The user should have easy access to the error information regarding the state of the gripper / gripper caros node.
- *
- * Add more getters to allow the user to obtain more information from the reported gripper state. Maybe even allow the
- *user access to the whole gripper state with ROS types (the user would then have to properly handle the type
- *conversions). Also see comment above about creating a struct holding the converted gripperState fields.
+ * Find a good way to handle the situation where a user tries to get some data e.g. getQ and no data has ever been
+ *received yet - currently it will just return the default initialised values.
  *
  * Provide synchronous versions of the service calls such as moveQ and gripQ. This would make a blocking call waiting
  *for the reported gripper state to show the proper values, but handleGripperState would never be run with the current
- *setup - requiring the subscription callback to be handled in its own thread, as described above (in one of the TODO
- *comments).
+ *setup (where the user has to invoke "ros spin") - requiring the subscription callback to be handled in its own thread.
  */
 
 using namespace caros;

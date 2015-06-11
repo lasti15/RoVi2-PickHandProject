@@ -46,9 +46,6 @@ class GripperSIProxy
    * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
    *gripper is not fully working, or the gripper has not announced this service yet.
    * @throws badServiceCall when an error happened while communicating with the gripper.
-   *
-   * [Detailed description] TODO: should describe something about how grasping is different than move (such as the hand
-   *(if it supports it) will continue to apply force trying to get into the target configuration)
    */
   bool gripQ(const rw::math::Q& q);
 
@@ -98,14 +95,13 @@ class GripperSIProxy
    * @brief Get the last reported velocities from the gripper
    * @returns The reported velocities of the gripper
    */
-  /* TODO: getVelocity() instead of getQd()? or as an alias/alternative? */
   rw::math::Q getQd();
 
   /**
    * @brief Get the last reported forces from the gripper
    * @returns The reported forces of the gripper
    *
-   * TODO: Currently it is probably just the (electrical) currents that will be returned, as there is no implemented
+   * @note Currently it is most likely just the (electrical) currents that will be returned, as there is no implemented
    *conversion to get the actual forces instead
    */
   rw::math::Q getForce();
@@ -116,10 +112,6 @@ class GripperSIProxy
    */
   ros::Time getTimeStamp();
 
-  /* TODO:
-   *   Should something be protected instead of private?
-   *   - What use cases would benefit from being able to access the service clients or the nodeHandle?
-   */
  protected:
   ros::NodeHandle nodehandle_;
   bool usePersistentConnections_;

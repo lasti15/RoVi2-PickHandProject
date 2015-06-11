@@ -11,10 +11,6 @@
 
 namespace
 {
-/* FIXME:
- * Remove hardcoded information regarding the targets and speeds are vectors or (random) indexing data structures  e.g.
- * targets_t::size_t looping and such...
- */
 template <typename targets_t, typename speeds_t, typename container_t>
 bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t& speeds, container_t& res)
 {
@@ -25,10 +21,8 @@ bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t&
     return false;
   }
 
-  ROS_ASSERT(
-      targets.size() ==
-      speeds
-          .size()); /* Just an extra "safety" control to verify that our double indexing loop will behave as expected */
+  /* Just an extra "safety" control to verify that our double indexing loop will behave as expected */
+  ROS_ASSERT(targets.size() == speeds.size());
   res.clear();
   res.reserve(targets.size());
 
@@ -42,7 +36,7 @@ bool fillContainerWithTargetsAndSpeeds(const targets_t& targets, const speeds_t&
 
   return true;
 }
-} // end namespace
+}  // end namespace
 
 using namespace caros;
 
@@ -80,10 +74,6 @@ bool SerialDeviceServiceInterface::initService()
         "then this should be considered a bug!");
   }
 
-  /* TODO:
-   * Should the "RobotState" not be called something like SerialDeviceState or similar?
-   * ^- The name should also be replaced in the ros error stream condition statement!
-   */
   deviceStatePublisher_ =
       nodehandle_.advertise<caros_control_msgs::robot_state>("robot_state", SERIAL_DEVICE_STATE_PUBLISHER_QUEUE_SIZE);
   ROS_ERROR_STREAM_COND(!deviceStatePublisher_, "The RobotState publisher is empty!");
@@ -144,7 +134,7 @@ bool SerialDeviceServiceInterface::initService()
   return true;
 }
 
-void SerialDeviceServiceInterface::publish(const caros_control_msgs::robot_state& state)
+void SerialDeviceServiceInterface::publishState(const caros_control_msgs::robot_state& state)
 {
   deviceStatePublisher_.publish(state);
 }
@@ -155,8 +145,6 @@ void SerialDeviceServiceInterface::publish(const caros_control_msgs::robot_state
 /* TODO:
  * Rewrite the functions to also take in the blends (which should be added to the .srv files). Also remember to update
  * the non-handle versions.
- * Try to refactor as much of the shared conversion/code for all these methods, into separate functions, like with the
- * fillContainerWithTransformsAndSpeed(...) function.
  */
 bool SerialDeviceServiceInterface::moveLinHandle(caros_control_msgs::serial_device_move_lin::Request& request,
                                                  caros_control_msgs::serial_device_move_lin::Response& response)
@@ -191,7 +179,7 @@ bool SerialDeviceServiceInterface::movePtpHandle(caros_control_msgs::serial_devi
 }
 
 bool SerialDeviceServiceInterface::movePtpTHandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
-                                                   caros_control_msgs::serial_device_move_ptp_t::Response& response)
+                                                  caros_control_msgs::serial_device_move_ptp_t::Response& response)
 {
   TransformAndSpeedContainer_t res;
   if (fillContainerWithTargetsAndSpeeds(request.targets, request.speeds, res))
@@ -226,7 +214,7 @@ bool SerialDeviceServiceInterface::moveVelTHandle(caros_control_msgs::serial_dev
 
 /* TODO:
  * Add speeds implementation
- * This should also be added to the RobWorkHardware URCallBackInterface servo functioninality, where the speed should be
+ * This should also be added to the RobWorkHardware URCallBackInterface servo functionality, where the speed should be
  * optional, defaulting to the currently hardcoded value...
  */
 bool SerialDeviceServiceInterface::moveServoQHandle(caros_control_msgs::serial_device_move_servo_q::Request& request,
@@ -276,15 +264,7 @@ bool SerialDeviceServiceInterface::moveLinFcHandle(caros_control_msgs::serial_de
   wrenchTarget(4) = request.wrench_target.torque.y;
   wrenchTarget(5) = request.wrench_target.torque.z;
 
-  /* FIXME:
-   * Add proper output message!
-   */
-  //    ROS_ASSERT_MSG(request.ctrl_gains.size() == 6, "The size of ctrl_gains " << request.ctrl_gains.size() << " but
-  //    should be 6!");
   ROS_ASSERT(request.ctrl_gains.size() == 6);
-  /* FIXME:
-   * Convert the ctrl_gains (boost::array) to std::vector or rw::math::Q ?
-   */
   rw::math::Q selection(request.ctrl_gains.size(), request.ctrl_gains.at(0), request.ctrl_gains.at(1),
                         request.ctrl_gains.at(2), request.ctrl_gains.at(3), request.ctrl_gains.at(4),
                         request.ctrl_gains.at(5));
