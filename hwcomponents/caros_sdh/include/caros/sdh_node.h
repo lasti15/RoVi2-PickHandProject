@@ -21,6 +21,8 @@
 
 #define SUPPORTED_Q_LENGTH_FOR_SDHNODE 7
 
+namespace caros
+{
 /**
  * @brief ROS node for controlling SDH.
  */
@@ -97,5 +99,7 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   int canBaudRate_;
   double canTimeout_;
 };
+
+}  // end namespace
 
 #endif /* include guard */

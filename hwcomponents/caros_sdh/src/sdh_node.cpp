@@ -44,6 +44,8 @@
  *it would make it easier to reason/debug "what just happened").
  */
 
+using namespace caros;
+
 SDHNode::SDHNode(const ros::NodeHandle& nodehandle)
     : caros::CarosNodeServiceInterface(nodehandle),
       caros::GripperServiceInterface(nodehandle),
