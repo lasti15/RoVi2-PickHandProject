@@ -16,6 +16,3 @@ float32[] limits
 ---
 # if the service request was acknowledged
 bool success
-
-# possibly why service was not acknowledged... for example if force control is not supported.
-uint32 errorstate
