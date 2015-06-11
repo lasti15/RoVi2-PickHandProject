@@ -12,6 +12,8 @@
 
 #include <ros/ros.h>
 
+namespace caros
+{
 /**
  * @brief Ros node for controlling Robotiq-3 gripper.
  */
@@ -89,5 +91,7 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   rw::common::Ptr<rwhw::Robotiq3> robotiq3_;
   ros::NodeHandle node_handle_;
 };
+
+}  // end namespace
 
 #endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
