@@ -132,8 +132,25 @@ bool UniversalRobots::activateHook()
   state_ = workcell_->getDefaultState();
   iksolver_ = rw::common::ownedPtr(new rw::invkin::JacobianIKSolver(device_, state_));
 
-  urrt_.connect(ip, URRT_PORT);
-  ur_.connect(ip, UR_PORT);
+  try
+  {
+    urrt_.connect(ip, URRT_PORT);
+  }
+  catch (rw::common::Exception& exp)
+  {
+    CAROS_FATALERROR("Could not connect to urrt:" << exp.what(), URNODE_UNSUCCESSFUL_CONNECT_TO_URRT);
+    return false;
+  }
+
+  try
+  {
+    ur_.connect(ip, UR_PORT);
+  }
+  catch (rw::common::Exception& exp)
+  {
+    CAROS_FATALERROR("Could not connect to urrt:" << exp.what(), URNODE_UNSUCCESSFUL_CONNECT_TO_UR);
+    return false;
+  }
 
   unsigned int numericCallbackPort = 0;
   try
@@ -148,7 +165,9 @@ bool UniversalRobots::activateHook()
   }
 
   /* The order of starting ur_ and urrt_ doesn't seem to matter */
+  /* No feedback from startCommunication() ... there are debug log messages on whether it was sort of successful or not */
   ur_.startCommunication(callbackIP, numericCallbackPort);
+  /* No feedback from start() */
   urrt_.start();
 
   if (!URServiceInterface::configureInterface())
