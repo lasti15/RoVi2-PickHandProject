@@ -2,7 +2,6 @@
 
 #include <caros/common_robwork.h>
 
-#include <rw/invkin/IKMetaSolver.hpp>
 #include <rw/math/MetricFactory.hpp>
 
 #include <ros/assert.h>
