@@ -1,5 +1,6 @@
 #include <caros/universal_robots.h>
 
+#include <caros/common.h>
 #include <caros/common_robwork.h>
 
 #include <rw/math/MetricFactory.hpp>
@@ -130,6 +131,7 @@ bool UniversalRobots::activateHook()
 
   state_ = workcell_->getDefaultState();
   iksolver_ = rw::common::ownedPtr(new rw::invkin::JacobianIKSolver(device_, state_));
+  ROS_ASSERT(iksolver_ != NULL);
 
   try
   {
@@ -169,13 +171,13 @@ bool UniversalRobots::activateHook()
   /* No feedback from start() */
   urrt_.start();
 
-  if (!URServiceInterface::configureInterface())
+  if (not URServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The URService could not be configured correctly.", URNODE_URSERVICE_CONFIGURE_FAIL);
     return false;
   }
 
-  if (!SerialDeviceServiceInterface::configureInterface())
+  if (not SerialDeviceServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The SerialDeviceService could not be configured correctly.",
                      URNODE_SERIALDEVICESERVICE_CONFIGURE_FAIL);
@@ -225,27 +227,20 @@ void UniversalRobots::runLoopHook()
     robotState.dq = caros::toRos(urrtData.dqActual);
     robotState.header.frame_id = nodehandle_.getNamespace();
     robotState.header.stamp = ros::Time::now();
-    robotState.estopped = purData.emergencyStopped;
-    if (robotState.estopped)
-    {
-      /* TODO:
-       * Is this data really broken, as stated by a comment in the MARVIN version?
-       */
-      ROS_DEBUG_STREAM_NAMED("robotState estopped", "Is estopped");
-    }
-    else
-    {
-      ROS_DEBUG_STREAM_NAMED("robotState estopped", "Is not estopped");
-    }
+    robotState.estopped = caros::toRos(purData.emergencyStopped);
 
-    robotState.isMoving = ur_.isMoving();
+    /* TODO: Currently there is a delay somewhere, where the data gotten from the robot is really delayed quite a bit - atleast for the emergency stop. */
+
+    /* TODO: This isMoving() function is not working - returns false eventhough the robot is moving...
+     * isMoving() is returning a variable that is modified within a thread - Perhaps the compiler has optimised the read to be constant? */
+    robotState.isMoving = caros::toRos(ur_.isMoving());
 
     /* TODO:
      * isColliding is hardcoded to be false....
      * ^- Look at the old out-commented code in the MARVIN version for hints on how the collision detection was done (if
      * it's desirable to bring back that functionality)
      */
-    robotState.isColliding = false;
+    robotState.isColliding = caros::toRos(false);
 
     SerialDeviceServiceInterface::publishState(robotState);
   }

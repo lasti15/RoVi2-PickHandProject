@@ -52,7 +52,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   bool urServoQ(const rw::math::Q& target);
   //! @copydoc URServiceInterface::forceModeStart
   bool urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
-                      const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits);
+                        const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits);
   //! @copydoc URServiceInterface::forceModeUpdate
   bool urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget);
   //! @copydoc URServiceInterface::forceModeStop
@@ -110,8 +110,8 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   rw::math::Q qcurrent_; /* Updated in runLoopHook() */
   rw::kinematics::Frame* ftFrame_;
 
-  rwhw::URCallBackInterface ur_;        /* shared */
-  rwhw::UniversalRobotsRTLogging urrt_; /* shared */
+  rwhw::URCallBackInterface ur_;
+  rwhw::UniversalRobotsRTLogging urrt_;
 
   // [ not being initialised ] rwhw::NetFTLogging::Ptr pNetFT_;
   //    rwhw::FTCompensation::Ptr pFTCompensation_;
@@ -119,8 +119,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   std::queue<rw::math::Wrench6D<>> wrenchDataQueue_;
 
   rw::invkin::JacobianIKSolver::Ptr iksolver_;
-  rw::kinematics::State
-      state_; /* Updated as needed by calling device_->setQ(qcurrent_, state_) or some other q-configuration */
+  rw::kinematics::State state_;
 
   bool useFTCollisionDetection_;
 };
