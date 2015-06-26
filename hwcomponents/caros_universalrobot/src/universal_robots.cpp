@@ -187,7 +187,7 @@ bool UniversalRobots::activateHook()
   return true;
 }
 
-bool UniversalRobots::recoverHook()
+bool UniversalRobots::recoverHook(const std::string& errorMsg, const int64_t errorCode)
 {
   /* TODO: Missing handling the different scenarios. */
   return false;

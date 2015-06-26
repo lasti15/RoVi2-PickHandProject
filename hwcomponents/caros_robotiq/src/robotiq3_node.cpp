@@ -49,7 +49,7 @@ bool Robotiq3Node::activateHook()
   return true;
 }
 
-bool Robotiq3Node::recoverHook()
+bool Robotiq3Node::recoverHook(const std::string& errorMsg, const int64_t errorCode)
 {
   /* TODO: */
 

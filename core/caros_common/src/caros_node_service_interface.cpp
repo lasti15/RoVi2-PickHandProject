@@ -122,7 +122,7 @@ bool CarosNodeServiceInterface::recoverNode()
     return false;
   }
 
-  if (recoverHook())
+  if (recoverHook(errorMsg_, errorCode_))
   {
     ROS_ERROR_STREAM_COND(previousState_ == FATALERROR, "A successful recovery brings the node back into the "
                                                             << CarosStateString[FATALERROR]

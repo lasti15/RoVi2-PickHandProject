@@ -47,7 +47,7 @@ protected:
   //! @copydoc CarosNodeServiceInterface::activateHook
   bool activateHook();
   //! @copydoc CarosNodeServiceInterface::recoverHook
-  bool recoverHook(){ return false;}
+  bool recoverHook(const std::string& errorMsg, const int64_t errorCode){ return false;}
   //! @copydoc CarosNodeServiceInterface::runLoopHook
   void runLoopHook();
   //! @copydoc CarosNodeServiceInterface::errorLoopHook

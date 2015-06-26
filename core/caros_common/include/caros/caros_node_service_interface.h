@@ -166,6 +166,8 @@ class CarosNodeServiceInterface
 
   /**
    * @brief This is called as part of a recovery process that is invoked through the ROS service "recover".
+   * @param[in] errorMsg The corresponding error message.
+   * @param[in] errorCode The error code that should be recovered from.
    *
    * This hook should be used to perform any necessary steps to recover from the error.
    * @note The design of the recovery process is to be considered incomplete. Some things are missing such as the
@@ -173,7 +175,7 @@ class CarosNodeServiceInterface
    *properly see what error the node has been told to recover from (it's available in the CarosNodeService, but how to
    *properly use it when recovering is undecided).
    */
-  virtual bool recoverHook() = 0;
+  virtual bool recoverHook(const std::string& errorMsg, const int64_t errorCode) = 0;
   /** @} */
 
   /**
