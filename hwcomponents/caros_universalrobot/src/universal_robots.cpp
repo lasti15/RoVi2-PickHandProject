@@ -296,16 +296,27 @@ void UniversalRobots::addFTData(const caros_common_msgs::wrench_data::ConstPtr s
 bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 {
   ROS_DEBUG_STREAM("servoT: " << target);
+
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   device_->setQ(qcurrent_, state_);
   std::vector<rw::math::Q> solutions = iksolver_->solve(target, state_);
   if (solutions.empty())
   {
     ROS_ERROR_STREAM("servoT: Unable to find IK solution for target = '" << target << "' and qcurrent_ = '" << qcurrent_
                                                                          << "'");
-    return true;
+    return false;
   }
 
   rw::math::Q closest = solutions.front();
+
+  if (not supportedQSize(closest))
+  {
+    return false;
+  }
 
   ROS_DEBUG_STREAM("servoT: Q-configuration being sent to driver: " << closest);
   ur_.servo(closest);
@@ -316,6 +327,11 @@ bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 bool UniversalRobots::urServoQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM("ServoQ: " << q);
+
+  if (not isInWorkingCondition() || not supportedQSize(q))
+  {
+    return false;
+  }
 
   ur_.servo(q);
   /* There is no (immediate) feedback from the ur_.servo() function call, so just returning true. */
@@ -331,6 +347,11 @@ bool UniversalRobots::urForceModeStart(const rw::math::Transform3D<>& refToffset
   ROS_DEBUG_STREAM("wrenchTarget: " << wrenchTarget);
   ROS_DEBUG_STREAM("limits: " << limits);
   ROS_DEBUG_STREAM("ForceModeStart arguments end");
+
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
 
   if (selection.size() != 6)
   {
@@ -352,13 +373,24 @@ bool UniversalRobots::urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget
 {
   ROS_DEBUG_STREAM("New wrench target for forceModeUpdate: " << wrenchTarget);
 
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ur_.forceModeUpdate(wrenchTarget);
   return true;
 }
 
 bool UniversalRobots::urForceModeStop()
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ur_.forceModeEnd();
+
   return true;
 }
 
@@ -368,6 +400,12 @@ bool UniversalRobots::urForceModeStop()
 bool UniversalRobots::moveLin(const TransformAndSpeedContainer_t& targets)
 {
   ROS_DEBUG_STREAM("moveLin with " << targets.size() << " target(s).");
+
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   for (const auto& target : targets)
   {
     /* moveT(...) is void, so no errorcode is returned. Furthermore the implementation (at least in revision 5472)
@@ -384,9 +422,20 @@ bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
 {
   ROS_DEBUG_STREAM("movePtp with " << targets.size() << " target(s).");
 
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   for (const auto& target : targets)
   {
-    ur_.moveQ(std::get<0>(target), std::get<1>(target));
+    const auto& q = std::get<0>(target);
+    if (not supportedQSize(q))
+    {
+      return false;
+    }
+
+    ur_.moveQ(q, std::get<1>(target));
   }
 
   return true;
@@ -394,6 +443,13 @@ bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
 
 bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
+  ROS_DEBUG_STREAM("movePtpT with " << targets.size() << " target(s).");
+
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   for (const auto& target : targets)
   {
     device_->setQ(qcurrent_, state_);
@@ -404,7 +460,14 @@ bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
       ROS_WARN_STREAM("movePtpT: Unable to find IK solution for: " << transform << " with qcurrent: " << qcurrent_);
       return false;
     }
-    ur_.moveQ(solutions.front(), std::get<1>(target));
+
+    const rw::math::Q& q = solutions.front();
+    if (not supportedQSize(q))
+    {
+      return false;
+    }
+
+    ur_.moveQ(q, std::get<1>(target));
   }
 
   return true;
@@ -420,6 +483,11 @@ bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel)
  * Old Implementation
  ******************************/
 #if 0
+  if (not isInWorkingCondition() || not supportedQSize(q_vel))
+  {
+    return false;
+  }
+
     /* TODO:
      * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
      * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
@@ -438,6 +506,11 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
  * Old Implementation
  ******************************/
 #if 0
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
 	device_->setQ(qcurrent_, state_);
 	rw::math::Jacobian jac = device_->baseJend(state_);
         /* TODO:
@@ -466,6 +539,11 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
  * Old Implementation
  ******************************/
 #if 0
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
     if (ftFrame_ == NULL) {
       /* It is also possible to go into an error state due to the missing ftFrame, and have a recover scenario handle fetching a the ftFrame name from the parameter server and try to find it in the workcell again. */
         ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
@@ -524,13 +602,24 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& posTarget, const 
 
 bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   /* Throwing away the speed:
    * RobWorkHardware doesn't support specifying the speed when servoing
    */
   bool res = false;
   for (const auto& target : targets)
   {
-    res = urServoQ(std::get<0>(target));
+    const auto& q = std::get<0>(target);
+    if (not supportedQSize(q))
+    {
+      return false;
+    }
+
+    res = urServoQ(q);
     if (!res)
     {
       break;
@@ -542,6 +631,11 @@ bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 
 bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   bool res = false;
   /* Throwing away the speed */
   for (const auto& target : targets)
@@ -558,6 +652,11 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 
 bool UniversalRobots::moveStart()
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ROS_ERROR_STREAM("Currently not implemented!");
 
   return false;
@@ -565,6 +664,11 @@ bool UniversalRobots::moveStart()
 
 bool UniversalRobots::moveStop()
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ur_.stopRobot();
 
   return true;
@@ -572,12 +676,48 @@ bool UniversalRobots::moveStop()
 
 bool UniversalRobots::movePause()
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ROS_ERROR_STREAM("Currently not implemented!");
   return false;
 }
 
 bool UniversalRobots::moveSetSafeModeEnabled(const bool value)
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
   ROS_ERROR_STREAM("Currently not implemented!");
   return false;
+}
+
+/************************************************************************
+ * Utility functions
+ ************************************************************************/
+bool UniversalRobots::isInWorkingCondition()
+{
+  if (not isInRunning())
+  {
+    ROS_WARN_STREAM("Not in running state!");
+    return false;
+  }
+
+  return true;
+}
+
+bool UniversalRobots::supportedQSize(const rw::math::Q& q)
+{
+  if (q.size() != SUPPORTED_Q_LENGTH_FOR_UR)
+  {
+    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_UR,
+                URNODE_UNSUPPORTED_Q_LENGTH);
+    return false;
+  }
+
+  return true;
 }
