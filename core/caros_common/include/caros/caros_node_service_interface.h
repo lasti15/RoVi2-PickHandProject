@@ -298,6 +298,16 @@ class CarosNodeServiceInterface
    * @post Failure: In ERROR state [ TODO: Settle on a strategy possibly involving FATALERROR ]
    */
   bool recoverNode();
+
+  /**
+   * @brief Request the node to shutdown.
+   *
+   * This is a non-blocking call, so the shutdown will happen at the next "ROS cycle" where it checks whehter a shutdown has been requested (e.g. ros::ok())
+   *
+   * @pre In any state
+   * @post In same state as before
+   */
+  bool terminateNode();
   /** @} */
 
   /**
@@ -313,6 +323,11 @@ class CarosNodeServiceInterface
    * @brief ROS service wrapper for recoverNode().
    */
   bool recoverHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
+
+  /**
+   * @brief ROS service wrapper for terminateNode().
+   */
+  bool terminateHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response);
   /** @} */
 
   /**
@@ -335,6 +350,7 @@ class CarosNodeServiceInterface
   ros::Publisher nodeStatePublisher_;
 
   ros::ServiceServer srvRecover_;
+  ros::ServiceServer srvTerminate_;
 
   NodeState nodeState_;
   NodeState previousState_;
