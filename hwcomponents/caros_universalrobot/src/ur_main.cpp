@@ -12,19 +12,7 @@ int main(int argc, char *argv[])
 
   ros::NodeHandle nh("~");
 
-  /* This workcell setup could also be moved into the UniversalRobots.cpp class - but leaving it as it is for now.
-   */
-  rw::models::WorkCell::Ptr workCell;
-  workCell = caros::getWorkCell();
-  if (workCell == NULL)
-  {
-    ROS_ERROR("No workcell was loaded - exiting...");
-    return 1;
-  }
-
-  ROS_DEBUG("Workcell loaded - starting node.");
-
-  caros::UniversalRobots ur(nh, workCell);
+  caros::UniversalRobots ur(nh);
   ur.start();
 
   return 0;

@@ -17,12 +17,12 @@ using namespace caros;
 #define WRENCH_DATA_QUEUE_MAX_ALLOWED_NUMBER_OF_ELEMENTS 3
 #define URRTDATA_QACTUAL_SIZE 6
 
-UniversalRobots::UniversalRobots(const ros::NodeHandle& nodehandle, rw::models::WorkCell::Ptr workcell)
+UniversalRobots::UniversalRobots(const ros::NodeHandle& nodehandle)
     : CarosNodeServiceInterface(nodehandle),
       SerialDeviceServiceInterface(nodehandle),
       URServiceInterface(nodehandle),
       nodehandle_(nodehandle),
-      workcell_(workcell),
+      workcell_(NULL),
       device_(NULL),
       ftFrame_(NULL),
       useFTCollisionDetection_(false)
@@ -102,6 +102,7 @@ bool UniversalRobots::activateHook()
     }
   }
 
+  workcell_ = caros::getWorkCell();
   if (workcell_ == NULL)
   {
     CAROS_FATALERROR("No workcell was provided!", URNODE_MISSING_WORKCELL);
