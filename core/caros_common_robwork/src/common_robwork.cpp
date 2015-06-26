@@ -272,7 +272,7 @@ rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname)
     std::string workcellFile;
     bool paramFound;
     paramFound = node.getParam(paramname, workcellFile);
-    if (!paramFound)
+    if (not paramFound)
     {
       ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
       return NULL;
@@ -301,7 +301,7 @@ rw::common::Ptr<rw::kinematics::State> getState()
 {
   // currently we always get the state from a service and not a topic
   ros::NodeHandle node("~");
-  if (!ros::service::exists("/caros/get_workcell_state", true))
+  if (not ros::service::exists("/caros/get_workcell_state", true))
   {
     ROS_ERROR_STREAM("There are no registered state sources!");
     return NULL;

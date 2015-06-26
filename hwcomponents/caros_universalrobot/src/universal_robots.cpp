@@ -53,6 +53,7 @@ bool UniversalRobots::activateHook()
                                                                         "server! This parameter has to be specified "
                                                                         "for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
+
     return false;
   }
 
@@ -167,7 +168,8 @@ bool UniversalRobots::activateHook()
   }
 
   /* The order of starting ur_ and urrt_ doesn't seem to matter */
-  /* No feedback from startCommunication() ... there are debug log messages on whether it was sort of successful or not */
+  /* No feedback from startCommunication() ... there are debug log messages on whether it was sort of successful or not
+   */
   ur_.startCommunication(callbackIP, numericCallbackPort);
   /* No feedback from start() */
   urrt_.start();
@@ -230,10 +232,12 @@ void UniversalRobots::runLoopHook()
     robotState.header.stamp = ros::Time::now();
     robotState.estopped = caros::toRos(purData.emergencyStopped);
 
-    /* TODO: Currently there is a delay somewhere, where the data gotten from the robot is really delayed quite a bit - atleast for the emergency stop. */
+    /* TODO: Currently there is a delay somewhere, where the data gotten from the robot is really delayed quite a bit -
+     * atleast for the emergency stop. */
 
     /* TODO: This isMoving() function is not working - returns false eventhough the robot is moving...
-     * isMoving() is returning a variable that is modified within a thread - Perhaps the compiler has optimised the read to be constant? */
+     * isMoving() is returning a variable that is modified within a thread - Perhaps the compiler has optimised the read
+     * to be constant? */
     robotState.isMoving = caros::toRos(ur_.isMoving());
 
     /* TODO:
