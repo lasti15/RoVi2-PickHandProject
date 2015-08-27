@@ -75,6 +75,10 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   bool connectToSDHDevice();
 
  private:
+  bool isInWorkingCondition();
+  bool supportedQSize(const rw::math::Q& q);
+
+ private:
   ros::NodeHandle nodeHandle_;
 
   enum SDH_STATE

@@ -385,28 +385,8 @@ bool SDHNode::moveQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "moveQ: " << q);
 
-  if (!isInRunning())
+  if (not isInWorkingCondition() || not supportedQSize(q))
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (sdh_ == 0)
-  {
-    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
-    return false;
-  }
-
-  if (!sdh_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
-    return false;
-  }
-
-  if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE)
-  {
-    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE,
-                SDHNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -434,28 +414,8 @@ bool SDHNode::gripQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "gripQ: " << q);
 
-  if (!isInRunning())
+  if (not isInWorkingCondition() || not supportedQSize(q))
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (sdh_ == 0)
-  {
-    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
-    return false;
-  }
-
-  if (!sdh_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
-    return false;
-  }
-
-  if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE)
-  {
-    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE,
-                SDHNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -481,28 +441,8 @@ bool SDHNode::setForceQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "setForceQ: " << q);
 
-  if (!isInRunning())
+  if (not isInWorkingCondition() || not supportedQSize(q))
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (sdh_ == 0)
-  {
-    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
-    return false;
-  }
-
-  if (!sdh_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
-    return false;
-  }
-
-  if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE)
-  {
-    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE,
-                SDHNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -526,28 +466,8 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "setVelocityQ: " << q);
 
-  if (!isInRunning())
+  if (not isInWorkingCondition() || not supportedQSize(q))
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (sdh_ == 0)
-  {
-    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
-    return false;
-  }
-
-  if (!sdh_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
-    return false;
-  }
-
-  if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE)
-  {
-    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE,
-                SDHNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -569,21 +489,8 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
 
 bool SDHNode::stopMovement()
 {
-  if (!isInRunning())
+  if (not isInWorkingCondition())
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (sdh_ == 0)
-  {
-    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
-    return false;
-  }
-
-  if (!sdh_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -598,6 +505,44 @@ bool SDHNode::stopMovement()
      * more c++ standard exceptions with out-of-range and invalid parameter specific exceptions. Thus making it easier
      * to do error recovery. */
     CAROS_ERROR(exp.what(), SDHNODE_INTERNAL_ERROR);
+    return false;
+  }
+
+  return true;
+}
+
+/************************************************************************
+ * Utility functions
+ ************************************************************************/
+bool SDHNode::isInWorkingCondition()
+{
+  if (!isInRunning())
+  {
+    ROS_WARN_STREAM("Not in running state!");
+    return false;
+  }
+
+  if (sdh_ == 0)
+  {
+    CAROS_FATALERROR("The SDH device is not configured.", SDHNODE_NO_SDH_DEVICE);
+    return false;
+  }
+
+  if (not sdh_->isConnected())
+  {
+    CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
+    return false;
+  }
+
+  return true;
+}
+
+bool SDHNode::supportedQSize(const rw::math::Q& q)
+{
+  if (q.size() != SUPPORTED_Q_LENGTH_FOR_SDHNODE)
+  {
+    CAROS_ERROR("The length of Q is " << q.size() << " but should be " << SUPPORTED_Q_LENGTH_FOR_SDHNODE,
+                SDHNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
