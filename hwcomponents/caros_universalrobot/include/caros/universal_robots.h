@@ -19,6 +19,8 @@
 
 #include <queue>
 
+#define SUPPORTED_Q_LENGTH_FOR_UR 6
+
 namespace caros
 {
 class UniversalRobots : public caros::CarosNodeServiceInterface,
@@ -40,7 +42,9 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
     URNODE_FAULTY_SUBSCRIBER,
     URNODE_INVALID_CALLBACKPORT,
     URNODE_UNSUCCESSFUL_CONNECT_TO_URRT,
-    URNODE_UNSUCCESSFUL_CONNECT_TO_UR
+    URNODE_UNSUCCESSFUL_CONNECT_TO_UR,
+    URNODE_UNSUPPORTED_Q_LENGTH,
+    URNODE_INTERNAL_ERROR
   };
 
   /************************************************************************
@@ -101,6 +105,10 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
  private:
   //! @brief Support function for capturing published wrench data
   void addFTData(const caros_common_msgs::wrench_data::ConstPtr state);
+
+  /* convenience functions */
+  bool isInWorkingCondition();
+  bool supportedQSize(const rw::math::Q& q);
 
  private:
   ros::NodeHandle nodehandle_;
