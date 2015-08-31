@@ -302,7 +302,7 @@ class CarosNodeServiceInterface
   /**
    * @brief Request the node to shutdown.
    *
-   * This is a non-blocking call, so the shutdown will happen at the next "ROS cycle" where it checks whehter a shutdown has been requested (e.g. ros::ok())
+   * This is a non-blocking call, so the shutdown will happen at the next "ROS cycle" where it checks whether a shutdown has been requested (e.g. ros::ok())
    *
    * @pre In any state
    * @post In same state as before
