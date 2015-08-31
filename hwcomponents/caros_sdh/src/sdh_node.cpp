@@ -53,7 +53,9 @@ SDHNode::~SDHNode()
   {
     if (sdh_->isConnected())
     {
-      ROS_DEBUG_STREAM("Still connected to the SDH device - going to stop the device and disconnect.");
+      ROS_DEBUG_STREAM(
+          "Still connected to the SDH device when destroying the SDHNode object - going to stop the device and "
+          "disconnect.");
       sdh_->stop();
       sdh_->disconnect();
     }
@@ -68,12 +70,12 @@ SDHNode::~SDHNode()
 
 bool SDHNode::activateHook()
 {
-  if (!configureSDHDevice())
+  if (not configureSDHDevice())
   {
     return false;
   }
 
-  if (!connectToSDHDevice())
+  if (not connectToSDHDevice())
   {
     return false;
   }
@@ -141,15 +143,15 @@ bool SDHNode::connectToSDHDevice()
 {
   if (sdh_ == 0)
   {
-    CAROS_FATALERROR("The SDH device is not configured", SDHNODE_INTERNAL_ERROR);
+    CAROS_FATALERROR("Can not connect to the SDH device when it has not yet been configured.", SDHNODE_INTERNAL_ERROR);
     return false;
   }
 
   if (sdh_->isConnected())
   {
-    ROS_ERROR_STREAM(
-        "'" << __PRETTY_FUNCTION__
-            << "' invoked even though a connection to the SDH device has already been established - this is a bug!");
+    CAROS_FATALERROR(
+        "A connection to the SDH device has already been established, so trying to connect to it again is a bug!",
+        SDHNODE_INTERNAL_ERROR);
     return false;
   }
 
@@ -178,7 +180,7 @@ bool SDHNode::connectToSDHDevice()
 
   /* Verify that the connection to the SDH device has been established - this eliminates the need for verifying that the
    * sdh_->connect() function calls actually succeed */
-  if (!sdh_->isConnected())
+  if (not sdh_->isConnected())
   {
     /* Something went wrong when connecting */
     CAROS_FATALERROR("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
@@ -207,7 +209,7 @@ void SDHNode::runLoopHook()
       return;
     }
 
-    if (!sdh_->isConnected())
+    if (not sdh_->isConnected())
     {
       CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
       return;

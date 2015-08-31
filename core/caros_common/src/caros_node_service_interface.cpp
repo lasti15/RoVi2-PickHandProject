@@ -139,6 +139,15 @@ bool CarosNodeServiceInterface::recoverNode()
   return true;
 }
 
+bool CarosNodeServiceInterface::terminateNode()
+{
+  /* Can be called at all times */
+  /* Simply request shutdown - a non blocking call and shutdown will occur at next "ROS cycle". */
+  ros::requestShutdown();
+
+  return true;
+}
+
 void CarosNodeServiceInterface::error(const std::string& msg, const int64_t errorCode)
 {
   ROS_DEBUG_STREAM("CarosNodeError: " << msg << "; error code: " << errorCode);
@@ -181,7 +190,7 @@ void CarosNodeServiceInterface::changeState(const NodeState newState)
 
 bool CarosNodeServiceInterface::initCarosNode()
 {
-  if (nodeStatePublisher_ || srvRecover_)
+  if (nodeStatePublisher_ || srvRecover_ || srvTerminate_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more CarosNodeServiceInterface services or publishers. If this is not fully intended "
@@ -194,7 +203,10 @@ bool CarosNodeServiceInterface::initCarosNode()
   srvRecover_ = nodeHandle_.advertiseService("recover", &CarosNodeServiceInterface::recoverHandle, this);
   ROS_ERROR_STREAM_COND(!srvRecover_, "The recover service is empty!");
 
-  if (nodeStatePublisher_ && srvRecover_)
+  srvTerminate_ = nodeHandle_.advertiseService("terminate", &CarosNodeServiceInterface::terminateHandle, this);
+  ROS_ERROR_STREAM_COND(!srvTerminate_, "The terminate service is empty!");
+
+  if (nodeStatePublisher_ && srvRecover_ && srvTerminate_)
   {
     /* Everything seems to be properly initialised */
   }
@@ -210,6 +222,11 @@ bool CarosNodeServiceInterface::initCarosNode()
 bool CarosNodeServiceInterface::recoverHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
 {
   return recoverNode();
+}
+
+bool CarosNodeServiceInterface::terminateHandle(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
+{
+  return terminateNode();
 }
 
 void CarosNodeServiceInterface::publishNodeState(const bool stateChanged)

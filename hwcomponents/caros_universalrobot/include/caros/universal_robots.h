@@ -28,7 +28,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
                         public URServiceInterface
 {
  public:
-  UniversalRobots(const ros::NodeHandle& nodehandle, rw::models::WorkCell::Ptr workcell);
+  UniversalRobots(const ros::NodeHandle& nodehandle);
 
   virtual ~UniversalRobots();
 
