@@ -188,7 +188,7 @@ bool SDHNode::connectToSDHDevice()
   return true;
 }
 
-bool SDHNode::recoverHook()
+bool SDHNode::recoverHook(const std::string& errorMsg, const int64_t errorCode)
 {
   /* Remember to place the state machine in a proper state according to the recovery (e.g. WAIT) */
 

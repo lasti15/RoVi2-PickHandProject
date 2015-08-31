@@ -187,10 +187,30 @@ bool UniversalRobots::activateHook()
   return true;
 }
 
-bool UniversalRobots::recoverHook()
+bool UniversalRobots::recoverHook(const std::string& errorMsg, const int64_t errorCode)
 {
-  /* TODO: Missing handling the different scenarios. */
-  return false;
+  /* TODO: Missing handling all the different scenarios. */
+  /* TODO: Go into fatal error if recover is invoked on the unsupported error scenarios */
+  bool resolved = false;
+
+  switch (errorCode)
+  {
+  URNODE_UNSUPPORTED_Q_LENGTH:
+    /* Simply acknowledge that a wrong Q was provided */
+    resolved = true;
+    break;
+  URNODE_INTERNAL_ERROR:
+    CAROS_FATALERROR("Can not resolve an internal error... ending up in this case/situation is a bug!",
+                     URNODE_INTERNAL_ERROR);
+    break;
+    default:
+      CAROS_FATALERROR("The provided errorCode '"
+                           << errorCode << "' has no recovery functionality! - this should be considered a bug!",
+                       URNODE_INTERNAL_ERROR);
+      break;
+  }
+
+  return resolved;
 }
 
 void UniversalRobots::runLoopHook()

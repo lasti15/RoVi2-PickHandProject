@@ -64,7 +64,7 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
  protected:
   // hooks implemented from CarosNodeServiceInterface base class
   bool activateHook();
-  bool recoverHook();
+  bool recoverHook(const std::string& errorMsg, const int64_t errorCode);
 
   void runLoopHook();
   void errorLoopHook();
