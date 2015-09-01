@@ -74,6 +74,9 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   bool configureRobotiqDevice();
   bool connectToRobotiqDevice();
 
+  // convenience functions
+  bool isInWorkingCondition();
+
  protected:
   typedef enum
   {

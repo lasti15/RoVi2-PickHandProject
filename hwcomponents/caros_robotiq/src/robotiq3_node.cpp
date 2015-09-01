@@ -228,31 +228,10 @@ bool Robotiq3Node::connectToRobotiqDevice()
 /************************************************************************
  * GripperServiceInterface
  ************************************************************************/
-/* Note:
- * The checks isInRunning(), (_robotiq == 0) and (! _robotiq->isConnected()) are not placed in one common function,
- * because the CAROS_ERROR and CAROS_FATALERROR macros are using source code lines to sort of pinpoint the "faulty"
- * function.
- * When a more appropriate method is found that can reduce this code duplication, then it should be implemented! (A
- * preprocessor code generating macro is not exactly a nice and easily maintainable solution)
- */
 bool Robotiq3Node::moveQ(const rw::math::Q& q)
 {
-  if (!isInRunning())
+  if (not isInWorkingCondition())
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (robotiq3_ == 0)
-  {
-    CAROS_FATALERROR("The Robotiq3 device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
-    return false;
-  }
-
-  if (!robotiq3_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -271,22 +250,8 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
 
 bool Robotiq3Node::gripQ(const rw::math::Q& q)
 {
-  if (!isInRunning())
+  if (not isInWorkingCondition())
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (robotiq3_ == 0)
-  {
-    CAROS_FATALERROR("The Robotiq3 device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
-    return false;
-  }
-
-  if (!robotiq3_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -305,22 +270,8 @@ bool Robotiq3Node::gripQ(const rw::math::Q& q)
 
 bool Robotiq3Node::setForceQ(const rw::math::Q& q)
 {
-  if (!isInRunning())
+  if (not isInWorkingCondition())
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (robotiq3_ == 0)
-  {
-    CAROS_FATALERROR("The Robotiq3 device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
-    return false;
-  }
-
-  if (!robotiq3_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -338,22 +289,8 @@ bool Robotiq3Node::setForceQ(const rw::math::Q& q)
 
 bool Robotiq3Node::setVelocityQ(const rw::math::Q& q)
 {
-  if (!isInRunning())
+  if (not isInWorkingCondition())
   {
-    ROS_WARN_STREAM("Not in running state!");
-    return false;
-  }
-
-  if (robotiq3_ == 0)
-  {
-    CAROS_FATALERROR("The Robotiq3 device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
-    return false;
-  }
-
-  if (!robotiq3_->isConnected())
-  {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
@@ -372,6 +309,29 @@ bool Robotiq3Node::setVelocityQ(const rw::math::Q& q)
 
 bool Robotiq3Node::stopMovement()
 {
+  if (not isInWorkingCondition())
+  {
+    return false;
+  }
+
+  try
+  {
+    robotiq3_->stopCmd();
+  }
+  catch (const rw::common::Exception& exp)
+  {
+    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    return false;
+  }
+
+  return true;
+}
+
+/************************************************************************
+ * Utility functions
+ ************************************************************************/
+bool Robotiq3Node::isInWorkingCondition()
+{
   if (!isInRunning())
   {
     ROS_WARN_STREAM("Not in running state!");
@@ -384,20 +344,10 @@ bool Robotiq3Node::stopMovement()
     return false;
   }
 
-  if (!robotiq3_->isConnected())
+  if (not robotiq3_->isConnected())
   {
     CAROS_ERROR("There is no established connection to the Robotiq3 device.",
                 ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
-    return false;
-  }
-
-  try
-  {
-    robotiq3_->stopCmd();
-  }
-  catch (const rw::common::Exception& exp)
-  {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
     return false;
   }
 
