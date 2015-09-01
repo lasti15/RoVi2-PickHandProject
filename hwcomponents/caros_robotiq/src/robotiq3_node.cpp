@@ -202,7 +202,7 @@ bool Robotiq3Node::connectToRobotiqDevice()
     ROS_ERROR_STREAM(
         "'"
         << __PRETTY_FUNCTION__
-            << "' invoked even though a connection to the Robotiq3 device has already been established - this is a bug!");
+        << "' invoked even though a connection to the Robotiq3 device has already been established - this is a bug!");
     return false;
   }
 
@@ -346,7 +346,8 @@ bool Robotiq3Node::isInWorkingCondition()
 
   if (not robotiq3_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
+                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 
