@@ -1,8 +1,8 @@
-# represents the state of a tactile array sensor. Such a sensor
-# may have multiple arrays
+# Represents the state of a tactile array sensor. Such a sensor
+# may have multiple arrays.
 
-#Header containing information about time and frameid
+# Header containing information about time and frameid
 Header header
 
-# the tactile arrays
+# The tactile arrays
 tactile_array_data[] data
