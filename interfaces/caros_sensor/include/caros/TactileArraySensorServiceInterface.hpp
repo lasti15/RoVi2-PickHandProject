@@ -1,15 +1,11 @@
 /**/
-#ifndef CAMERASENSORSERVICEINTERFACE_HPP
-#define CAMERASENSORSERVICEINTERFACE_HPP
-
-#include <rw/math/Q.hpp>
-#include <rw/math/Transform3D.hpp>
+#ifndef CAROS_TACTILEARRAYSENSORSERVICEINTERFACE_HPP
+#define CAROS_TACTILEARRAYSENSORSERVICEINTERFACE_HPP
 
 #include <ros/ros.h>
-#include <string>
 
 /**
- * @brief describe the minimum interface of a Force/Torque sensing device.
+ * @brief describe the minimum interface of a tactile array device.
  */
 class TactileArraySensorServiceInterface {
 public:
@@ -17,11 +13,6 @@ public:
 
 protected:
 	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
-
-private:
-    //ros::Publisher _FTSensorStatePublisher;
-    //ros::ServiceServer _srvMoveQ;
-
 };
 
-#endif //#ifndef SDHSERVICEINTERFACE_HPP
+#endif

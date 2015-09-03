@@ -5,8 +5,8 @@
  *      Author: thomas
  */
 
-#ifndef CAROS_FTSENSORSIPROXY_HPP_
-#define CAROS_FTSENSORSIPROXY_HPP_
+#ifndef CAROS_FTSENSORSIPROXY_HPP
+#define CAROS_FTSENSORSIPROXY_HPP
 
 #include <geometry_msgs/WrenchStamped.h>
 
@@ -57,4 +57,4 @@ private:
 
 }
 
-#endif /* FTSENSORSIPROXY_HPP_ */
+#endif

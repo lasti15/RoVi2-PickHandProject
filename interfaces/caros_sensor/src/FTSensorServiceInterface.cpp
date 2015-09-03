@@ -2,9 +2,6 @@
 #include <caros/FTSensorServiceInterface.hpp>
 
 #include <caros/common.h>
-
-#include <rw/math/Wrench6D.hpp>
-
 #include <geometry_msgs/WrenchStamped.h>
 
 using namespace rw::common;

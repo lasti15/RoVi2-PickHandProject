@@ -5,13 +5,9 @@
 #include <caros_sensor_msgs/button_sensor_state.h>
 
 #include <rw/common/Ptr.hpp>
-#include <rw/math.hpp>
-#include <rw/trajectory/Path.hpp>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
-
-#include <queue>
 
 namespace caros
 {

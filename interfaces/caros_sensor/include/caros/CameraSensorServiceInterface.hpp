@@ -1,15 +1,13 @@
 /**/
-#ifndef CAMERASENSORSERVICEINTERFACE_HPP
-#define CAMERASENSORSERVICEINTERFACE_HPP
+#ifndef CAROS_CAMERASENSORSERVICEINTERFACE_HPP
+#define CAROS_CAMERASENSORSERVICEINTERFACE_HPP
 
-#include <rw/math/Q.hpp>
-#include <rw/math/Transform3D.hpp>
+#include <rw/common/Ptr.hpp>
 
 #include <ros/ros.h>
-#include <string>
 
 /**
- * @brief describe the minimum interface of a Force/Torque sensing device.
+ * @brief describe the minimum interface of a camera device.
  */
 class CameraSensorServiceInterface {
 public:
@@ -18,10 +16,6 @@ public:
 protected:
 	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 
-private:
-    //ros::Publisher _FTSensorStatePublisher;
-    //ros::ServiceServer _srvMoveQ;
-
 };
 
-#endif //#ifndef SDHSERVICEINTERFACE_HPP
+#endif

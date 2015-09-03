@@ -2,7 +2,6 @@
 #include <caros/pose_sensor_si_proxy.h>
 
 #include <fstream>
-#include <rw/common/Ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include <caros/common_robwork.h>
@@ -37,7 +36,7 @@ void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sens
 	boost::mutex::scoped_lock lock(_mutex);
 	_poses.resize(state.poses.size());
 	_stamp = state.header.stamp;
-	for(int i=0;i<state.poses.size();i++){
+	for(size_t i=0;i<state.poses.size();i++){
 		PoseData &pdata = _poses[i];
 		pdata.pose = caros::toRw(state.poses[i]);
 		pdata.id = state.ids[i];

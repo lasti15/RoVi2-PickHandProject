@@ -3,8 +3,6 @@
 #define CAROS_BUTTONSENSORSERVICEINTERFACE_H
 
 #include <ros/ros.h>
-#include <vector>
-#include <string>
 
 namespace caros
 {

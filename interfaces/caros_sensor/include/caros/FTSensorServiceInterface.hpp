@@ -2,13 +2,9 @@
 #ifndef CAROS_FTSENSORSERVICEINTERFACE_HPP
 #define CAROS_FTSENSORSERVICEINTERFACE_HPP
 
-#include <rw/math/Q.hpp>
-#include <rw/math/Transform3D.hpp>
 #include <rw/math/Wrench6D.hpp>
 
-#include "ros/ros.h"
-
-#include <string>
+#include <ros/ros.h>
 
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
@@ -31,8 +27,7 @@ protected:
 
 private:
     ros::Publisher _wrenchDataPublisher;
-    //ros::ServiceServer _srvMoveQ;
 
 };
 
-#endif //#ifndef SDHSERVICEINTERFACE_HPP
+#endif

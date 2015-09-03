@@ -1,15 +1,13 @@
 /**/
-#ifndef PoseSensorSIProxy_HPP_
-#define PoseSensorSIProxy_HPP_
+#ifndef CAROS_POSESENSORSIPROXY_HPP
+#define CAROS_POSESENSORSIPROXY_HPP
 
 #include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
-#include <rw/trajectory/Path.hpp>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
 #include <caros_sensor_msgs/pose_sensor_state.h>
-#include <queue>
 
 namespace caros {
 
@@ -62,4 +60,4 @@ private:
 
 }
 
-#endif //end include guard
+#endif

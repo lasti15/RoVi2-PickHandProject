@@ -2,8 +2,6 @@
 #include <caros/button_sensor_service_interface.h>
 #include <caros_sensor_msgs/button_sensor_state.h>
 
-#include <caros/common.h>
-
 using namespace caros;
 
 ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodeHnd) :

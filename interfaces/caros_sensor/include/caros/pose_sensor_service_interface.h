@@ -2,12 +2,9 @@
 #ifndef CAROS_POSESENSORSERVICEINTERFACE_HPP
 #define CAROS_POSESENSORSERVICEINTERFACE_HPP
 
-#include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
 
 #include <ros/ros.h>
-
-#include <string>
 
 namespace caros
 {
@@ -52,4 +49,4 @@ private:
 
 }
 
-#endif //#ifndef SDHSERVICEINTERFACE_HPP
+#endif

@@ -1,13 +1,10 @@
 /**/
 #include <caros/button_sensor_si_proxy.h>
 
-#include <caros/common.h>
-#include <rw/common/Ptr.hpp>
 #include <boost/foreach.hpp>
 #include <fstream>
 
 using namespace rw::common;
-using namespace rw::math;
 using namespace std;
 using namespace caros;
 
