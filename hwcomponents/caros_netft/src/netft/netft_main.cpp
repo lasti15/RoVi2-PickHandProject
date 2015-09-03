@@ -54,53 +54,16 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh("~");
 	std::string name = nh.getNamespace();
 	std::string propertyFile;
-<<<<<<< .mine
-	std::string host, robotName, robotState;
-=======
 	std::string host, devName, calibfile;
 
->>>>>>> .r1128
 	int publishRate = 400;
 	nh.getParam("properties", propertyFile);
 	nh.param("host", host, std::string(""));
 	nh.param("rate", publishRate, 400);
-<<<<<<< .mine
-	nh.param("robot", robotName, "");
-	nh.param("robotState", robotState, "");
-
-	bool unbiasedWrenchEnabled = false;
-
-
-	// try and load the workcell, this will determine if the calibrated wrench is published or not
-    WorkCell::Ptr workcell;
-    Device::Ptr dev;
-    try {
-        workcell = RwRos::getWorkCell();
-        dev = workcell->findDevice(robotName);
-        if (dev == NULL) {
-            ROS_INFO_STREAM("Unable to find device "<<robotName<<" in work cell");
-        }
-
-        // todo allso
-        unbiasedWrenchEnabled = true;
-=======
 	nh.getParam("robot", devName);
 	nh.getParam("calibfile",calibfile);
->>>>>>> .r1128
 
 
-<<<<<<< .mine
-    } catch (const Exception& exp) {
-        ROS_WARN_STREAM("Unable to open file " << exp.what());
-        ROS_WARN("Unbiased wrench data will not be available!");
-    }
-
-    ROS_INFO("WorkCell loaded!");
-    ROS_INFO("WorkCell loaded! Starting ur component.");
-
-
-
-=======
     // get the workcell
 	WorkCell::Ptr _pWorkCell = RwRos::getWorkCell();
 	if(_pWorkCell==NULL){
@@ -122,7 +85,6 @@ int main(int argc, char **argv)
 	_ftCompensation = new rwhw::FTCompensation(_dev, _pWorkCell->getDefaultState(), calibfile);
 	_lastTime = ros::Time::now();
 	ros::Subscriber robotState = nh.subscribe("/" + devName + "/RobotState", 1, &handleRobotState);
->>>>>>> .r1128
 
 	try {
 
