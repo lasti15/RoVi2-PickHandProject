@@ -16,7 +16,7 @@ namespace caros
 class PoseSensorServiceInterface
 {
 public:
-  //! smart pointer type
+  //! pointer type
   typedef rw::common::Ptr<PoseSensorServiceInterface> Ptr;
 
   //! constructor

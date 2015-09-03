@@ -7,11 +7,14 @@
 /**
  * @brief describe the minimum interface of a Kinect device.
  */
-class KinectSensorServiceInterface {
+class KinectSensorServiceInterface
+{
 public:
-	KinectSensorServiceInterface(const std::string& service_name);
+  //! constructor
+  KinectSensorServiceInterface(const std::string& service_name);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+};
 
 #endif

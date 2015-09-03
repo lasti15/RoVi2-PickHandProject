@@ -9,13 +9,14 @@ ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle
 {
 }
 
-bool ButtonSensorServiceInterface::configureInterface(){
-  button_pub_ = node_hnd_.advertise < caros_sensor_msgs::button_sensor_state > ("buttons", 5);
+bool ButtonSensorServiceInterface::configureInterface()
+{
+  button_pub_ = node_hnd_.advertise<caros_sensor_msgs::button_sensor_state>("buttons", 5);
   return true;
 }
 
-void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string,bool> >& digital_buttons,
-                                                  const std::vector<std::pair<std::string,bool> >& analog_buttons)
+void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string, bool> >& digital_buttons,
+                                                  const std::vector<std::pair<std::string, bool> >& analog_buttons)
 {
 
   caros_sensor_msgs::button_sensor_state pstate;
@@ -29,7 +30,6 @@ void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<st
     pstate.digital_ids[i] = digital_buttons[i].first;
     pstate.digital[i] = digital_buttons[i].second;
   }
-
 
   for (size_t i = 0; i < analog_buttons.size(); i++)
   {

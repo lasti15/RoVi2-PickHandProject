@@ -7,12 +7,14 @@
 /**
  * @brief describe the minimum interface of a tactile array device.
  */
-class TactileArraySensorServiceInterface {
+class TactileArraySensorServiceInterface
+{
 public:
-	TactileArraySensorServiceInterface(const std::string& service_name);
+  //! constructor
+  TactileArraySensorServiceInterface(const std::string& service_name);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 };
 
 #endif

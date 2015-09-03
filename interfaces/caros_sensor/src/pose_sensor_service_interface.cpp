@@ -14,7 +14,7 @@ PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& no
 
 bool PoseSensorServiceInterface::configureInterface()
 {
-  pose_pub_ = node_hnd_.advertise < caros_sensor_msgs::pose_sensor_state > ("poses", 5);
+  pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::pose_sensor_state>("poses", 5);
   return true;
 }
 

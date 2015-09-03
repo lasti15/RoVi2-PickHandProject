@@ -16,43 +16,50 @@
 
 #include <ros/ros.h>
 
-namespace caros {
+namespace caros
+{
 
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a FTSensorServiceInterface.
  *
  */
-class FTSensorSIProxy {
+class FTSensorSIProxy
+{
 public:
-	typedef rw::common::Ptr<FTSensorSIProxy> Ptr;
+  //! pointer type
+  typedef rw::common::Ptr<FTSensorSIProxy> Ptr;
 
-	//! constructor - create with device name
-	FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
+  //! constructor
+  FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
 
-    FTSensorSIProxy(const std::string& devname);
+  //! constructor
+  FTSensorSIProxy(const std::string& devname);
 
-	//! destructor
-	virtual ~FTSensorSIProxy();
+  //! destructor
+  virtual ~FTSensorSIProxy();
 
-	rw::math::Wrench6D<> getWrench();
+  //! get current state
+  rw::math::Wrench6D<> getWrench();
 
-	ros::Time getTimeStamp();
+  //! get time stamp of current reading
+  ros::Time getTimeStamp();
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 
-	// states
-	ros::Subscriber _ftState;
+  // states
+  ros::Subscriber _ftState;
 
 private:
-	boost::mutex _mutex;
+  boost::mutex _mutex;
 
-	// state variables
-	rw::math::Wrench6D<> _wrench;
+  // state variables
+  rw::math::Wrench6D<> _wrench;
 
-	void handleFTState(const geometry_msgs::WrenchStamped& state);
-	geometry_msgs::WrenchStamped _pFTState;
+  void handleFTState(const geometry_msgs::WrenchStamped& state);
+  
+  geometry_msgs::WrenchStamped _pFTState;
 };
 
 }

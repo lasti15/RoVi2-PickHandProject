@@ -9,12 +9,14 @@
 /**
  * @brief describe the minimum interface of a camera trigger device.
  */
-class CameraTriggerServiceInterface {
+class CameraTriggerServiceInterface
+{
 public:
-	CameraTriggerServiceInterface(const std::string& service_name);
+  //! constructor
+  CameraTriggerServiceInterface(const std::string& service_name);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 };
 
 #endif

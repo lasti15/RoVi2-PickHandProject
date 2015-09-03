@@ -9,53 +9,62 @@
 #include <ros/ros.h>
 #include <caros_sensor_msgs/pose_sensor_state.h>
 
-namespace caros {
+namespace caros
+{
 
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a PoseSensorServiceInterface.
  */
-class PoseSensorSIProxy {
+class PoseSensorSIProxy
+{
 
 public:
-	typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
+  //! pointer type
+  typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
 
-	//! constructor - create with device name
-	PoseSensorSIProxy(const ros::NodeHandle& nhandle);
+  //! constructor
+  PoseSensorSIProxy(const ros::NodeHandle& nhandle);
 
-	PoseSensorSIProxy(const std::string& devname);
+  //! constructor
+  PoseSensorSIProxy(const std::string& devname);
 
-	//! destructor
-	virtual ~PoseSensorSIProxy();
+  //! destructor
+  virtual ~PoseSensorSIProxy();
 
-	struct PoseData {
-		rw::math::Transform3D<> pose;
-		int id;
-		float quality;
-		ros::Time stamp;
-		std::string frame;
-	};
+  //! pose data structure
+  struct PoseData
+  {
+    rw::math::Transform3D<> pose;
+    int id;
+    float quality;
+    ros::Time stamp;
+    std::string frame;
+  };
 
-	std::vector<PoseData> getPoses();
+  //! get current pose state
+  std::vector<PoseData> getPoses();
 
-	ros::Time getTimeStamp();
+  //! get time stamp of current pose state
+  ros::Time getTimeStamp();
 
 protected:
-	void configureProxy();
-        void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
+  void configureProxy();
+  
+  void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
 
 protected:
-	ros::NodeHandle node_hnd_;
+  ros::NodeHandle node_hnd_;
 
-	// states
-	ros::Subscriber _poseSensorState;
+  // states
+  ros::Subscriber _poseSensorState;
 
 private:
-	boost::mutex _mutex;
+  boost::mutex _mutex;
 
-	// state variables
-	std::vector<PoseData> _poses;
-	ros::Time _stamp;
+  // state variables
+  std::vector<PoseData> _poses;
+  ros::Time _stamp;
 };
 
 }

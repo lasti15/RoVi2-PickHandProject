@@ -21,6 +21,7 @@ class ButtonSensorSIProxy
 {
 
 public:
+  //! pointer type
   typedef rw::common::Ptr<ButtonSensorSIProxy> Ptr;
 
   //! constructor
@@ -32,6 +33,7 @@ public:
   //! destructor
   virtual ~ButtonSensorSIProxy();
 
+  //! button data structure
   struct ButtonData
   {
     float button;
@@ -40,12 +42,15 @@ public:
     ros::Time stamp;
   };
 
+  //! get current button state
   std::vector<ButtonData> getButtons();
 
+  //! get time stamp of current button state
   ros::Time getTimeStamp();
 
 protected:
   bool configureProxy();
+  
   void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
 
 protected:

@@ -13,6 +13,7 @@ namespace caros
 class ButtonSensorServiceInterface
 {
 public:
+  //! constructor
   ButtonSensorServiceInterface(const std::string& service_name);
 
   //! constructor
@@ -21,7 +22,6 @@ public:
 protected:
   bool configureInterface();
 
-  //! publish poses read by sensor
   void publishButtons(const std::vector<std::pair<std::string,bool> >& digital_buttons,
                       const std::vector<std::pair<std::string,bool> >& analog_buttons);
 

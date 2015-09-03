@@ -9,12 +9,14 @@
 /**
  * @brief describe the minimum interface of a camera device.
  */
-class CameraSensorServiceInterface {
+class CameraSensorServiceInterface
+{
 public:
-	CameraSensorServiceInterface(const std::string& service_name);
+  //! constructor
+  CameraSensorServiceInterface(const std::string& service_name);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 
 };
 

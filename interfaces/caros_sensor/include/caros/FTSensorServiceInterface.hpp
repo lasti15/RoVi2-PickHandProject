@@ -9,24 +9,31 @@
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
  */
-class FTSensorServiceInterface {
+class FTSensorServiceInterface
+{
 public:
-    typedef rw::common::Ptr<FTSensorServiceInterface> Ptr;
+  //! pointer type
+  typedef rw::common::Ptr<FTSensorServiceInterface> Ptr;
 
-    //! constructor
-	FTSensorServiceInterface(const std::string& service_name);
+  //! constructor
+  FTSensorServiceInterface(const std::string& service_name);
 
-	FTSensorServiceInterface(rw::common::Ptr<ros::NodeHandle> nh);
+  //! constructor
+  FTSensorServiceInterface(rw::common::Ptr<ros::NodeHandle> nh);
 
-	virtual ~FTSensorServiceInterface(){}
+  //! destructor
+  virtual ~FTSensorServiceInterface()
+  {
+  }
 
-	void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
+  //! send the current F/T reading
+  void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
 protected:
-	rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
 
 private:
-    ros::Publisher _wrenchDataPublisher;
+  ros::Publisher _wrenchDataPublisher;
 
 };
 
