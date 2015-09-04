@@ -178,12 +178,12 @@ bool Robotiq3Node::configureRobotiqDevice()
                         "The sizes of the Q's in the force limit pair are not equal. first contains "
                             << force_limits.first.size() << " and second contains " << force_limits.second.size()
                             << " elements.");
-  ROS_INFO_STREAM("Lower position limits: " << position_limits.first);
-  ROS_INFO_STREAM("Upper position limits: " << position_limits.second);
-  ROS_INFO_STREAM("Lower velocity limits: " << velocity_limits.first);
-  ROS_INFO_STREAM("Upper velocity limits: " << velocity_limits.second);
-  ROS_INFO_STREAM("Lower force limits: " << force_limits.first);
-  ROS_INFO_STREAM("Upper force limits: " << force_limits.second);
+  ROS_DEBUG_STREAM("Lower position limits: " << position_limits.first);
+  ROS_DEBUG_STREAM("Upper position limits: " << position_limits.second);
+  ROS_DEBUG_STREAM("Lower velocity limits: " << velocity_limits.first);
+  ROS_DEBUG_STREAM("Upper velocity limits: " << velocity_limits.second);
+  ROS_DEBUG_STREAM("Lower force limits: " << force_limits.first);
+  ROS_DEBUG_STREAM("Upper force limits: " << force_limits.second);
 
   /* TODO: Debug information on what was configured accordingly to the parameter server? */
   return true;
@@ -255,6 +255,8 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
                 ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
+
+  ROS_DEBUG_STREAM("moveQ with " << q.size() << " joint(s).");
 
   try
   {
