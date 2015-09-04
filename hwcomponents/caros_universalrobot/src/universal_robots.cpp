@@ -198,11 +198,11 @@ bool UniversalRobots::recoverHook(const std::string& errorMsg, const int64_t err
 
   switch (errorCode)
   {
-  URNODE_UNSUPPORTED_Q_LENGTH:
+  case URNODE_UNSUPPORTED_Q_LENGTH:
     /* Simply acknowledge that a wrong Q was provided */
     resolved = true;
     break;
-  URNODE_INTERNAL_ERROR:
+  case URNODE_INTERNAL_ERROR:
     CAROS_FATALERROR("Can not resolve an internal error... ending up in this case/situation is a bug!",
                      URNODE_INTERNAL_ERROR);
     break;
