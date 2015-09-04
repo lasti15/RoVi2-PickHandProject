@@ -7,7 +7,7 @@
 
 #include <caros/common_robwork.h>
 
-#include <caros/FTSensorSIProxy.hpp>
+#include <caros/ft_sensor_si_proxy.h>
 
 using namespace caros;
 
@@ -18,7 +18,7 @@ FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nhandle) :
 }
 
 FTSensorSIProxy::FTSensorSIProxy(const std::string& name) :
-    _nodeHnd(rw::common::ownedPtr(new ros::NodeHandle(name)))
+    _nodeHnd(name)
 {
   _ftState = _nodeHnd.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }

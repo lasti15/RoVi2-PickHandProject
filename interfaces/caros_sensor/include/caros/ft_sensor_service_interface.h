@@ -19,7 +19,7 @@ public:
   FTSensorServiceInterface(const std::string& service_name);
 
   //! constructor
-  FTSensorServiceInterface(rw::common::Ptr<ros::NodeHandle> nh);
+  FTSensorServiceInterface(ros::NodeHandle nh);
 
   //! destructor
   virtual ~FTSensorServiceInterface()

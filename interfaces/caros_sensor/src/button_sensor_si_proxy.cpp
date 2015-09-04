@@ -14,13 +14,13 @@ ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nhandle) :
 }
 
 ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) :
-    _nodeHnd(ownedPtr(new ros::NodeHandle(name)))
+    _nodeHnd(name)
 {
 }
 
 bool ButtonSensorSIProxy::configureProxy()
 {
-  _buttonSensorState = _nodeHnd->subscribe(_nodeHnd.getNamespace() + "/buttons", 1,
+  _buttonSensorState = _nodeHnd.subscribe(_nodeHnd.getNamespace() + "/buttons", 1,
                                            &ButtonSensorSIProxy::handleButtonSensorState, this);
   return true;
 }
