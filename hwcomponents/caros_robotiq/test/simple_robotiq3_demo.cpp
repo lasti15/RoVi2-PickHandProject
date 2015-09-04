@@ -9,57 +9,57 @@ int main(int argc, char* argv[])
   ros::init(argc, argv, "robotiq3_simple_demo");
   ros::NodeHandle n("~");
 
-  const std::string nodeUnderTestName = "robotiq3_simple_demo_node";
+  const std::string node_under_test_name = "robotiq3_simple_demo_node";
 
-  const std::string infoPrefix = ros::this_node::getName() + ": ";
+  const std::string info_prefix = ros::this_node::getName() + ": ";
 
   ROS_INFO_STREAM(ros::this_node::getName() << " started!");
 
-  ROS_INFO_STREAM(infoPrefix << "Setting up GripperSIProxy");
-  caros::GripperSIProxy r3Test(n, nodeUnderTestName);
-  ROS_INFO_STREAM(infoPrefix << "GripperSIProxy setup. The hand should be initializing if it was not before!");
+  ROS_INFO_STREAM(info_prefix << "Setting up GripperSIProxy");
+  caros::GripperSIProxy r3_test(n, node_under_test_name);
+  ROS_INFO_STREAM(info_prefix << "GripperSIProxy setup. The hand should be initializing if it was not before!");
 
-  const std::string nodeStateTopicName = nodeUnderTestName + "/" + "caros_node/caros_node_state";
-  bool isRunning = false;
-  while (!isRunning)
+  const std::string node_stateTopicName = node_under_test_name + "/" + "caros_node/caros_node_state";
+  bool is_running = false;
+  while (!is_running)
   {
-    boost::shared_ptr<const caros_common_msgs::caros_node_state> nodeStateMessage;
-    nodeStateMessage = ros::topic::waitForMessage<caros_common_msgs::caros_node_state>(nodeStateTopicName);
-    isRunning = nodeStateMessage->state == "RUNNING";
+    boost::shared_ptr<const caros_common_msgs::caros_node_state> node_state_message;
+    node_state_message = ros::topic::waitForMessage<caros_common_msgs::caros_node_state>(node_stateTopicName);
+    is_running = node_state_message->state == "RUNNING";
   }
 
-  ROS_INFO_STREAM(infoPrefix << "The hand should be initialized and ready to use now!");
+  ROS_INFO_STREAM(info_prefix << "The hand should be initialized and ready to use now!");
 
   ros::spinOnce();
 
-  ROS_INFO_STREAM(infoPrefix << "The hand is now at: " << r3Test.getQ());
+  ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r3_test.getQ());
 
   rw::math::Q target(4, 200, 200, 200, 100);
-  ROS_INFO_STREAM(infoPrefix << "Trying to move to: " << target);
+  ROS_INFO_STREAM(info_prefix << "Trying to move to: " << target);
 
-  bool ret = r3Test.moveQ(target);
+  bool ret = r3_test.moveQ(target);
 
   if (not ret)
   {
-    ROS_ERROR_STREAM(infoPrefix << "Could not properly move the hand");
+    ROS_ERROR_STREAM(info_prefix << "Could not properly move the hand");
     return 1;
   }
   else
   {
-    ROS_INFO_STREAM(infoPrefix << "Movement command successfully accepted");
+    ROS_INFO_STREAM(info_prefix << "Movement command successfully accepted");
   }
 
-  rw::math::Q current = r3Test.getQ();
+  rw::math::Q current = r3_test.getQ();
 
   while (ros::ok() && current != target)
   {
     ros::Duration(1).sleep();  // In seconds
     ros::spinOnce();
-    current = r3Test.getQ();
-    ROS_INFO_STREAM(infoPrefix << "The hand is now at: " << r3Test.getQ());
+    current = r3_test.getQ();
+    ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r3_test.getQ());
   }
 
-  ROS_WARN_STREAM(infoPrefix << "This node will now end. This is intended behavior. When used with the test script this will lead to an error message. Please ignore that.");
+  ROS_WARN_STREAM(info_prefix << "This node will now end. This is intended behavior. When used with the test script this will lead to an error message. Please ignore that.");
 
   return 0;
 }
