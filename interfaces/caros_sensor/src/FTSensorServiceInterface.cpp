@@ -8,7 +8,6 @@ using namespace rw::common;
 
 FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)
 {
-  _nodeHnd = ownedPtr(new ros::NodeHandle(service_name));
   _wrenchDataPublisher = _nodeHnd->advertise<geometry_msgs::WrenchStamped>("wrench", 5);
 }
 

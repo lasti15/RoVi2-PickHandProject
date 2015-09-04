@@ -8,7 +8,7 @@ using namespace rw::common;
 using namespace std;
 using namespace caros;
 
-ButtonSensorSIProxy::ButtonSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle) :
+ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nhandle) :
     _nodeHnd(nhandle)
 {
 }
@@ -20,7 +20,7 @@ ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) :
 
 bool ButtonSensorSIProxy::configureProxy()
 {
-  _buttonSensorState = _nodeHnd->subscribe(_nodeHnd->getNamespace() + "/buttons", 1,
+  _buttonSensorState = _nodeHnd->subscribe(_nodeHnd.getNamespace() + "/buttons", 1,
                                            &ButtonSensorSIProxy::handleButtonSensorState, this);
   return true;
 }

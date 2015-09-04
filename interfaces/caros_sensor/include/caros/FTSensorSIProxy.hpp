@@ -31,7 +31,7 @@ public:
   typedef rw::common::Ptr<FTSensorSIProxy> Ptr;
 
   //! constructor
-  FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
+  FTSensorSIProxy(ros::NodeHandle nhandle);
 
   //! constructor
   FTSensorSIProxy(const std::string& devname);
@@ -46,7 +46,7 @@ public:
   ros::Time getTimeStamp();
 
 protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  ros::NodeHandle _nodeHnd;
 
   // states
   ros::Subscriber _ftState;

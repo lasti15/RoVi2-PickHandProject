@@ -2,8 +2,6 @@
 #ifndef CAROS_CAMERATRIGGERSERVICEINTERFACE_HPP
 #define CAROS_CAMERATRIGGERSERVICEINTERFACE_HPP
 
-#include <rw/common/Ptr.hpp>
-
 #include <ros/ros.h>
 
 /**
@@ -16,7 +14,7 @@ public:
   CameraTriggerServiceInterface(const std::string& service_name);
 
 protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  ros::NodeHandle _nodeHnd;
 };
 
 #endif

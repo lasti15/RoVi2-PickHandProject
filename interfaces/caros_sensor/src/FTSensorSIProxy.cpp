@@ -11,16 +11,16 @@
 
 using namespace caros;
 
-FTSensorSIProxy::FTSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle) :
+FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nhandle) :
     _nodeHnd(nhandle)
 {
-  _ftState = _nodeHnd->subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
+  _ftState = _nodeHnd.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }
 
 FTSensorSIProxy::FTSensorSIProxy(const std::string& name) :
     _nodeHnd(rw::common::ownedPtr(new ros::NodeHandle(name)))
 {
-  _ftState = _nodeHnd->subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
+  _ftState = _nodeHnd.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }
 
 FTSensorSIProxy::~FTSensorSIProxy()

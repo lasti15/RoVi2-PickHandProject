@@ -14,7 +14,7 @@ public:
   TactileArraySensorServiceInterface(const std::string& service_name);
 
 protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  ros::NodeHandle _nodeHnd;
 };
 
 #endif

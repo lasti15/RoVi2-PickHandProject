@@ -30,7 +30,7 @@ public:
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
 protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  ros::NodeHandle _nodeHnd;
 
 private:
   ros::Publisher _wrenchDataPublisher;

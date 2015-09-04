@@ -25,7 +25,7 @@ public:
   typedef rw::common::Ptr<ButtonSensorSIProxy> Ptr;
 
   //! constructor
-  ButtonSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
+  ButtonSensorSIProxy(ros::NodeHandle nhandle);
 
   //! constructor
   ButtonSensorSIProxy(const std::string& devname);
@@ -54,7 +54,7 @@ protected:
   void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
 
 protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+  ros::NodeHandle _nodeHnd;
 
   // states
   ros::Subscriber _buttonSensorState;
