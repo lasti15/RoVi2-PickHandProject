@@ -20,8 +20,10 @@ public:
   ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
 protected:
+  //! setup the node's output services
   bool configureInterface();
 
+  //! publish button states read by sensor
   void publishButtons(const std::vector<std::pair<std::string,bool> >& digital_buttons,
                       const std::vector<std::pair<std::string,bool> >& analog_buttons);
 
