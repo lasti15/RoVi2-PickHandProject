@@ -29,9 +29,6 @@ class PoseSensorServiceInterface
   //! initialize ros interface
   bool configureInterface();
 
-  //! shutdown ros interface
-  bool cleanupInterface();
-
   //! publish poses read by sensor
   void publishPoses(const std::vector<rw::math::Transform3D<>>& poses, const std::vector<int>& ids,
                     const std::vector<float>& qualities);

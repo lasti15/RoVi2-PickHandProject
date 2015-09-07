@@ -16,12 +16,6 @@ bool PoseSensorServiceInterface::configureInterface()
   return true;
 }
 
-bool PoseSensorServiceInterface::cleanupInterface()
-{
-  pose_pub_.shutdown();
-  return true;
-}
-
 void PoseSensorServiceInterface::publishPoses(const std::vector<rw::math::Transform3D<>>& poses,
                                               const std::vector<int>& ids, const std::vector<float>& qualities)
 {
