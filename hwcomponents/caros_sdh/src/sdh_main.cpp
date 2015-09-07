@@ -8,9 +8,9 @@ int main(int argc, char *argv[])
 
   ros::NodeHandle nh("~");
 
-  caros::SDHNode sdhNode(nh);
+  caros::SDHNode sdh_node(nh);
 
-  sdhNode.start();
+  sdh_node.start();
 
   return 0;
 }

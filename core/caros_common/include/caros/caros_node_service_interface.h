@@ -59,13 +59,13 @@ CAROS_ERROR("The value of x is " << x << ". x should be less than zero.", 2);
 \endcode
  *
  */
-#define CAROS_ERROR(ostreamExpression, errorCode)                                                 \
-  do                                                                                              \
-  {                                                                                               \
-    std::stringstream ERROR__stream;                                                              \
-    ERROR__stream << ostreamExpression;                                                           \
-    ROS_ERROR_STREAM("CarosNodeError: " << ERROR__stream.str() << "; error code: " << errorCode); \
-    error(ERROR__stream.str(), errorCode);                                                        \
+#define CAROS_ERROR(ostream_expression, error_code)                                                \
+  do                                                                                               \
+  {                                                                                                \
+    std::stringstream ERROR__stream;                                                               \
+    ERROR__stream << ostream_expression;                                                           \
+    ROS_ERROR_STREAM("CarosNodeError: " << ERROR__stream.str() << "; error code: " << error_code); \
+    error(ERROR__stream.str(), error_code);                                                        \
   } while (0)
 
 /**
@@ -77,13 +77,13 @@ CAROS_FATALERROR("The value of x is " << x << ". x must not be less than zero.",
 \endcode
  *
  */
-#define CAROS_FATALERROR(ostreamExpression, errorCode)                                                      \
-  do                                                                                                        \
-  {                                                                                                         \
-    std::stringstream FATALERROR__stream;                                                                   \
-    FATALERROR__stream << ostreamExpression;                                                                \
-    ROS_ERROR_STREAM("CarosNodeFatalError: " << FATALERROR__stream.str() << "; error code: " << errorCode); \
-    fatalError(FATALERROR__stream.str(), errorCode);                                                        \
+#define CAROS_FATALERROR(ostream_expression, error_code)                                                     \
+  do                                                                                                         \
+  {                                                                                                          \
+    std::stringstream FATALERROR__stream;                                                                    \
+    FATALERROR__stream << ostream_expression;                                                                \
+    ROS_ERROR_STREAM("CarosNodeFatalError: " << FATALERROR__stream.str() << "; error code: " << error_code); \
+    fatalError(FATALERROR__stream.str(), error_code);                                                        \
   } while (0)
 
 /**
@@ -112,12 +112,12 @@ class CarosNodeServiceInterface
   /**
    * @brief constructor.
    * @param[in] nodehandle The nodehandle to use for ROS services and publishers.
-   * @param[in] loopRateFrequency Optional parameter that specifies the frequency [Hz] of this ROS node - see
+   * @param[in] loop_rate_frequency Optional parameter that specifies the frequency [Hz] of this ROS node - see
    * setLoopRateFrequency() for more information.
    *
    * @throws std::runtime_error if the basic functionality can't be properly initialised.
    */
-  CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency = 30);
+  CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loop_rate_frequency = 30);
 
   /**
    * @brief virtual destructor
@@ -166,8 +166,8 @@ class CarosNodeServiceInterface
 
   /**
    * @brief This is called as part of a recovery process that is invoked through the ROS service "recover".
-   * @param[in] errorMsg The corresponding error message.
-   * @param[in] errorCode The error code that should be recovered from.
+   * @param[in] error_msg The corresponding error message.
+   * @param[in] error_code The error code that should be recovered from.
    *
    * This hook should be used to perform any necessary steps to recover from the error.
    * @note The design of the recovery process is to be considered incomplete. Some things are missing such as the
@@ -175,14 +175,14 @@ class CarosNodeServiceInterface
    *properly see what error the node has been told to recover from (it's available in the CarosNodeService, but how to
    *properly use it when recovering is undecided).
    */
-  virtual bool recoverHook(const std::string& errorMsg, const int64_t errorCode) = 0;
+  virtual bool recoverHook(const std::string& error_msg, const int64_t error_code) = 0;
   /** @} */
 
   /**
    * @name Loop Hooks
    *
    * The loop hook corresponding to the current state will be invoked at the frequency specified when calling the
-   *constructor CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loopRateFrequency) or set
+   *constructor CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loop_rate_frequency) or set
    *through setLoopRateFrequency().
    */
   /** @{ */
@@ -208,7 +208,7 @@ class CarosNodeServiceInterface
    */
   NodeState getState()
   {
-    return nodeState_;
+    return node_state_;
   }
 
   /**
@@ -217,21 +217,21 @@ class CarosNodeServiceInterface
    */
   NodeState getPreviousState()
   {
-    return previousState_;
+    return previous_state_;
   }
 
   /** @{ */
   bool isInRunning()
   {
-    return nodeState_ == RUNNING;
+    return node_state_ == RUNNING;
   }
   bool isInError()
   {
-    return nodeState_ == ERROR;
+    return node_state_ == ERROR;
   }
   bool isInFatalError()
   {
-    return nodeState_ == FATALERROR;
+    return node_state_ == FATALERROR;
   }
   /** @} */
 
@@ -253,20 +253,20 @@ class CarosNodeServiceInterface
    */
   double getLoopRateFrequency()
   {
-    return loopRateFrequency_;
+    return loop_rate_frequency_;
   }
 
   /**
    * @brief error function, should not be invoked directly but through the @ref caros::CAROS_ERROR macro.
    */
   void error(const std::string& msg,
-             const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+             const int64_t error_code = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
 
   /**
    * @brief fatal error function, should not be invoked directly but through the @ref caros::CAROS_FATALERROR macro.
    */
   void fatalError(const std::string& msg,
-                  const int64_t errorCode = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
+                  const int64_t error_code = CAROS_NODE_ERRORCODES::CAROS_NODE_NO_ERROR_CODE_SUPPLIED);
 
  private:
   /**
@@ -304,7 +304,8 @@ class CarosNodeServiceInterface
   /**
    * @brief Request the node to shutdown.
    *
-   * This is a non-blocking call, so the shutdown will happen at the next "ROS cycle" where it checks whether a shutdown has been requested (e.g. ros::ok())
+   * This is a non-blocking call, so the shutdown will happen at the next "ROS cycle" where it checks whether a shutdown
+   *has been requested (e.g. ros::ok())
    *
    * @pre In any state
    * @post In same state as before
@@ -337,34 +338,34 @@ class CarosNodeServiceInterface
    *
    * @note Supposed to be called internally.
    */
-  void changeState(const NodeState newState);
+  void changeState(const NodeState new_state);
 
   /**
    * @brief Publishes the state of this CAROS node.
    *
    * @note Supposed to be called internally.
    */
-  void publishNodeState(const bool stateChanged = false);
+  void publishNodeState(const bool state_changed = false);
 
  private:
-  ros::NodeHandle nodeHandle_;
+  ros::NodeHandle nodehandle_;
 
-  ros::Publisher nodeStatePublisher_;
+  ros::Publisher node_state_publisher_;
 
-  ros::ServiceServer srvRecover_;
-  ros::ServiceServer srvTerminate_;
+  ros::ServiceServer srv_recover_;
+  ros::ServiceServer srv_terminate_;
 
-  NodeState nodeState_;
-  NodeState previousState_;
+  NodeState node_state_;
+  NodeState previous_state_;
 
-  double loopRateFrequency_;
-  ros::Rate loopRate_;
+  double loop_rate_frequency_;
+  ros::Rate loop_rate_;
 
-  std::string errorMsg_;
+  std::string error_msg_;
   /* Using int64_t because it's highly related with the type specified in the caros_common_msgs::caros_node_state
    * message
    */
-  int64_t errorCode_;
+  int64_t error_code_;
 };
 }  // namespace
 #endif

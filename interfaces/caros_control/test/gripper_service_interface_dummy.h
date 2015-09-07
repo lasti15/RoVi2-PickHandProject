@@ -9,7 +9,7 @@
 class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
 {
  public:
-  GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue, const bool causeError = false);
+  GripperServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool return_value, const bool cause_error = false);
   virtual ~GripperServiceInterfaceDummy();
 
   const std::string& getMostRecentFunctionCalled() const;
@@ -21,10 +21,10 @@ class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
   bool stopMovement(void);
 
  private:
-  bool returnValue_;
-  bool causeError_;
-  std::string causingErrorMsg_;
-  std::string mostRecentFunctionCalled_;
+  bool return_value_;
+  bool cause_error_;
+  std::string causing_error_msg_;
+  std::string most_recent_function_called_;
 };
 
 #endif

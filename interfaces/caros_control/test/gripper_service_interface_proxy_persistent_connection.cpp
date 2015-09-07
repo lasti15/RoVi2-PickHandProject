@@ -2,7 +2,7 @@
 
 TEST(GripperSIProxy, reestablishPersistentConnection)
 {
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest,
+  caros::test::testServices<D_t, P_t, Services_t>(services_to_test,
                                                   caros::test::TestType::ReestablishPersistentConnection);
 }
 

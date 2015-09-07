@@ -2,7 +2,7 @@
 
 TEST(SerialDeviceSIProxy, servicesSuccess)
 {
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::ReturnTrue);
+  caros::test::testServices<D_t, P_t, Services_t>(services_to_test, caros::test::TestType::ReturnTrue);
 }
 
 int main(int argc, char *argv[])

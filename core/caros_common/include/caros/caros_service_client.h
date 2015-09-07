@@ -21,30 +21,30 @@ namespace caros
  *
  * Connections are not created before they are actually being used (e.g. one of the call functions)
  */
-class carosServiceClient
+class CarosServiceClient
 {
  public:
   /**
    * @brief Constructor
    * @param[in] nodehandle used to obtain/create ros::ServiceClient object (could be converted into a version that
    * doesn't require a nodehandle)
-   * @param[in] connectionIdentifier specifying the service name to connect to (excluding the namespace)
-   * @param[in] serviceNamespace specifying the namespace of where the service is to be found
-   * @param[in] usePersistentConnection specify the persistence of the connections (this can be changed at run time)
+   * @param[in] connection_identifier specifying the service name to connect to (excluding the namespace)
+   * @param[in] service_namespace specifying the namespace of where the service is to be found
+   * @param[in] use_persistent_connection specify the persistence of the connections (this can be changed at run time)
    */
-  carosServiceClient(ros::NodeHandle nodehandle, const std::string& connectionIdentifier,
-                     const std::string& serviceNamespace, const bool usePersistentConnection)
+  CarosServiceClient(ros::NodeHandle nodehandle, const std::string& connection_identifier,
+                     const std::string& service_namespace, const bool use_persistent_connection)
       : nodehandle_(nodehandle),
-        connectionIdentifier_(connectionIdentifier),
-        usePersistentConnection_(usePersistentConnection)
+        connection_identifier_(connection_identifier),
+        use_persistent_connection_(use_persistent_connection)
   {
-    serviceName_ = serviceNamespace + "/" + connectionIdentifier_;
+    service_name_ = service_namespace + "/" + connection_identifier_;
   }
 
   /**
    * @brief Destructor
    */
-  virtual ~carosServiceClient()
+  virtual ~CarosServiceClient()
   { /* Nothing for now */
   }
 
@@ -56,7 +56,7 @@ class carosServiceClient
   template <typename T>
   bool call(T& srv, const bool persistence)
   {
-    usePersistentConnection(persistence);
+    use_persistent_connection(persistence);
     return call<T>(srv);
   }
 
@@ -69,20 +69,20 @@ class carosServiceClient
   {
     prepareConnection<T>();
 
-    bool srvCallSuccess = false;
+    bool srv_call_success = false;
 
-    if (not serviceClient_.exists())
+    if (not service_client_.exists())
     {
-      THROW_CAROS_UNAVAILABLE_SERVICE("The service " << serviceClient_.getService() << " does not exist.");
+      THROW_CAROS_UNAVAILABLE_SERVICE("The service " << service_client_.getService() << " does not exist.");
     }
 
-    srvCallSuccess = serviceClient_.call(srv);
-    if (not srvCallSuccess)
+    srv_call_success = service_client_.call(srv);
+    if (not srv_call_success)
     {
-      THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << serviceClient_.getService());
+      THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << service_client_.getService());
     }
 
-    return srvCallSuccess;
+    return srv_call_success;
   }
 
   /**
@@ -90,10 +90,10 @@ class carosServiceClient
    */
   void shutdown()
   {
-    if (serviceClient_.isPersistent() && serviceClient_.isValid())
+    if (service_client_.isPersistent() && service_client_.isValid())
     {
-      ROS_DEBUG_STREAM("Shutting down persistent connection (id: " << connectionIdentifier_ << ")");
-      serviceClient_.shutdown();
+      ROS_DEBUG_STREAM("Shutting down persistent connection (id: " << connection_identifier_ << ")");
+      service_client_.shutdown();
     }
   }
 
@@ -101,9 +101,9 @@ class carosServiceClient
    * @brief change persistence of the connection(s) to be established
    * @param[in] persistence use persistent (i.e. true) or non-persistent (i.e. false) connection
    */
-  void usePersistentConnection(const bool persistence)
+  void use_persistent_connection(const bool persistence)
   {
-    usePersistentConnection_ = persistence;
+    use_persistent_connection_ = persistence;
   }
 
   /**
@@ -113,7 +113,7 @@ class carosServiceClient
    */
   bool isUsingPersistentConnection()
   {
-    return usePersistentConnection_;
+    return use_persistent_connection_;
   }
 
  protected:
@@ -123,56 +123,56 @@ class carosServiceClient
   template <typename T>
   void prepareConnection()
   {
-    bool createNewConnection = false;
+    bool create_new_connection = false;
 
     /* The ordering is important to make sure that the switch between persistent and non-persistent connection is
      * happening */
     /* Switch from persistent to non-persistent connection */
-    if (serviceClient_.isPersistent() && not usePersistentConnection_)
+    if (service_client_.isPersistent() && not use_persistent_connection_)
     {
-      ROS_DEBUG_STREAM("Switching from persistent to non-persistent connection (id: " << connectionIdentifier_ << ")");
-      if (serviceClient_.isValid())
+      ROS_DEBUG_STREAM("Switching from persistent to non-persistent connection (id: " << connection_identifier_ << ")");
+      if (service_client_.isValid())
       {
-        ROS_DEBUG_STREAM("Shutting down the old persistent connection (id: " << connectionIdentifier_ << ")");
-        serviceClient_.shutdown();
+        ROS_DEBUG_STREAM("Shutting down the old persistent connection (id: " << connection_identifier_ << ")");
+        service_client_.shutdown();
       }
-      createNewConnection = true;
+      create_new_connection = true;
     }
     /* Switch from non-persistent to persistent connection */
     /* the .isValid() test is to make sure that this case is not wrongly chosen when a new persistent connection should
      * be created */
-    else if (not serviceClient_.isPersistent() && serviceClient_.isValid() && usePersistentConnection_)
+    else if (not service_client_.isPersistent() && service_client_.isValid() && use_persistent_connection_)
     {
-      ROS_DEBUG_STREAM("Switching from non-persistent to persistent connection (id: " << connectionIdentifier_ << ")");
-      createNewConnection = true;
+      ROS_DEBUG_STREAM("Switching from non-persistent to persistent connection (id: " << connection_identifier_ << ")");
+      create_new_connection = true;
     }
     /* Reestablish the persistent connection */
-    else if (serviceClient_.isPersistent() && not serviceClient_.isValid())
+    else if (service_client_.isPersistent() && not service_client_.isValid())
     {
-      ROS_DEBUG_STREAM("Reconnecting the persistent connection with (id: " << connectionIdentifier_ << ")");
-      createNewConnection = true;
+      ROS_DEBUG_STREAM("Reconnecting the persistent connection with (id: " << connection_identifier_ << ")");
+      create_new_connection = true;
     }
     /* No previous connection setup */
-    else if (not serviceClient_.isValid())
+    else if (not service_client_.isValid())
     {
-      ROS_DEBUG_STREAM("Setting up new connection (id: " << connectionIdentifier_ << ")");
-      createNewConnection = true;
+      ROS_DEBUG_STREAM("Setting up new connection (id: " << connection_identifier_ << ")");
+      create_new_connection = true;
     }
 
-    if (createNewConnection)
+    if (create_new_connection)
     {
       /* Can use the ros::service::createClient call and not have to rely on having a nodehandle */
-      // serviceClient_ = ros::service::createClient<T>(serviceName_, usePersistentConnection_);
-      serviceClient_ = nodehandle_.serviceClient<T>(serviceName_, usePersistentConnection_);
+      // service_client_ = ros::service::createClient<T>(service_name_, use_persistent_connection_);
+      service_client_ = nodehandle_.serviceClient<T>(service_name_, use_persistent_connection_);
     }
   }
 
  protected:
   ros::NodeHandle nodehandle_;
-  ros::ServiceClient serviceClient_;
-  std::string connectionIdentifier_;
-  std::string serviceName_;
-  bool usePersistentConnection_;
+  ros::ServiceClient service_client_;
+  std::string connection_identifier_;
+  std::string service_name_;
+  bool use_persistent_connection_;
 };
 
 }  // end namespace

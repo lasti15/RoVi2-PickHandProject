@@ -19,13 +19,13 @@ find_package(catkin REQUIRED COMPONENTS
 ########################################################################
 add_message_files(
   FILES
-  rw_state_data.msg
-  rw_state.msg
+  RwStateData.msg
+  RwState.msg
 )
 
 add_service_files(
   FILES
-  get_rw_state.srv
+  GetRwState.srv
 )
 
 generate_messages(

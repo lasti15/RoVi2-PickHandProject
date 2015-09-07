@@ -31,7 +31,8 @@ class PoseSensorSIProxy
    * @param[in] devname The name of the node
    * @param[in] use_persistent_connections Define usage of persistent connections
    */
-  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool use_persistent_connections = true);
+  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                    const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~PoseSensorSIProxy();

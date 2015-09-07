@@ -1,4 +1,3 @@
-/**/
 #ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
 #define CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
 
@@ -20,11 +19,6 @@ namespace caros
 class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
  public:
-  enum ERRORCODE
-  {
-    CONNECTION_ERROR = 1  //! Connection to robotiq hand was not possible
-  };
-
   //! constructor
   Robotiq3Node(const ros::NodeHandle& node_handle);
 
@@ -53,18 +47,18 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   {
     ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE = 1,
     ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL,
-    ROBOTIQ3NODE_UNSUPPORTED_INTERFACE_TYPE,
+    // ROBOTIQ3NODE_UNSUPPORTED_INTERFACE_TYPE,
     ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED,
     ROBOTIQ3NODE_INTERNAL_ERROR,
     ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION,
     ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE,
-    ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH
+    // ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH
   };
 
  protected:
   // hooks implemented from CarosNodeServiceInterface base class
   bool activateHook();
-  bool recoverHook(const std::string& errorMsg, const int64_t errorCode);
+  bool recoverHook(const std::string& error_msg, const int64_t error_code);
 
   void runLoopHook();
   void errorLoopHook();

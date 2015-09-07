@@ -7,7 +7,7 @@
 #include <caros/common_robwork.h>
 #include <caros/exceptions.h>
 
-#include <caros_control_msgs/gripper_state.h>
+#include <caros_control_msgs/GripperState.h>
 
 /* TODO:
  * Find a good way to handle the situation where a user tries to get some data e.g. getQ and no data has ever been
@@ -21,21 +21,21 @@
 using namespace caros;
 
 GripperSIProxy::GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                               const bool usePersistentConnections)
+                               const bool use_persistent_connections)
     : nodehandle_(nodehandle),
-      usePersistentConnections_(usePersistentConnections),
-      rosNamespace_("/" + devname + "/" + GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE),
-      srvMoveQ_(nodehandle_, "move_q", rosNamespace_, usePersistentConnections_),
-      srvGripQ_(nodehandle_, "grip_q", rosNamespace_, usePersistentConnections_),
-      srvSetForceQ_(nodehandle_, "set_force_q", rosNamespace_, usePersistentConnections_),
-      srvSetVelocityQ_(nodehandle_, "set_velocity_q", rosNamespace_, usePersistentConnections_),
-      srvStopMovement_(nodehandle_, "stop_movement", rosNamespace_, usePersistentConnections_)
+      use_persistent_connections_(use_persistent_connections),
+      ros_namespace_("/" + devname + "/" + GRIPPER_SERVICE_INTERFACE_SUB_NAMESPACE),
+      srv_move_q_(nodehandle_, "move_q", ros_namespace_, use_persistent_connections_),
+      srv_grip_q_(nodehandle_, "grip_q", ros_namespace_, use_persistent_connections_),
+      srv_set_force_q_(nodehandle_, "set_force_q", ros_namespace_, use_persistent_connections_),
+      srv_set_velocity_q_(nodehandle_, "set_velocity_q", ros_namespace_, use_persistent_connections_),
+      srv_stop_movement_(nodehandle_, "stop_movement", ros_namespace_, use_persistent_connections_)
 {
   /* TODO:
    * Make the queue size into a parameter that can be configured - (hardcoded to 1 here)
    */
-  subGripperState_ =
-      nodehandle_.subscribe(rosNamespace_ + "/gripper_state", 1, &GripperSIProxy::handleGripperState, this);
+  sub_gripper_state_ =
+      nodehandle_.subscribe(ros_namespace_ + "/gripper_state", 1, &GripperSIProxy::handleGripperState, this);
 }
 
 GripperSIProxy::~GripperSIProxy()
@@ -45,49 +45,49 @@ GripperSIProxy::~GripperSIProxy()
 
 bool GripperSIProxy::moveQ(const rw::math::Q& q)
 {
-  caros_control_msgs::gripper_move_q srv;
+  caros_control_msgs::GripperMoveQ srv;
   srv.request.q = caros::toRos(q);
 
-  srvMoveQ_.call<caros_control_msgs::gripper_move_q>(srv);
+  srv_move_q_.call<caros_control_msgs::GripperMoveQ>(srv);
 
   return srv.response.success;
 }
 
 bool GripperSIProxy::gripQ(const rw::math::Q& q)
 {
-  caros_control_msgs::gripper_grip_q srv;
+  caros_control_msgs::GripperGripQ srv;
   srv.request.q = caros::toRos(q);
 
-  srvGripQ_.call<caros_control_msgs::gripper_grip_q>(srv);
+  srv_grip_q_.call<caros_control_msgs::GripperGripQ>(srv);
 
   return srv.response.success;
 }
 
 bool GripperSIProxy::setForceQ(const rw::math::Q& q)
 {
-  caros_control_msgs::gripper_set_force_q srv;
+  caros_control_msgs::GripperSetForceQ srv;
   srv.request.force = caros::toRos(q);
 
-  srvSetForceQ_.call<caros_control_msgs::gripper_set_force_q>(srv);
+  srv_set_force_q_.call<caros_control_msgs::GripperSetForceQ>(srv);
 
   return srv.response.success;
 }
 
 bool GripperSIProxy::setVelocityQ(const rw::math::Q& q)
 {
-  caros_control_msgs::gripper_set_velocity_q srv;
+  caros_control_msgs::GripperSetVelocityQ srv;
   srv.request.velocity = caros::toRos(q);
 
-  srvSetVelocityQ_.call<caros_control_msgs::gripper_set_velocity_q>(srv);
+  srv_set_velocity_q_.call<caros_control_msgs::GripperSetVelocityQ>(srv);
 
   return srv.response.success;
 }
 
 bool GripperSIProxy::stopMovement()
 {
-  caros_control_msgs::gripper_stop_movement srv;
+  caros_control_msgs::GripperStopMovement srv;
 
-  srvStopMovement_.call<caros_control_msgs::gripper_stop_movement>(srv);
+  srv_stop_movement_.call<caros_control_msgs::GripperStopMovement>(srv);
 
   return srv.response.success;
 }
@@ -95,34 +95,34 @@ bool GripperSIProxy::stopMovement()
 /* Hardcoded since the connections are not added to a collection that can easily be iterated */
 void GripperSIProxy::closePersistentConnections()
 {
-  srvMoveQ_.shutdown();
-  srvGripQ_.shutdown();
-  srvSetForceQ_.shutdown();
-  srvSetVelocityQ_.shutdown();
-  srvStopMovement_.shutdown();
+  srv_move_q_.shutdown();
+  srv_grip_q_.shutdown();
+  srv_set_force_q_.shutdown();
+  srv_set_velocity_q_.shutdown();
+  srv_stop_movement_.shutdown();
 }
 
 rw::math::Q GripperSIProxy::getQ()
 {
-  return caros::toRw(pSV_gripperState_.q);
+  return caros::toRw(psv_gripper_state_.q);
 }
 
 rw::math::Q GripperSIProxy::getQd()
 {
-  return caros::toRw(pSV_gripperState_.dq);
+  return caros::toRw(psv_gripper_state_.dq);
 }
 
 rw::math::Q GripperSIProxy::getForce()
 {
-  return caros::toRw(pSV_gripperState_.force);
+  return caros::toRw(psv_gripper_state_.force);
 }
 
 ros::Time GripperSIProxy::getTimeStamp()
 {
-  return pSV_gripperState_.header.stamp;
+  return psv_gripper_state_.header.stamp;
 }
 
-void GripperSIProxy::handleGripperState(const caros_control_msgs::gripper_state& state)
+void GripperSIProxy::handleGripperState(const caros_control_msgs::GripperState& state)
 {
-  pSV_gripperState_ = state;
+  psv_gripper_state_ = state;
 }

@@ -35,12 +35,12 @@ else()
   ################################################
   add_service_files(
     FILES
-    ur_service_servo_q.srv
-    ur_service_servo_t.srv
-    ur_service_empty.srv
-    ur_service_force_mode_start.srv
-    ur_service_force_mode_update.srv
-    ur_service_force_mode_stop.srv
+    UrServiceServoQ.srv
+    UrServiceServoT.srv
+    UrServiceEmpty.srv
+    UrServiceForceModeStart.srv
+    UrServiceForceModeUpdate.srv
+    UrServiceForceModeStop.srv
     )
 
   generate_messages(

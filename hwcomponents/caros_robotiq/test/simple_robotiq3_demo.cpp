@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <caros/gripper_si_proxy.h>
-#include <caros_common_msgs/caros_node_state.h>
+#include <caros_common_msgs/CarosNodeState.h>
 #include <ros/topic.h>
 
 int main(int argc, char* argv[])
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
   bool is_running = false;
   while (not is_running)
   {
-    auto node_state_message = ros::topic::waitForMessage<caros_common_msgs::caros_node_state>(node_stateTopicName);
+    auto node_state_message = ros::topic::waitForMessage<caros_common_msgs::CarosNodeState>(node_stateTopicName);
     is_running = node_state_message->state == "RUNNING";
   }
 
@@ -58,7 +58,8 @@ int main(int argc, char* argv[])
     ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r3_test.getQ());
   }
 
-  ROS_WARN_STREAM(info_prefix << "This node will now end. This is intended behavior. When used with the test script this will lead to an error message. Please ignore that.");
+  ROS_WARN_STREAM(info_prefix << "This node will now end. This is intended behavior. When used with the test script "
+                                 "this will lead to an error message. Please ignore that.");
 
   return 0;
 }

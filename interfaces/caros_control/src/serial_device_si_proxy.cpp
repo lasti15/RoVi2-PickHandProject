@@ -3,17 +3,17 @@
 #include <caros/serial_device_service_interface.h>
 #include <caros/common.h>
 #include <caros/common_robwork.h>
-#include <caros_common_msgs/stop.h>
-#include <caros_common_msgs/pause.h>
-#include <caros_common_msgs/config_bool.h>
-#include <caros_control_msgs/serial_device_move_lin.h>
-#include <caros_control_msgs/serial_device_move_ptp.h>
-#include <caros_control_msgs/serial_device_move_ptp_t.h>
-#include <caros_control_msgs/serial_device_move_vel_q.h>
-#include <caros_control_msgs/serial_device_move_vel_t.h>
-#include <caros_control_msgs/serial_device_move_lin_fc.h>
-#include <caros_control_msgs/serial_device_move_servo_q.h>
-#include <caros_control_msgs/serial_device_move_servo_t.h>
+#include <caros_common_msgs/Stop.h>
+#include <caros_common_msgs/Pause.h>
+#include <caros_common_msgs/ConfigBool.h>
+#include <caros_control_msgs/SerialDeviceMoveLin.h>
+#include <caros_control_msgs/SerialDeviceMovePtp.h>
+#include <caros_control_msgs/SerialDeviceMovePtpT.h>
+#include <caros_control_msgs/SerialDeviceMoveVelQ.h>
+#include <caros_control_msgs/SerialDeviceMoveVelT.h>
+#include <caros_control_msgs/SerialDeviceMoveLinFc.h>
+#include <caros_control_msgs/SerialDeviceMoveServoQ.h>
+#include <caros_control_msgs/SerialDeviceMoveServoT.h>
 
 #define SPEED_MIN 0.0f
 #define SPEED_MAX 100.0f
@@ -21,26 +21,26 @@
 using namespace caros;
 
 SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                                         const bool usePersistentConnections)
+                                         const bool use_persistent_connections)
     : nodehandle_(nodehandle),
-      usePersistentConnections_(usePersistentConnections),
-      rosNamespace_("/" + devname + "/" + SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE),
-      srvMoveLinFc_(nodehandle_, "move_lin_fc", rosNamespace_, usePersistentConnections_),
-      srvMoveLin_(nodehandle_, "move_lin", rosNamespace_, usePersistentConnections_),
-      srvMovePtp_(nodehandle_, "move_ptp", rosNamespace_, usePersistentConnections_),
-      srvMovePtpT_(nodehandle_, "move_ptp_t", rosNamespace_, usePersistentConnections_),
-      srvMoveServoQ_(nodehandle_, "move_servo_q", rosNamespace_, usePersistentConnections_),
-      srvMoveServoT_(nodehandle_, "move_servo_t", rosNamespace_, usePersistentConnections_),
-      srvMoveVelQ_(nodehandle_, "move_vel_q", rosNamespace_, usePersistentConnections_),
-      srvMoveVelT_(nodehandle_, "move_vel_t", rosNamespace_, usePersistentConnections_),
-      srvPause_(nodehandle_, "move_pause", rosNamespace_, usePersistentConnections_),
-      srvStart_(nodehandle_, "move_start", rosNamespace_, usePersistentConnections_),
-      srvStop_(nodehandle_, "move_stop", rosNamespace_, usePersistentConnections_),
-      srvSetSafeModeEnabled_(nodehandle_, "set_safe_mode_enabled", rosNamespace_, usePersistentConnections_)
+      use_persistent_connections_(use_persistent_connections),
+      ros_namespace_("/" + devname + "/" + SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE),
+      srv_move_lin_fc_(nodehandle_, "move_lin_fc", ros_namespace_, use_persistent_connections_),
+      srv_move_lin_(nodehandle_, "move_lin", ros_namespace_, use_persistent_connections_),
+      srv_move_ptp_(nodehandle_, "move_ptp", ros_namespace_, use_persistent_connections_),
+      srv_move_ptp_t_(nodehandle_, "move_ptp_t", ros_namespace_, use_persistent_connections_),
+      srv_move_servo_q_(nodehandle_, "move_servo_q", ros_namespace_, use_persistent_connections_),
+      srv_move_servo_t_(nodehandle_, "move_servo_t", ros_namespace_, use_persistent_connections_),
+      srv_move_vel_q_(nodehandle_, "move_vel_q", ros_namespace_, use_persistent_connections_),
+      srv_move_vel_t_(nodehandle_, "move_vel_t", ros_namespace_, use_persistent_connections_),
+      srv_pause_(nodehandle_, "move_pause", ros_namespace_, use_persistent_connections_),
+      srv_start_(nodehandle_, "move_start", ros_namespace_, use_persistent_connections_),
+      srv_stop_(nodehandle_, "move_stop", ros_namespace_, use_persistent_connections_),
+      srv_set_safe_mode_enabled_(nodehandle_, "set_safe_mode_enabled", ros_namespace_, use_persistent_connections_)
 {
   // states
-  subRobotState_ =
-      nodehandle_.subscribe(rosNamespace_ + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
+  sub_robot_state_ =
+      nodehandle_.subscribe(ros_namespace_ + "/robot_state", 1, &SerialDeviceSIProxy::handleRobotState, this);
 }
 
 SerialDeviceSIProxy::~SerialDeviceSIProxy()
@@ -50,12 +50,12 @@ SerialDeviceSIProxy::~SerialDeviceSIProxy()
 bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
   verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
-  caros_control_msgs::serial_device_move_lin srv;
+  caros_control_msgs::SerialDeviceMoveLin srv;
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  srvMoveLin_.call<caros_control_msgs::serial_device_move_lin>(srv);
+  srv_move_lin_.call<caros_control_msgs::SerialDeviceMoveLin>(srv);
 
   return srv.response.success;
 }
@@ -63,12 +63,12 @@ bool SerialDeviceSIProxy::moveLin(const rw::math::Transform3D<>& target, const f
 bool SerialDeviceSIProxy::movePtp(const rw::math::Q& target, const float speed, const float blend)
 {
   verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
-  caros_control_msgs::serial_device_move_ptp srv;
+  caros_control_msgs::SerialDeviceMovePtp srv;
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  srvMovePtp_.call<caros_control_msgs::serial_device_move_ptp>(srv);
+  srv_move_ptp_.call<caros_control_msgs::SerialDeviceMovePtp>(srv);
 
   return srv.response.success;
 }
@@ -76,12 +76,12 @@ bool SerialDeviceSIProxy::movePtp(const rw::math::Q& target, const float speed, 
 bool SerialDeviceSIProxy::movePtpT(const rw::math::Transform3D<>& target, const float speed, const float blend)
 {
   verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
-  caros_control_msgs::serial_device_move_ptp_t srv;
+  caros_control_msgs::SerialDeviceMovePtpT srv;
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
   srv.request.blends.push_back(caros::toRos(blend));
 
-  srvMovePtpT_.call<caros_control_msgs::serial_device_move_ptp_t>(srv);
+  srv_move_ptp_t_.call<caros_control_msgs::SerialDeviceMovePtpT>(srv);
 
   return srv.response.success;
 }
@@ -89,11 +89,11 @@ bool SerialDeviceSIProxy::movePtpT(const rw::math::Transform3D<>& target, const 
 bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float speed)
 {
   verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
-  caros_control_msgs::serial_device_move_servo_q srv;
+  caros_control_msgs::SerialDeviceMoveServoQ srv;
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
 
-  srvMoveServoQ_.call<caros_control_msgs::serial_device_move_servo_q>(srv);
+  srv_move_servo_q_.call<caros_control_msgs::SerialDeviceMoveServoQ>(srv);
 
   return srv.response.success;
 }
@@ -101,78 +101,78 @@ bool SerialDeviceSIProxy::moveServoQ(const rw::math::Q& target, const float spee
 bool SerialDeviceSIProxy::moveServoT(const rw::math::Transform3D<>& target, const float speed)
 {
   verifyValueIsWithin(speed, SPEED_MIN, SPEED_MAX);
-  caros_control_msgs::serial_device_move_servo_t srv;
+  caros_control_msgs::SerialDeviceMoveServoT srv;
   srv.request.targets.push_back(caros::toRos(target));
   srv.request.speeds.push_back(caros::toRos(speed));
 
-  srvMoveServoT_.call<caros_control_msgs::serial_device_move_servo_t>(srv);
+  srv_move_servo_t_.call<caros_control_msgs::SerialDeviceMoveServoT>(srv);
 
   return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelQ(const rw::math::Q& target)
 {
-  caros_control_msgs::serial_device_move_vel_q srv;
+  caros_control_msgs::SerialDeviceMoveVelQ srv;
   srv.request.vel = caros::toRos(target);
 
-  srvMoveVelQ_.call<caros_control_msgs::serial_device_move_vel_q>(srv);
+  srv_move_vel_q_.call<caros_control_msgs::SerialDeviceMoveVelQ>(srv);
 
   return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
 {
-  caros_control_msgs::serial_device_move_vel_t srv;
+  caros_control_msgs::SerialDeviceMoveVelT srv;
   srv.request.vel = caros::toRos(target);
 
-  srvMoveVelT_.call<caros_control_msgs::serial_device_move_vel_t>(srv);
+  srv_move_vel_t_.call<caros_control_msgs::SerialDeviceMoveVelT>(srv);
 
   return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
-                                    const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain)
+bool SerialDeviceSIProxy::moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
+                                    const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain)
 {
-  caros_control_msgs::serial_device_move_lin_fc srv;
-  srv.request.pos_target = caros::toRos(posTarget);
+  caros_control_msgs::SerialDeviceMoveLinFc srv;
+  srv.request.pos_target = caros::toRos(pos_target);
   srv.request.offset = caros::toRos(offset);
-  srv.request.wrench_target = caros::toRos(wrenchTarget);
+  srv.request.wrench_target = caros::toRos(wrench_target);
 
-  ROS_ASSERT(controlGain.size() == srv.request.ctrl_gains.size());
+  ROS_ASSERT(control_gain.size() == srv.request.ctrl_gains.size());
   for (std::size_t index = 0; index < srv.request.ctrl_gains.size(); ++index)
   {
-    srv.request.ctrl_gains[index] = caros::toRosFloat(controlGain[index]);
+    srv.request.ctrl_gains[index] = caros::toRosFloat(control_gain[index]);
   }
 
-  srvMoveLinFc_.call<caros_control_msgs::serial_device_move_lin_fc>(srv);
+  srv_move_lin_fc_.call<caros_control_msgs::SerialDeviceMoveLinFc>(srv);
 
   return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::stop()
 {
-  caros_common_msgs::stop srv;
+  caros_common_msgs::Stop srv;
 
-  srvStop_.call<caros_common_msgs::stop>(srv);
+  srv_stop_.call<caros_common_msgs::Stop>(srv);
 
   return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::pause()
 {
-  caros_common_msgs::pause srv;
+  caros_common_msgs::Pause srv;
 
-  srvPause_.call<caros_common_msgs::pause>(srv);
+  srv_pause_.call<caros_common_msgs::Pause>(srv);
 
   return srv.response.success;
 }
 
 bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable)
 {
-  caros_common_msgs::config_bool srv;
+  caros_common_msgs::ConfigBool srv;
   srv.request.value = caros::toRos(enable);
 
-  srvSetSafeModeEnabled_.call<caros_common_msgs::config_bool>(srv);
+  srv_set_safe_mode_enabled_.call<caros_common_msgs::ConfigBool>(srv);
 
   return srv.response.success;
 }
@@ -180,41 +180,41 @@ bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable)
 /* Hardcoded since the connections are not added to a collection that can easily be iterated */
 void SerialDeviceSIProxy::closePersistentConnections()
 {
-  srvMoveLinFc_.shutdown();
-  srvMoveLin_.shutdown();
-  srvMovePtp_.shutdown();
-  srvMovePtpT_.shutdown();
-  srvMoveServoQ_.shutdown();
-  srvMoveServoT_.shutdown();
-  srvMoveVelQ_.shutdown();
-  srvMoveVelT_.shutdown();
-  srvPause_.shutdown();
-  srvStart_.shutdown();
-  srvStop_.shutdown();
-  srvSetSafeModeEnabled_.shutdown();
+  srv_move_lin_fc_.shutdown();
+  srv_move_lin_.shutdown();
+  srv_move_ptp_.shutdown();
+  srv_move_ptp_t_.shutdown();
+  srv_move_servo_q_.shutdown();
+  srv_move_servo_t_.shutdown();
+  srv_move_vel_q_.shutdown();
+  srv_move_vel_t_.shutdown();
+  srv_pause_.shutdown();
+  srv_start_.shutdown();
+  srv_stop_.shutdown();
+  srv_set_safe_mode_enabled_.shutdown();
 }
 
-void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::robot_state& state)
+void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::RobotState& state)
 {
-  pRobotState_ = state;
+  robot_state_ = state;
 }
 
 rw::math::Q SerialDeviceSIProxy::getQ()
 {
-  return caros::toRw(pRobotState_.q);
+  return caros::toRw(robot_state_.q);
 }
 
 rw::math::Q SerialDeviceSIProxy::getQd()
 {
-  return caros::toRw(pRobotState_.dq);
+  return caros::toRw(robot_state_.dq);
 }
 
 bool SerialDeviceSIProxy::isMoving()
 {
-  return pRobotState_.isMoving;
+  return robot_state_.is_moving;
 }
 
 ros::Time SerialDeviceSIProxy::getTimeStamp()
 {
-  return pRobotState_.header.stamp;
+  return robot_state_.header.stamp;
 }

@@ -2,17 +2,17 @@
 <launch>
   <!-- Define the parameterisation of the ROS parameters -->
   <arg name="deviceName" default="UR1" />
-  <arg name="FTFrame" default="WORLD" />
-  <arg name="IP" default="192.168.100.4" />
+  <arg name="ftFrame" default="WORLD" />
+  <arg name="ip" default="192.168.100.4" />
   <arg name="callbackPort" default="33333" />
-  <arg name="callbackIP" default="192.168.100.1" />
-  <arg name="WrenchTopic" default="wrenchData" />
+  <arg name="callbackIp" default="192.168.100.1" />
+  <arg name="wrenchTopic" default="wrenchData" />
 
   <!-- Set the ROS parameters -->
   <param name="deviceName" type="str" value="$(arg deviceName)" />
-  <param name="FTFrame" type="str" value="$(arg FTFrame)"/>
-  <param name="IP" type="str" value="$(arg IP)"/>
+  <param name="ftFrame" type="str" value="$(arg ftFrame)"/>
+  <param name="ip" type="str" value="$(arg ip)"/>
   <param name="callbackPort" type="str" value="$(arg callbackPort)"/>
-  <param name="callbackIP" type="str" value="$(arg callbackIP)"/>
-  <param name="WrenchTopic" type="str" value="$(arg WrenchTopic)"/>
+  <param name="callbackIp" type="str" value="$(arg callbackIp)"/>
+  <param name="wrenchTopic" type="str" value="$(arg wrenchTopic)"/>
 </launch>

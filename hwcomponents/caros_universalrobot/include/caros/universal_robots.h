@@ -6,7 +6,7 @@
 #include <caros/caros_node_service_interface.h>
 #include <caros/serial_device_service_interface.h>
 
-#include <caros_common_msgs/wrench_data.h>
+#include <caros_common_msgs/WrenchData.h>
 
 #include <rw/invkin/JacobianIKSolver.hpp>
 
@@ -55,10 +55,10 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   //! @copydoc URServiceInterface::servoQ
   bool urServoQ(const rw::math::Q& target);
   //! @copydoc URServiceInterface::forceModeStart
-  bool urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
-                        const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits);
+  bool urForceModeStart(const rw::math::Transform3D<>& ref_t_offset, const rw::math::Q& selection,
+                        const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& limits);
   //! @copydoc URServiceInterface::forceModeUpdate
-  bool urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget);
+  bool urForceModeUpdate(const rw::math::Wrench6D<>& wrench_target);
   //! @copydoc URServiceInterface::forceModeStop
   bool urForceModeStop();
 
@@ -76,8 +76,8 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   //! @copydoc caros::SerialDeviceServiceInterface::moveVelT
   bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel);
   //! @copydoc caros::SerialDeviceServiceInterface::moveLinFc
-  bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
-                 const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain);
+  bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
+                 const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoQ
   bool moveServoQ(const QAndSpeedContainer_t& targets);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoT
@@ -96,7 +96,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
    * Hooks implemented from CarosNodeServiceInterface base class
    ************************************************************************/
   bool activateHook();
-  bool recoverHook(const std::string& errorMsg, const int64_t errorCode);
+  bool recoverHook(const std::string& error_msg, const int64_t error_code);
 
   void runLoopHook();
   void errorLoopHook();
@@ -104,7 +104,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
 
  private:
   //! @brief Support function for capturing published wrench data
-  void addFTData(const caros_common_msgs::wrench_data::ConstPtr state);
+  void addFTData(const caros_common_msgs::WrenchData::ConstPtr state);
 
   /* convenience functions */
   bool isInWorkingCondition();
@@ -116,20 +116,20 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   rw::models::WorkCell::Ptr workcell_;
   rw::models::Device::Ptr device_;
   rw::math::Q qcurrent_; /* Updated in runLoopHook() */
-  rw::kinematics::Frame* ftFrame_;
+  rw::kinematics::Frame* ft_frame_;
 
   rwhw::URCallBackInterface ur_;
   rwhw::UniversalRobotsRTLogging urrt_;
 
-  // [ not being initialised ] rwhw::NetFTLogging::Ptr pNetFT_;
-  //    rwhw::FTCompensation::Ptr pFTCompensation_;
-  ros::Subscriber subFTData_;
-  std::queue<rw::math::Wrench6D<>> wrenchDataQueue_;
+  // [ not being initialised ] rwhw::NetFTLogging::Ptr p_net_ft_;
+  //    rwhw::FTCompensation::Ptr p_ft_compensation_;
+  ros::Subscriber sub_ft_data_;
+  std::queue<rw::math::Wrench6D<>> wrench_data_queue_;
 
-  rw::invkin::JacobianIKSolver::Ptr iksolver_;
+  rw::invkin::JacobianIKSolver::Ptr ik_solver_;
   rw::kinematics::State state_;
 
-  bool useFTCollisionDetection_;
+  bool use_ft_collision_detection_;
 };
 }
 #endif  // include guard

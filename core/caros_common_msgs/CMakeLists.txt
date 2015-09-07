@@ -19,19 +19,19 @@ find_package(catkin REQUIRED COMPONENTS
 ########################################################################
 add_message_files(
   FILES
-  q.msg
-  caros_node_state.msg
-  wrench_data.msg
+  Q.msg
+  CarosNodeState.msg
+  WrenchData.msg
 )
 
 add_service_files(
   FILES
-  start.srv
-  stop.srv
-  pause.srv
-  config_bool.srv
-  config_int.srv
-  empty_srv.srv
+  Start.srv
+  Stop.srv
+  Pause.srv
+  ConfigBool.srv
+  ConfigInt.srv
+  EmptySrv.srv
 )
 
 generate_messages(

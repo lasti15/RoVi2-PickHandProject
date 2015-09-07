@@ -15,7 +15,7 @@
  * None of this is code is guaranteed to not make the robot crash into anything or do unexpected behaviour!
  * It is highly recommended that you understand what the code does before you run it!
  *
- * To minimise risk, please use (very) small qChange values!
+ * To minimise risk, please use (very) small q_change values!
  */
 
 /* This class is supposed to make it a bit easier to reuse the test code.
@@ -35,16 +35,16 @@ class UrTest
   virtual ~UrTest(){/* Empty */
   };
 
-  bool testMovePtp(const double qChange)
+  bool testMovePtp(const double q_change)
   {
-    if (not doTestMovePtp(qChange))
+    if (not doTestMovePtp(q_change))
     {
       return false;
     }
     ROS_INFO_STREAM("Waiting a little moment for the movement to be finished");
     ros::Duration(5).sleep();  // In seconds
 
-    if (not doTestMovePtp(-qChange))
+    if (not doTestMovePtp(-q_change))
     {
       return false;
     }
@@ -54,16 +54,16 @@ class UrTest
     return true;
   }
 
-  bool testMoveServoQ(const double qChange)
+  bool testMoveServoQ(const double q_change)
   {
-    if (not doTestMoveServoQ(qChange))
+    if (not doTestMoveServoQ(q_change))
     {
       return false;
     }
     ROS_INFO_STREAM("Waiting a little moment for the movement to be finished");
     ros::Duration(5).sleep();  // In seconds
 
-    if (not doTestMoveServoQ(-qChange))
+    if (not doTestMoveServoQ(-q_change))
     {
       return false;
     }
@@ -86,8 +86,8 @@ class UrTest
 
   void initDevice()
   {
-    std::string deviceName;
-    if (not nodehandle_.getParam("deviceName", deviceName))
+    std::string device_name;
+    if (not nodehandle_.getParam("deviceName", device_name))
     {
       ROS_FATAL_STREAM("The parameter '" << nodehandle_.getNamespace()
                                          << "/deviceName' was not present on the parameter "
@@ -96,11 +96,11 @@ class UrTest
       throw std::runtime_error("Not able to obtain device name.");
     }
 
-    ROS_DEBUG_STREAM("Looking for the device '" << deviceName << "' in the workcell.");
-    device_ = workcell_->findDevice(deviceName);
+    ROS_DEBUG_STREAM("Looking for the device '" << device_name << "' in the workcell.");
+    device_ = workcell_->findDevice(device_name);
     if (device_ == NULL)
     {
-      ROS_FATAL_STREAM("Unable to find device " << deviceName << " in the loaded workcell");
+      ROS_FATAL_STREAM("Unable to find device " << device_name << " in the loaded workcell");
       throw std::runtime_error("Not able to find the device within the workcell.");
     }
   }
@@ -113,11 +113,11 @@ class UrTest
         new rw::proximity::CollisionDetector(workcell_, rwlibs::proximitystrategies::ProximityStrategyYaobi::make()));
     /* PlannerConstraint that uses the collision detector to verify that the _start_ and _end_ configurations are
      * collision free and that the edge(s) between those is/are also collision free. */
-    const rw::pathplanning::PlannerConstraint plannerConstraint =
+    const rw::pathplanning::PlannerConstraint planner_constraint =
         rw::pathplanning::PlannerConstraint::make(detector, device_, state);
 
     /* Just using a really simple path planner (straight line in the configuration space) */
-    planner_ = rw::pathplanning::QToQPlanner::make(plannerConstraint);
+    planner_ = rw::pathplanning::QToQPlanner::make(planner_constraint);
   }
 
   rw::math::Q getCurrentJointConfiguration()
@@ -127,31 +127,31 @@ class UrTest
      * ^- That could be asserted / verified using sdsip.isMoving()
      * However other sources could invoke services on the UR that causes it to move...
      */
-    ros::Time currentTimestamp = ros::Time::now();
-    ros::Time obtainedTimestamp = sdsip_.getTimeStamp();
-    while (currentTimestamp > obtainedTimestamp)
+    ros::Time current_timestamp = ros::Time::now();
+    ros::Time obtained_timestamp = sdsip_.getTimeStamp();
+    while (current_timestamp > obtained_timestamp)
     {
       ros::Duration(0.1).sleep();  // In seconds
       ros::spinOnce();
-      obtainedTimestamp = sdsip_.getTimeStamp();
+      obtained_timestamp = sdsip_.getTimeStamp();
     }
 
     return sdsip_.getQ();
   }
 
-  rw::trajectory::QPath getQPath(const double qChange)
+  rw::trajectory::QPath getQPath(const double q_change)
   {
-    rw::math::Q startConfiguration = getCurrentJointConfiguration();
-    rw::math::Q endConfiguration = startConfiguration + rw::math::Q(startConfiguration.size(), qChange);
+    rw::math::Q start_configuration = getCurrentJointConfiguration();
+    rw::math::Q end_configuration = start_configuration + rw::math::Q(start_configuration.size(), q_change);
 
     rw::trajectory::QPath path;
-    bool validPath = false;
+    bool valid_path = false;
     ROS_ASSERT(planner_);
-    validPath = planner_->query(startConfiguration, endConfiguration, path);
+    valid_path = planner_->query(start_configuration, end_configuration, path);
 
-    if (not validPath)
+    if (not valid_path)
     {
-      ROS_ERROR_STREAM("Could not find a path from '" << startConfiguration << "' to '" << endConfiguration << "'.");
+      ROS_ERROR_STREAM("Could not find a path from '" << start_configuration << "' to '" << end_configuration << "'.");
       throw std::runtime_error("No valid path found.");
     }
 
@@ -159,17 +159,17 @@ class UrTest
   }
 
   rw::trajectory::QPath linearInterpolatedPath(const rw::math::Q& start, const rw::math::Q& end,
-                                               const double totalDuration = 10.0, const double durationStep = 1.0)
+                                               const double total_duration = 10.0, const double duration_step = 1.0)
   {
-    ROS_ASSERT(durationStep > 0);
-    ROS_ASSERT(durationStep < totalDuration);
+    ROS_ASSERT(duration_step > 0);
+    ROS_ASSERT(duration_step < total_duration);
 
-    rw::trajectory::QLinearInterpolator interpolator(start, end, totalDuration);
+    rw::trajectory::QLinearInterpolator interpolator(start, end, total_duration);
 
     rw::trajectory::QPath path;
 
     path.push_back(start);
-    for (double t = durationStep; t <= (totalDuration - durationStep); t += durationStep)
+    for (double t = duration_step; t <= (total_duration - duration_step); t += duration_step)
     {
       path.push_back(interpolator.x(t));
     }
@@ -178,10 +178,10 @@ class UrTest
     return path;
   }
 
-  bool doTestMovePtp(const double qChange)
+  bool doTestMovePtp(const double q_change)
   {
-    bool returnStatus = true;
-    rw::trajectory::QPath path = getQPath(qChange);
+    bool return_status = true;
+    rw::trajectory::QPath path = getQPath(q_change);
     for (const rw::math::Q& p : path)
     {
       ROS_INFO_STREAM("Ask to movePtp to '" << p << "'.");
@@ -189,25 +189,25 @@ class UrTest
       ret = sdsip_.movePtp(p);
       if (not ret)
       {
-        returnStatus = false;
+        return_status = false;
         ROS_ERROR_STREAM("The serial device didn't acknowledge the movePtp command.");
       }
     }
 
-    return returnStatus;
+    return return_status;
   }
 
-  bool doTestMoveServoQ(const double qChange)
+  bool doTestMoveServoQ(const double q_change)
   {
-    bool returnStatus = true;
-    rw::trajectory::QPath path = getQPath(qChange);
+    bool return_status = true;
+    rw::trajectory::QPath path = getQPath(q_change);
 
     ROS_ASSERT(path.size() == 2);
-    rw::math::Q startConfiguration = path.at(0);
-    rw::math::Q endConfiguration = path.at(1);
+    rw::math::Q start_configuration = path.at(0);
+    rw::math::Q end_configuration = path.at(1);
 
     // replace the path with an interpolated path
-    path = linearInterpolatedPath(startConfiguration, endConfiguration);
+    path = linearInterpolatedPath(start_configuration, end_configuration);
 
     for (const rw::math::Q& p : path)
     {
@@ -216,12 +216,12 @@ class UrTest
       ret = sdsip_.moveServoQ(p);
       if (not ret)
       {
-        returnStatus = false;
+        return_status = false;
         ROS_ERROR_STREAM("The serial device didn't acknowledge the moveServoQ command.");
       }
     }
 
-    return returnStatus;
+    return return_status;
   }
 
  protected:
