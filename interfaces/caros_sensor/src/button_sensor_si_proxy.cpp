@@ -1,27 +1,21 @@
-/**/
 #include <caros/button_sensor_si_proxy.h>
-
-#include <boost/foreach.hpp>
-#include <fstream>
 
 using namespace rw::common;
 using namespace std;
 using namespace caros;
 
-ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nhandle) :
-    _nodeHnd(nhandle)
+ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nhandle) : _nodeHnd(nhandle)
 {
 }
 
-ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) :
-    _nodeHnd(name)
+ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) : _nodeHnd(name)
 {
 }
 
 bool ButtonSensorSIProxy::configureProxy()
 {
-  _buttonSensorState = _nodeHnd.subscribe(_nodeHnd.getNamespace() + "/buttons", 1,
-                                           &ButtonSensorSIProxy::handleButtonSensorState, this);
+  _buttonSensorState =
+      _nodeHnd.subscribe(_nodeHnd.getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
   return true;
 }
 
@@ -37,15 +31,19 @@ void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::butto
 
   for (size_t i = 0; i < state.digital.size(); i++)
   {
-    ButtonData &pdata = _buttons[i];
+    ButtonData& pdata = _buttons[i];
     pdata.button = state.digital[i];
     pdata.id = state.digital_ids[i];
+    pdata.isAnalog = false;
+    pdata.stamp = _stamp;
   }
   for (size_t j = 0; j < state.analog.size(); j++)
   {
-    ButtonData &pdata = _buttons[state.digital.size() + j];
+    ButtonData& pdata = _buttons[state.digital.size() + j];
     pdata.button = state.analog[j];
     pdata.id = state.analog_ids[j];
+    pdata.isAnalog = true;
+    pdata.stamp = _stamp;
   }
 }
 
@@ -60,4 +58,3 @@ ros::Time ButtonSensorSIProxy::getTimeStamp()
   boost::mutex::scoped_lock lock(_mutex);
   return _stamp;
 }
-
