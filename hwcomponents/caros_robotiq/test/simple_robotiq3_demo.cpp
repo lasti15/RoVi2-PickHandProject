@@ -21,10 +21,9 @@ int main(int argc, char* argv[])
 
   const std::string node_stateTopicName = node_under_test_name + "/" + "caros_node/caros_node_state";
   bool is_running = false;
-  while (!is_running)
+  while (not is_running)
   {
-    boost::shared_ptr<const caros_common_msgs::caros_node_state> node_state_message;
-    node_state_message = ros::topic::waitForMessage<caros_common_msgs::caros_node_state>(node_stateTopicName);
+    auto node_state_message = ros::topic::waitForMessage<caros_common_msgs::caros_node_state>(node_stateTopicName);
     is_running = node_state_message->state == "RUNNING";
   }
 
