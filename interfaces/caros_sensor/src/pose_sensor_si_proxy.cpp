@@ -9,16 +9,12 @@ using namespace std;
 
 using namespace caros;
 
-PoseSensorSIProxy::PoseSensorSIProxy(const ros::NodeHandle& nhandle) :
-    node_hnd_(nhandle)
+PoseSensorSIProxy::PoseSensorSIProxy(const ros::NodeHandle& nhandle) : node_hnd_(nhandle)
 {
-
 }
 
-PoseSensorSIProxy::PoseSensorSIProxy(const std::string& devname) :
-    node_hnd_(devname)
+PoseSensorSIProxy::PoseSensorSIProxy(const std::string& devname) : node_hnd_(devname)
 {
-
 }
 
 PoseSensorSIProxy::~PoseSensorSIProxy()
@@ -27,8 +23,8 @@ PoseSensorSIProxy::~PoseSensorSIProxy()
 
 void PoseSensorSIProxy::configureProxy()
 {
-  _poseSensorState = node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1,
-                                         &PoseSensorSIProxy::handlePoseSensorState, this);
+  _poseSensorState =
+      node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
 }
 
 void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state)
@@ -38,7 +34,7 @@ void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sens
   _stamp = state.header.stamp;
   for (size_t i = 0; i < state.poses.size(); i++)
   {
-    PoseData &pdata = _poses[i];
+    PoseData& pdata = _poses[i];
     pdata.pose = caros::toRw(state.poses[i]);
     pdata.id = state.ids[i];
     pdata.quality = state.qualities[i];
@@ -58,4 +54,3 @@ ros::Time PoseSensorSIProxy::getTimeStamp()
   boost::mutex::scoped_lock lock(_mutex);
   return _stamp;
 }
-
