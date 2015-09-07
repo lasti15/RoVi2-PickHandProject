@@ -7,7 +7,7 @@
 #include <vector>
 #include <utility>
 
-#define BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE 5
+#define BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE 1
 
 namespace caros
 {

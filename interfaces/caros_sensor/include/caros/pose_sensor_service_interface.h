@@ -8,7 +8,7 @@
 
 #include <vector>
 
-#define POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE 5
+#define POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE 1
 
 namespace caros
 {
