@@ -3,11 +3,12 @@
 
 #include <geometry_msgs/WrenchStamped.h>
 
-#include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
+
+#include <memory>
 
 namespace caros
 {
@@ -20,7 +21,7 @@ class FTSensorSIProxy
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<FTSensorSIProxy> Ptr;
+  typedef std::shared_ptr<FTSensorSIProxy> Ptr;
 
   //! constructor
   FTSensorSIProxy(ros::NodeHandle nhandle);

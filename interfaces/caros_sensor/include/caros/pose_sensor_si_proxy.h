@@ -3,13 +3,13 @@
 
 #include <caros_sensor_msgs/pose_sensor_state.h>
 
-#include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
 
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
 
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -23,7 +23,7 @@ class PoseSensorSIProxy
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
+  typedef std::shared_ptr<PoseSensorSIProxy> Ptr;
 
   //! constructor
   PoseSensorSIProxy(const ros::NodeHandle& nhandle);

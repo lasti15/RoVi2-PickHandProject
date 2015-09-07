@@ -1,6 +1,4 @@
 #include <caros/button_sensor_si_proxy.h>
-
-using namespace rw::common;
 using namespace std;
 using namespace caros;
 

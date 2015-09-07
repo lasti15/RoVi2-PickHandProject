@@ -6,6 +6,7 @@
 
 #include <ros/ros.h>
 
+#include <memory>
 #include <vector>
 
 #define POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE 1
@@ -20,7 +21,7 @@ class PoseSensorServiceInterface
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<PoseSensorServiceInterface> Ptr;
+  typedef std::shared_ptr<PoseSensorServiceInterface> Ptr;
 
   //! constructor
   PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);

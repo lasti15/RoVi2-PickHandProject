@@ -3,7 +3,6 @@
 
 #include <caros/common_robwork.h>
 
-using namespace rw::common;
 using namespace rw::math;
 using namespace std;
 

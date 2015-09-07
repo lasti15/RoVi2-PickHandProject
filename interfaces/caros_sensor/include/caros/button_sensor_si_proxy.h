@@ -3,7 +3,7 @@
 
 #include <caros_sensor_msgs/button_sensor_state.h>
 
-#include <rw/common/Ptr.hpp>
+#include <memory>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
@@ -19,7 +19,7 @@ class ButtonSensorSIProxy
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<ButtonSensorSIProxy> Ptr;
+  typedef std::shared_ptr<ButtonSensorSIProxy> Ptr;
 
   //! constructor
   ButtonSensorSIProxy(ros::NodeHandle nhandle);
