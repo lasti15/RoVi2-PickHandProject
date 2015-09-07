@@ -4,11 +4,11 @@
 #include <geometry_msgs/WrenchStamped.h>
 
 #include <rw/math.hpp>
-#include <boost/thread.hpp>
 
 #include <ros/ros.h>
 
 #include <memory>
+#include <mutex>
 
 namespace caros
 {
@@ -45,7 +45,7 @@ class FTSensorSIProxy
   ros::Subscriber _ftState;
 
  private:
-  boost::mutex _mutex;
+  std::mutex _mutex;
 
   // state variables
   rw::math::Wrench6D<> _wrench;

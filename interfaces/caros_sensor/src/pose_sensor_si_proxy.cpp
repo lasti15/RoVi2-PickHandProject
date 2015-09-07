@@ -28,7 +28,7 @@ void PoseSensorSIProxy::configureProxy()
 
 void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state)
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   _poses.resize(state.poses.size());
   _stamp = state.header.stamp;
   for (size_t i = 0; i < state.poses.size(); i++)
@@ -44,12 +44,12 @@ void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sens
 
 std::vector<PoseSensorSIProxy::PoseData> PoseSensorSIProxy::getPoses()
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   return _poses;
 }
 
 ros::Time PoseSensorSIProxy::getTimeStamp()
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   return _stamp;
 }

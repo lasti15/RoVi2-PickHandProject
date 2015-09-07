@@ -20,19 +20,19 @@ FTSensorSIProxy::~FTSensorSIProxy()
 
 void FTSensorSIProxy::handleFTState(const geometry_msgs::WrenchStamped& state)
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   _wrench = caros::toRw(state.wrench);
   _pFTState = state;
 }
 
 rw::math::Wrench6D<> FTSensorSIProxy::getWrench()
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   return _wrench;
 }
 
 ros::Time FTSensorSIProxy::getTimeStamp()
 {
-  boost::mutex::scoped_lock lock(_mutex);
+  std::lock_guard<std::mutex> lock(_mutex);
   return _pFTState.header.stamp;
 }

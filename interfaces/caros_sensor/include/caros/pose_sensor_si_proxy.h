@@ -5,11 +5,10 @@
 
 #include <rw/math.hpp>
 
-#include <boost/thread.hpp>
-
 #include <ros/ros.h>
 
 #include <memory>
+#include <mutex>
 #include <vector>
 #include <string>
 
@@ -62,7 +61,7 @@ class PoseSensorSIProxy
   ros::Subscriber _poseSensorState;
 
  private:
-  boost::mutex _mutex;
+  std::mutex _mutex;
 
   // state variables
   std::vector<PoseData> _poses;

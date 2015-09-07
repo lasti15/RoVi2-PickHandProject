@@ -4,7 +4,7 @@
 #include <caros_sensor_msgs/button_sensor_state.h>
 
 #include <memory>
-#include <boost/thread.hpp>
+#include <mutex>
 
 #include <ros/ros.h>
 
@@ -57,7 +57,7 @@ class ButtonSensorSIProxy
   ros::Subscriber _buttonSensorState;
 
  private:
-  boost::mutex _mutex;
+  std::mutex _mutex;
 
   // state variables
   /* Notes:
