@@ -7,6 +7,8 @@
 
 #include <string>
 
+#define FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE 5
+
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
  */
