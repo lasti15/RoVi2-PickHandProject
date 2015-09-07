@@ -1,25 +1,27 @@
-/**/
 #ifndef CAROS_POSESENSORSIPROXY_HPP
 #define CAROS_POSESENSORSIPROXY_HPP
 
+#include <caros_sensor_msgs/pose_sensor_state.h>
+
 #include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
+
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
-#include <caros_sensor_msgs/pose_sensor_state.h>
+
+#include <vector>
+#include <string>
 
 namespace caros
 {
-
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a PoseSensorServiceInterface.
  */
 class PoseSensorSIProxy
 {
-
-public:
+ public:
   //! pointer type
   typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
 
@@ -48,25 +50,24 @@ public:
   //! get time stamp of current pose state
   ros::Time getTimeStamp();
 
-protected:
+ protected:
   void configureProxy();
-  
+
   void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
 
-protected:
+ protected:
   ros::NodeHandle node_hnd_;
 
   // states
   ros::Subscriber _poseSensorState;
 
-private:
+ private:
   boost::mutex _mutex;
 
   // state variables
   std::vector<PoseData> _poses;
   ros::Time _stamp;
 };
-
 }
 
 #endif

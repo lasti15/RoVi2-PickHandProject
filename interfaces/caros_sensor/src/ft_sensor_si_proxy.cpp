@@ -1,24 +1,15 @@
-/*
- * FTSensorSIProxy.cpp
- *
- *  Created on: 15/05/2013
- *      Author: thomas
- */
+#include <caros/ft_sensor_si_proxy.h>
 
 #include <caros/common_robwork.h>
 
-#include <caros/ft_sensor_si_proxy.h>
-
 using namespace caros;
 
-FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nhandle) :
-    _nodeHnd(nhandle)
+FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nhandle) : _nodeHnd(nhandle)
 {
   _ftState = _nodeHnd.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }
 
-FTSensorSIProxy::FTSensorSIProxy(const std::string& name) :
-    _nodeHnd(name)
+FTSensorSIProxy::FTSensorSIProxy(const std::string& name) : _nodeHnd(name)
 {
   _ftState = _nodeHnd.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }

@@ -1,4 +1,3 @@
-/**/
 #ifndef CAROS_FTSENSORSERVICEINTERFACE_HPP
 #define CAROS_FTSENSORSERVICEINTERFACE_HPP
 
@@ -6,12 +5,14 @@
 
 #include <ros/ros.h>
 
+#include <string>
+
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
  */
 class FTSensorServiceInterface
 {
-public:
+ public:
   //! pointer type
   typedef rw::common::Ptr<FTSensorServiceInterface> Ptr;
 
@@ -29,12 +30,11 @@ public:
   //! send the current F/T reading
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
-protected:
+ protected:
   ros::NodeHandle _nodeHnd;
 
-private:
+ private:
   ros::Publisher _wrenchDataPublisher;
-
 };
 
 #endif

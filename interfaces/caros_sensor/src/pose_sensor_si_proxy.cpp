@@ -1,9 +1,6 @@
 /**/
 #include <caros/pose_sensor_si_proxy.h>
 
-#include <fstream>
-#include <boost/foreach.hpp>
-
 #include <caros/common_robwork.h>
 
 using namespace rw::common;

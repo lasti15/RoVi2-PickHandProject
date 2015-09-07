@@ -1,4 +1,3 @@
-/**/
 #include <caros/ft_sensor_service_interface.h>
 
 #include <caros/common.h>
@@ -20,7 +19,7 @@ FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nh)
 void FTSensorServiceInterface::publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe)
 {
   geometry_msgs::WrenchStamped wdata;
-  
+
   wdata.header.frame_id = refframe;
   wdata.header.stamp = ros::Time::now();
 

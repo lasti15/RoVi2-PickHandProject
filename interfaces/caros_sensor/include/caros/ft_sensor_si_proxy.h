@@ -1,10 +1,3 @@
-/*
- * FTSensorSIProxy.hpp
- *
- *  Created on: 15/05/2013
- *      Author: thomas
- */
-
 #ifndef CAROS_FTSENSORSIPROXY_HPP
 #define CAROS_FTSENSORSIPROXY_HPP
 
@@ -18,7 +11,6 @@
 
 namespace caros
 {
-
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a FTSensorServiceInterface.
@@ -26,7 +18,7 @@ namespace caros
  */
 class FTSensorSIProxy
 {
-public:
+ public:
   //! pointer type
   typedef rw::common::Ptr<FTSensorSIProxy> Ptr;
 
@@ -45,23 +37,22 @@ public:
   //! get time stamp of current reading
   ros::Time getTimeStamp();
 
-protected:
+ protected:
   ros::NodeHandle _nodeHnd;
 
   // states
   ros::Subscriber _ftState;
 
-private:
+ private:
   boost::mutex _mutex;
 
   // state variables
   rw::math::Wrench6D<> _wrench;
 
   void handleFTState(const geometry_msgs::WrenchStamped& state);
-  
+
   geometry_msgs::WrenchStamped _pFTState;
 };
-
 }
 
 #endif
