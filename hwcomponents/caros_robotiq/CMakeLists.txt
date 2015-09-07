@@ -58,4 +58,12 @@ else()
     caros_common
     caros_control
   )
+  
+  ########################################################################
+  #### Testing
+  ########################################################################
+  if(CATKIN_ENABLE_TESTING)
+    add_executable(simple_caros_robotiq3_demo test/simple_robotiq3_demo.cpp)
+    target_link_libraries(simple_caros_robotiq3_demo ${catkin_LIBRARIES})
+  endif()
 endif()
