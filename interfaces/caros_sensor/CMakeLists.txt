@@ -57,10 +57,8 @@ add_library(${library_name}
   src/pose_sensor_si_proxy.cpp
   src/button_sensor_service_interface.cpp
   src/button_sensor_si_proxy.cpp
-  
-  src/FTSensorServiceInterface.cpp
-  src/FTSensorSIProxy.cpp
-  
+  src/ft_sensor_service_interface.cpp
+  src/ft_sensor_si_proxy.cpp
 )
 
 add_dependencies(${library_name}

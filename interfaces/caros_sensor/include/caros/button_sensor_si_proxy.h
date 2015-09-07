@@ -1,21 +1,15 @@
-/**/
 #ifndef CAROS_BUTTONSESORSIPROXY_H
 #define CAROS_BUTTONSESORSIPROXY_H
 
 #include <caros_sensor_msgs/button_sensor_state.h>
 
 #include <rw/common/Ptr.hpp>
-#include <rw/math.hpp>
-#include <rw/trajectory/Path.hpp>
 #include <boost/thread.hpp>
 
 #include <ros/ros.h>
 
-#include <queue>
-
 namespace caros
 {
-
 /**
  * @brief this class implements a cpp proxy to control and read data from
  * a ButtonSensorServiceInterface.
@@ -23,12 +17,12 @@ namespace caros
  */
 class ButtonSensorSIProxy
 {
-
-public:
+ public:
+  //! pointer type
   typedef rw::common::Ptr<ButtonSensorSIProxy> Ptr;
 
   //! constructor
-  ButtonSensorSIProxy(rw::common::Ptr<ros::NodeHandle> nhandle);
+  ButtonSensorSIProxy(ros::NodeHandle nhandle);
 
   //! constructor
   ButtonSensorSIProxy(const std::string& devname);
@@ -36,6 +30,7 @@ public:
   //! destructor
   virtual ~ButtonSensorSIProxy();
 
+  //! button data structure
   struct ButtonData
   {
     float button;
@@ -44,27 +39,33 @@ public:
     ros::Time stamp;
   };
 
+  //! get current button state
   std::vector<ButtonData> getButtons();
 
+  //! get time stamp of current button state
   ros::Time getTimeStamp();
 
-protected:
+ protected:
   bool configureProxy();
+
   void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
 
-protected:
-  rw::common::Ptr<ros::NodeHandle> _nodeHnd;
+ protected:
+  ros::NodeHandle _nodeHnd;
 
   // states
   ros::Subscriber _buttonSensorState;
 
-private:
+ private:
   boost::mutex _mutex;
 
   // state variables
+  /* Notes:
+   * std::vector could potentially, depending on the number of elements, be an ineffective container for looking up
+   * specific button IDs, since the list has to be traversed until the ID is found.
+   */
   std::vector<ButtonData> _buttons;
   ros::Time _stamp;
 };
-
 }
-#endif //end include guard
+#endif  // end include guard

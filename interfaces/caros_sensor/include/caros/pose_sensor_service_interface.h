@@ -2,30 +2,28 @@
 #ifndef CAROS_POSESENSORSERVICEINTERFACE_HPP
 #define CAROS_POSESENSORSERVICEINTERFACE_HPP
 
-#include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
 
 #include <ros/ros.h>
 
-#include <string>
+#include <vector>
 
 namespace caros
 {
-
 /**
  * @brief standard interface for pose sensor that can track a number of
  *  poses.
  */
 class PoseSensorServiceInterface
 {
-public:
-  //! smart pointer type
+ public:
+  //! pointer type
   typedef rw::common::Ptr<PoseSensorServiceInterface> Ptr;
 
   //! constructor
   PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
-protected:
+ protected:
   //! initialize ros interface
   bool configureInterface();
 
@@ -33,23 +31,18 @@ protected:
   bool cleanupInterface();
 
   //! publish poses read by sensor
-  void publishPoses(const std::vector<rw::math::Transform3D<> >& poses, const std::vector<int>& ids,
+  void publishPoses(const std::vector<rw::math::Transform3D<>>& poses, const std::vector<int>& ids,
                     const std::vector<float>& qualities);
 
-private:
-  PoseSensorServiceInterface()
-  {
-  }
-  ;
+ private:
+  PoseSensorServiceInterface(){};
 
-protected:
+ protected:
   ros::NodeHandle node_hnd_;
 
-private:
+ private:
   ros::Publisher pose_pub_;
-
 };
-
 }
 
-#endif //#ifndef SDHSERVICEINTERFACE_HPP
+#endif

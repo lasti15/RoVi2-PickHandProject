@@ -1,4 +1,3 @@
-/**/
 #include <caros/pose_sensor_service_interface.h>
 #include <caros_sensor_msgs/pose_sensor_state.h>
 
@@ -7,14 +6,13 @@
 using namespace rw::common;
 using namespace caros;
 
-PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& nodeHnd) :
-    node_hnd_(nodeHnd)
+PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& nodeHnd) : node_hnd_(nodeHnd)
 {
 }
 
 bool PoseSensorServiceInterface::configureInterface()
 {
-  pose_pub_ = node_hnd_.advertise < caros_sensor_msgs::pose_sensor_state > ("poses", 5);
+  pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::pose_sensor_state>("poses", 5);
   return true;
 }
 
@@ -24,7 +22,7 @@ bool PoseSensorServiceInterface::cleanupInterface()
   return true;
 }
 
-void PoseSensorServiceInterface::publishPoses(const std::vector<rw::math::Transform3D<> >& poses,
+void PoseSensorServiceInterface::publishPoses(const std::vector<rw::math::Transform3D<>>& poses,
                                               const std::vector<int>& ids, const std::vector<float>& qualities)
 {
   caros_sensor_msgs::pose_sensor_state pstate;
@@ -44,7 +42,6 @@ void PoseSensorServiceInterface::publishPoses(const std::vector<rw::math::Transf
       pstate.qualities[i] = i;
     else
       pstate.qualities[i] = qualities[i];
-
   }
 
   pose_pub_.publish(pstate);
