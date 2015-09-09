@@ -1,62 +1,53 @@
-
 \mainpage
-\htmlinclude manifest.html
 
-[TOC]
+caros_robotiq3 is a ROS node for controlling a physical Robotiq3 hand. A few interfaces are available for controlling the hand.
 
-This component enables the stereo calibration of kinect cameras using the standard 
-stereo calibration component from ros (camera__calibration).
+# Interfaces - how to use this node #
 
-Since the kinect cannot stream both at the same time this component will buffer one stream
-and forward the other stream. It will also allow one to switch between which stream is forwarded 
-and which stream is buffered. Finally, it allows one to grab a single image from the buffered 
-stream which will be synchronized with the forwarded stream. 
+## Gripper Service Interface ##
+The @ref caros::GripperServiceInterface interface is fully supported by this node.
 
-This firstly enables one to use the standard ros stereo calibration gui but also allow
-one to more clearly control which images to use in the stereo calibration. 
+The hand has four joints. Therefore all service calls expecting input of type Q need to be provided four dimensional Qs. All Q values should be between 0 and 255 (see Robotiq3 datasheet).
 
+# Requirements #
+RobWorkHardware with the *robotiq* component enabled, is required and can be obtained from http://www.robwork.dk
 
-# Generic kinect calibration process # 
+# Launching the node #
+The CAROS UniversalRobot node can be launched by using the following:
 
-First use openni to start the kinect camera drivers 
+    roslaunch caros_robotiq caros_robotiq3.launch
 
-	roslaunch openni__launch openni.launch
+The launch script is using the default ip and port used in the marvin setup. This can be changed in the hwcomponents/caros_robotiq/launch/caros_robotiq3_param.xml file.
 
-This should initialize the camera and start publishing images on /camera/rgb and /camera/ir.
+## Parameters ##
+The following parameters are supported:
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| ip | IP of the hand to control | 192.168.100.21 |
+| port | The modbus communication port used | 502 |
 
-Next start the kinect__calibration component.
+# Small demo(s) #
+To quickly and easily verify that the communication with the hand is working, there is one simple demo that can be run. The expected behaviour should be both observed and verified by the user.
 
-	rosrun kinect__calibration kinect__stereo__camera
+## Available demo(s) ##
+| Demo | Expected behaviour | Notes |
+| ---- | ------------------ | ----- |
+| simple_demo | Initiallising the hand and moving the fingers to a position. | None |
 
-This component will start publishing two new image streams /camera/right and /camera/left, where
-right is the rgb camera and ir is the left camera. The terminal in which this component
-runs will be used for controlling the image streams.
+## Launching the demo(s) ##
+In order to make ROS properly find the demos, then the <your_catkin_workspace>/devel/setup.bash file should be sourced. If standing in your catkin workspace then it's as simple as (if you are using BASH or similar shell - default on Ubuntu):
 
-Finally start the standard ros stereo calibration component and remember to edit the --size 
-and --square attributes to fit the physical attributes of your calibration plate. See 
-[ROS stereo calibration](http://www.ros.org/wiki/camera_calibration/Tutorials/StereoCalibration) for 
-more details.     
+    source devel/setup.bash
 
-	rosrun camera__calibration cameracalibrator.py --size 4x6 --square 0.0518 
-		   right:=/camera/right/image left:=/camera/left/image right__camera:=/camera/right left__camera:=/camera/left 
+To launch the demos:
 
-Now the stereo camera view should startup and you should see something like:
+    roslaunch caros_universalrobot <demo name>.test
 
-![RGB view of stereo calibration](images/first-view-stereo.png)
+For example to launch the simple_demo:
 
-Now go to the terminal of kinect__calibration and press s. This should switch the streaming from 
-RGB to IR as in the following image:
+    roslaunch caros_robotiq simple_demo.test
 
-![IR view of stereo calibration](images/second-view-stereo.png)
+### Using debug verbosity ###
+To enable debug verbosity and thus hopefully make it easier to diagnose issues, then a rosconsole debug configuration file has to be present (see https://gitlab.com/caro-sdu/caros/wikis/Tests#example-rosconsole_debug-conf):
 
-Now if the calibration board is detected in both image streams press 'g'. This will publish the buffered image 
-for roughly 1 second which is enough for the stereo calibration to add a sample. If a sample was added an output 
-similar to the following should be displayed in the camera__calibration terminal 
-	
-	...
-	*** Added sample 1, p_x = 0.383, p_y = 0.549, p_size = 0.165, skew = 0.008
-	...
- 
-
-# Marvin kinect calibration process #
-
+    ROSCONSOLE_CONFIG_FILE=/path/to/rosconsole_debug.conf roslaunch caros_robotiq simple_demo.test
