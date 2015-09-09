@@ -3,8 +3,10 @@
 
 using namespace caros;
 
-ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle) : nodehandle_(nodehandle)
+ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle)
+    : nodehandle_(nodehandle, BUTTON_SENSOR_SERVICE_INTERFACE_SUB_NAMESPACE)
 {
+  /* Nothing specific to do */
 }
 
 ButtonSensorServiceInterface::~ButtonSensorServiceInterface()
@@ -14,8 +16,32 @@ ButtonSensorServiceInterface::~ButtonSensorServiceInterface()
 
 bool ButtonSensorServiceInterface::configureInterface()
 {
-  button_pub_ = nodehandle_.advertise<caros_sensor_msgs::ButtonSensorState>("buttons",
+  if (button_publisher_)
+  {
+    ROS_WARN_STREAM(
+        "Reinitialising one or more ButtonSensorServiceInterface services or publishers. If this is not fully intended "
+        "then this should be considered a bug!");
+  }
+
+  button_publisher_ = nodehandle_.advertise<caros_sensor_msgs::ButtonSensorState>("buttons",
                                                                             BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE);
+  ROS_ERROR_STREAM_COND(not button_publisher_, "The ButtonSensor buttons publisher is empty!");
+
+  /* Verify that the various ROS services have actually been created properly */
+  if (button_publisher_)
+  {
+    /* Everything seems to be properly initialised */
+    ROS_DEBUG_STREAM(
+        "All ButtonSensorServiceInterface publishers and services appear to have been properly initialised");
+  }
+  else
+  {
+    ROS_ERROR_STREAM(
+        "The ButtonSensor service could not be properly initialised - one or more ros services or publishers failed to "
+        "be properly initialised.");
+    return false;
+  }
+
   return true;
 }
 
@@ -40,5 +66,5 @@ void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<st
     button_state.analog[i] = analog_buttons[i].second;
   }
 
-  button_pub_.publish(button_state);
+  button_publisher_.publish(button_state);
 }

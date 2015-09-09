@@ -10,6 +10,7 @@
 #include <vector>
 
 #define POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE 1
+#define POSE_SENSOR_SERVICE_INTERFACE_SUB_NAMESPACE "caros_pose_sensor_service_interface"
 
 namespace caros
 {
@@ -37,11 +38,8 @@ class PoseSensorServiceInterface
  private:
   PoseSensorServiceInterface(){};
 
- protected:
   ros::NodeHandle nodehandle_;
-
- private:
-  ros::Publisher pose_pub_;
+  ros::Publisher pose_publisher_;
 };
 }
 

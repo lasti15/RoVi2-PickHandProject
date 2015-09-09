@@ -9,7 +9,10 @@
 #include <string>
 
 #define FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE 1
+#define FT_SENSOR_SERVICE_INTERFACE_SUB_NAMESPACE "caros_ft_sensor_service_interface"
 
+namespace caros
+{
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
  */
@@ -20,24 +23,26 @@ class FTSensorServiceInterface
   typedef std::shared_ptr<FTSensorServiceInterface> Ptr;
 
   //! constructor
-  FTSensorServiceInterface(const std::string& service_name);
-
-  //! constructor
-  FTSensorServiceInterface(ros::NodeHandle nh);
+  FTSensorServiceInterface(ros::NodeHandle nodehandle);
 
   //! destructor
   virtual ~FTSensorServiceInterface()
   {
   }
 
+ protected:
+  //! initialize ros interface
+  bool configureInterface();
+
   //! send the current F/T reading
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
- protected:
-  ros::NodeHandle nodehandle_;
-
  private:
+  FTSensorServiceInterface(){};
+
+  ros::NodeHandle nodehandle_;
   ros::Publisher wrench_data_publisher_;
 };
+}
 
 #endif

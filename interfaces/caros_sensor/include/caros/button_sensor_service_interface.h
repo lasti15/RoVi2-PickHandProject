@@ -8,6 +8,7 @@
 #include <utility>
 
 #define BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE 1
+#define BUTTON_SENSOR_SERVICE_INTERFACE_SUB_NAMESPACE "caros_button_sensor_service_interface"
 
 namespace caros
 {
@@ -18,26 +19,23 @@ class ButtonSensorServiceInterface
 {
  public:
   //! constructor
-  ButtonSensorServiceInterface(const std::string& service_name);
-
-  //! constructor
   ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
   virtual ~ButtonSensorServiceInterface();
 
  protected:
-  //! setup the node's output services
+  //! initialize ros interface
   bool configureInterface();
 
   //! publish button states read by sensor
   void publishButtons(const std::vector<std::pair<std::string, bool>>& digital_buttons,
                       const std::vector<std::pair<std::string, bool>>& analog_buttons);
 
- protected:
-  ros::NodeHandle nodehandle_;
-
  private:
-  ros::Publisher button_pub_;
+  ButtonSensorServiceInterface(){};
+
+  ros::NodeHandle nodehandle_;
+  ros::Publisher button_publisher_;
 };
 }
 
