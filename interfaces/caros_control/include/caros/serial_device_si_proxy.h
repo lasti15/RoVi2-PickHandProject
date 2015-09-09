@@ -2,7 +2,7 @@
 #define CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
 
 #include <caros/caros_service_client.h>
-#include <caros_control_msgs/robot_state.h>
+#include <caros_control_msgs/RobotState.h>
 
 #include <rw/math.hpp>
 
@@ -28,10 +28,10 @@ class SerialDeviceSIProxy
    * @brief Constructor
    * @param[in] nodehandle
    * @param[in] devname The name of the CAROS serialdevice node
-   * @param[in] usePersistentConnections Define usage of persistent connections
+   * @param[in] use_persistent_connections Define usage of persistent connections
    */
   SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                      const bool usePersistentConnections = true);
+                      const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~SerialDeviceSIProxy();
@@ -43,9 +43,9 @@ class SerialDeviceSIProxy
    * @param[in] blend
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool moveLin(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
 
@@ -56,9 +56,9 @@ class SerialDeviceSIProxy
    * @param[in] blend
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool movePtp(const rw::math::Q& target, const float speed = 100.0f, const float blend = 0.0f);
 
@@ -69,9 +69,9 @@ class SerialDeviceSIProxy
    * @param[in] blend
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool movePtpT(const rw::math::Transform3D<>& target, const float speed = 100.0f, const float blend = 0.0f);
 
@@ -80,9 +80,9 @@ class SerialDeviceSIProxy
    * @param[in] target The joint velocities
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool moveVelQ(const rw::math::Q& target);
 
@@ -91,9 +91,9 @@ class SerialDeviceSIProxy
    * @param[in] target The velocity screw.
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool moveVelT(const rw::math::VelocityScrew6D<>& target);
 
@@ -103,9 +103,9 @@ class SerialDeviceSIProxy
    * @param[in] speed The movement speed (a value between 0 and 100 is expected)
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   /* There is no blend parameter, as it is irrelevent when doing servoing. */
   bool moveServoQ(const rw::math::Q& target, const float speed = 100.0f);
@@ -116,36 +116,36 @@ class SerialDeviceSIProxy
    * @param[in] speed The movement speed (a value between 0 and 100 is expected)
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   /* There is no blend parameter, as it is irrelevent when doing servoing. */
   bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100.0f);
 
   /**
    * @brief move robot with a hybrid position/force control
-   * @param[in] posTarget the target pose configuration
+   * @param[in] pos_target the target pose configuration
    * @param[in] offset offset
-   * @param[in] wrenchTarget wrench
-   * @param[in] controlGain Control gains for the force control. 0 means 100% position control, while values != 0 means
+   * @param[in] wrench_target wrench
+   * @param[in] control_gain Control gains for the force control. 0 means 100% position control, while values != 0 means
    *force control with the numerical value.
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
-  bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
-                 const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain);
+  bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
+                 const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain);
 
   /**
    * @brief hard stop the robot
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool stop();
 
@@ -153,9 +153,9 @@ class SerialDeviceSIProxy
    * @brief pause the robot, should be able to continue trajectory
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool pause();
 
@@ -164,9 +164,9 @@ class SerialDeviceSIProxy
    * @param[in] enable a value of true enables safe mode, and false disables it
    *
    * @returns a boolean indicating if the serial device accepted the command
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the serial device.
+   * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool setSafeModeEnabled(const bool enable);
 
@@ -217,29 +217,29 @@ class SerialDeviceSIProxy
  protected:
   ros::NodeHandle nodehandle_;
 
-  bool usePersistentConnections_;
-  std::string rosNamespace_;
+  bool use_persistent_connections_;
+  std::string ros_namespace_;
 
   // services
-  caros::carosServiceClient srvMoveLinFc_;
-  caros::carosServiceClient srvMoveLin_;
-  caros::carosServiceClient srvMovePtp_;
-  caros::carosServiceClient srvMovePtpT_;
-  caros::carosServiceClient srvMoveServoQ_;
-  caros::carosServiceClient srvMoveServoT_;
-  caros::carosServiceClient srvMoveVelQ_;
-  caros::carosServiceClient srvMoveVelT_;
+  caros::CarosServiceClient srv_move_lin_fc_;
+  caros::CarosServiceClient srv_move_lin_;
+  caros::CarosServiceClient srv_move_ptp_;
+  caros::CarosServiceClient srv_move_ptp_t_;
+  caros::CarosServiceClient srv_move_servo_q_;
+  caros::CarosServiceClient srv_move_servo_t_;
+  caros::CarosServiceClient srv_move_vel_q_;
+  caros::CarosServiceClient srv_move_vel_t_;
 
-  caros::carosServiceClient srvPause_;
-  caros::carosServiceClient srvStart_;
-  caros::carosServiceClient srvStop_;
+  caros::CarosServiceClient srv_pause_;
+  caros::CarosServiceClient srv_start_;
+  caros::CarosServiceClient srv_stop_;
 
-  caros::carosServiceClient srvSetSafeModeEnabled_;
+  caros::CarosServiceClient srv_set_safe_mode_enabled_;
 
   // states
-  void handleRobotState(const caros_control_msgs::robot_state& state);
-  ros::Subscriber subRobotState_;
-  caros_control_msgs::robot_state pRobotState_;
+  void handleRobotState(const caros_control_msgs::RobotState& state);
+  ros::Subscriber sub_robot_state_;
+  caros_control_msgs::RobotState robot_state_;
 };
 }
 

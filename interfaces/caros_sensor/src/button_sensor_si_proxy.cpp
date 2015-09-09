@@ -7,8 +7,8 @@ ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::
                                          const bool use_persistent_connections)
     : nodehandle_(nodehandle)
 {
-  button_sensor_state_sub_ =
-      nodehandle_.subscribe(nodehandle_.getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
+  button_sensor_state_sub_ = nodehandle_.subscribe(nodehandle_.getNamespace() + "/buttons", 1,
+                                                   &ButtonSensorSIProxy::handleButtonSensorState, this);
 }
 
 ButtonSensorSIProxy::~ButtonSensorSIProxy()

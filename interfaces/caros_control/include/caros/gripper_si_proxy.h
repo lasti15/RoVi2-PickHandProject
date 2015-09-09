@@ -2,7 +2,7 @@
 #define CAROS_CONTROL_GRIPPER_SI_PROXY_H
 
 #include <caros/caros_service_client.h>
-#include <caros_control_msgs/gripper_state.h>
+#include <caros_control_msgs/GripperState.h>
 
 #include <rw/math/Q.hpp>
 
@@ -24,7 +24,7 @@ class GripperSIProxy
    * @param[in] devname The name of the CAROS gripper node
    * @param[in] usePersistentConnections Define usage of persistent connections
    */
-  GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
+  GripperSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool use_persistent_connections = true);
 
   //! Destructor
   virtual ~GripperSIProxy();
@@ -33,9 +33,9 @@ class GripperSIProxy
    * @brief Move gripper to configuration
    * @param[in] q The target configuration
    * @returns a boolean indicating if the gripper accepted the command.
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    * gripper is not fully working, or the gripper has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the gripper.
+   * @throws BadServiceCall when an error happened while communicating with the gripper.
    */
   bool moveQ(const rw::math::Q& q);
 
@@ -43,9 +43,9 @@ class GripperSIProxy
    * @brief Grasp with the given configuration
    * @param[in] q The target configuration to use for the grasp
    * @returns a boolean indicating if the gripper accepted the command.
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    *gripper is not fully working, or the gripper has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the gripper.
+   * @throws BadServiceCall when an error happened while communicating with the gripper.
    */
   bool gripQ(const rw::math::Q& q);
 
@@ -53,9 +53,9 @@ class GripperSIProxy
    * @brief Set the force configuration for the gripper
    * @param[in] q The force configuration
    * @returns a boolean indicating if the gripper successfully completed the command.
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    * gripper is not fully working, or the gripper has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the gripper.
+   * @throws BadServiceCall when an error happened while communicating with the gripper.
    */
   bool setForceQ(const rw::math::Q& q);
 
@@ -63,18 +63,18 @@ class GripperSIProxy
    * @brief Set the velocity configuration for the gripper
    * @param[in] q The velocity configuration
    * @returns a boolean indicating if the gripper successfully completed the command.
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    * gripper is not fully working, or the gripper has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the gripper.
+   * @throws BadServiceCall when an error happened while communicating with the gripper.
    */
   bool setVelocityQ(const rw::math::Q& q);
 
   /**
    * @brief Stop the gripper's movement(s)
    * @returns a boolean indicating if the gripper accepted the command.
-   * @throws unavailableService when the command is currently unavailable. This indicates that the connection to the
+   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
    * gripper is not fully working, or the gripper has not announced this service yet.
-   * @throws badServiceCall when an error happened while communicating with the gripper.
+   * @throws BadServiceCall when an error happened while communicating with the gripper.
    */
   bool stopMovement();
 
@@ -114,22 +114,22 @@ class GripperSIProxy
 
  protected:
   ros::NodeHandle nodehandle_;
-  bool usePersistentConnections_;
-  std::string rosNamespace_;
+  bool use_persistent_connections_;
+  std::string ros_namespace_;
 
   // services
-  caros::carosServiceClient srvMoveQ_;
-  caros::carosServiceClient srvGripQ_;
-  caros::carosServiceClient srvSetForceQ_;
-  caros::carosServiceClient srvSetVelocityQ_;
-  caros::carosServiceClient srvStopMovement_;
+  caros::CarosServiceClient srv_move_q_;
+  caros::CarosServiceClient srv_grip_q_;
+  caros::CarosServiceClient srv_set_force_q_;
+  caros::CarosServiceClient srv_set_velocity_q_;
+  caros::CarosServiceClient srv_stop_movement_;
 
   // states
-  void handleGripperState(const caros_control_msgs::gripper_state& state);
-  ros::Subscriber subGripperState_;
+  void handleGripperState(const caros_control_msgs::GripperState& state);
+  ros::Subscriber sub_gripper_state_;
   // pSV_ is "protectStateVariable", but removed synchronisation until a proper threading mechanism is being
   // implemented within the SIProxy.
-  caros_control_msgs::gripper_state pSV_gripperState_;
+  caros_control_msgs::GripperState psv_gripper_state_;
 };
 }
 #endif /* #ifndef */

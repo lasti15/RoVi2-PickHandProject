@@ -3,9 +3,9 @@
 #include <rw/math.hpp>
 #include <rw/loaders/WorkCellFactory.hpp>
 
-#include <caros_common_msgs/q.h>
-#include <caros_common_robwork_msgs/get_rw_state.h>
-#include <caros_common_robwork_msgs/rw_state.h>
+#include <caros_common_msgs/Q.h>
+#include <caros_common_robwork_msgs/GetRwState.h>
+#include <caros_common_robwork_msgs/RwState.h>
 
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/Transform.h>
@@ -26,77 +26,77 @@ namespace caros
 /************************************************************************
  * State
  ************************************************************************/
-caros_common_robwork_msgs::rw_state toRos(const rw::kinematics::State& state)
+caros_common_robwork_msgs::RwState toRos(const rw::kinematics::State& state)
 {
-  ROS_DEBUG_STREAM("RobWork state to ROS rw_state -begin-");
-  caros_common_robwork_msgs::rw_state res;
+  ROS_DEBUG_STREAM("RobWork state to ROS RwState -begin-");
+  caros_common_robwork_msgs::RwState res;
   /* Preallocate the size */
-  auto stateDataSize = state.getStateStructure()->getStateData().size();
-  ROS_DEBUG_STREAM("stateDataSize: " << stateDataSize);
-  res.state_data.reserve(stateDataSize);
+  auto state_data_size = state.getStateStructure()->getStateData().size();
+  ROS_DEBUG_STREAM("state_data_size: " << state_data_size);
+  res.state_data.reserve(state_data_size);
 
   for (const auto& data : state.getStateStructure()->getStateData())
   {
-    caros_common_robwork_msgs::rw_state_data resData;
-    resData.name = data->getName();
-    resData.size =
+    caros_common_robwork_msgs::RwStateData res_data;
+    res_data.name = data->getName();
+    res_data.size =
         data->size() * sizeof(double); /* This hardcoded sizeof should be provided by the 'data->' object, as the type
                                           used for storing the state data is highly implementation specific */
-    ROS_DEBUG_STREAM("resData name: " << resData.name);
-    ROS_DEBUG_STREAM("resData size: " << resData.size << " where data->size = " << data->size()
-                                      << " and sizeof(double) = " << sizeof(double));
+    ROS_DEBUG_STREAM("res_data name: " << res_data.name);
+    ROS_DEBUG_STREAM("res_data size: " << res_data.size << " where data->size = " << data->size()
+                                       << " and sizeof(double) = " << sizeof(double));
     /* Preallocate the size */
-    resData.data.reserve(resData.size);
+    res_data.data.reserve(res_data.size);
 
-    for (std::size_t index = 0; index < resData.size; ++index)
+    for (std::size_t index = 0; index < res_data.size; ++index)
     {
       /* Converting to uint8_t because the data in the state should just be considered a memory space and not
        * necessarily consist of doubles, as it could as well be booleans and other sort of types */
-      std::uint8_t binaryData = reinterpret_cast<const std::uint8_t*>(data->getData(state))[index];
-      ROS_DEBUG_STREAM("binaryData[" << index << "] = " << std::hex << std::setw(2)
-                                     << static_cast<std::uint32_t>(binaryData));
-      resData.data.push_back(binaryData);
+      std::uint8_t binary_data = reinterpret_cast<const std::uint8_t*>(data->getData(state))[index];
+      ROS_DEBUG_STREAM("binary_data[" << index << "] = " << std::hex << std::setw(2)
+                                      << static_cast<std::uint32_t>(binary_data));
+      res_data.data.push_back(binary_data);
     }
-    res.state_data.push_back(resData);
+    res.state_data.push_back(res_data);
   }
 
-  ROS_DEBUG_STREAM("RobWork state to ROS rw_state -end-");
+  ROS_DEBUG_STREAM("RobWork state to ROS RwState -end-");
   return res;
 }
 
-void toRw(const caros_common_robwork_msgs::rw_state& stateRos, rw::kinematics::State& state)
+void toRw(const caros_common_robwork_msgs::RwState& state_ros, rw::kinematics::State& state)
 {
-  ROS_DEBUG_STREAM("ROS rw_state to RobWork state -begin-");
-  for (const auto& stateRosData : stateRos.state_data)
+  ROS_DEBUG_STREAM("ROS RwState to RobWork state -begin-");
+  for (const auto& state_ros_data : state_ros.state_data)
   {
-    auto data = state.getStateStructure()->findData(stateRosData.name);
-    if ((data->size() * sizeof(double)) == stateRosData.data.size())
+    auto data = state.getStateStructure()->findData(state_ros_data.name);
+    if ((data->size() * sizeof(double)) == state_ros_data.data.size())
     {
-      ROS_DEBUG_STREAM("data name: " << stateRosData.name);
-      ROS_DEBUG_STREAM("data size: " << stateRosData.data.size());
-      // Place the stateRosData.data in a continuous memory space
-      std::uint8_t rawData[stateRosData.data.size()];
-      for (std::size_t index = 0; index < stateRosData.data.size(); ++index)
+      ROS_DEBUG_STREAM("data name: " << state_ros_data.name);
+      ROS_DEBUG_STREAM("data size: " << state_ros_data.data.size());
+      // Place the state_ros_data.data in a continuous memory space
+      std::uint8_t raw_data[state_ros_data.data.size()];
+      for (std::size_t index = 0; index < state_ros_data.data.size(); ++index)
       {
-        rawData[index] = stateRosData.data.at(index);
-        ROS_DEBUG_STREAM("rawData[" << index << "] = " << std::hex << std::setw(2)
-                                    << static_cast<std::uint32_t>(rawData[index]));
+        raw_data[index] = state_ros_data.data.at(index);
+        ROS_DEBUG_STREAM("raw_data[" << index << "] = " << std::hex << std::setw(2)
+                                     << static_cast<std::uint32_t>(raw_data[index]));
       }
-      data->setData(state, reinterpret_cast<const double*>(rawData));
+      data->setData(state, reinterpret_cast<const double*>(raw_data));
     }
     else
     {
       ROS_ERROR_STREAM(
           "Mismatch in data (i.e. payload) lengths between current state and the serialised state from ROS: "
           "ros_state_name="
-          << stateRosData.name << " ros_state_size=" << stateRosData.data.size() * sizeof(double)
+          << state_ros_data.name << " ros_state_size=" << state_ros_data.data.size() * sizeof(double)
           << " current_state_size=" << data->size());
     }
   }
-  ROS_DEBUG_STREAM("ROS rw_state to RobWork state -end-");
+  ROS_DEBUG_STREAM("ROS RwState to RobWork state -end-");
 }
 
-rw::kinematics::State toRw(const caros_common_robwork_msgs::rw_state& state_ros, const rw::models::WorkCell::Ptr wc)
+rw::kinematics::State toRw(const caros_common_robwork_msgs::RwState& state_ros, const rw::models::WorkCell::Ptr wc)
 {
   rw::kinematics::State state = wc->getDefaultState();
 
@@ -108,7 +108,7 @@ rw::kinematics::State toRw(const caros_common_robwork_msgs::rw_state& state_ros,
 /************************************************************************
  * Q
  ************************************************************************/
-rw::math::Q toRw(const caros_common_msgs::q& q)
+rw::math::Q toRw(const caros_common_msgs::Q& q)
 {
   rw::math::Q res(q.data.size());
   for (std::size_t i = 0; i < q.data.size(); ++i)
@@ -118,9 +118,9 @@ rw::math::Q toRw(const caros_common_msgs::q& q)
   return res;
 }
 
-caros_common_msgs::q toRos(const rw::math::Q& q)
+caros_common_msgs::Q toRos(const rw::math::Q& q)
 {
-  caros_common_msgs::q res;
+  caros_common_msgs::Q res;
   res.data.resize(q.size());
   for (std::size_t i = 0; i < q.size(); ++i)
   {
@@ -269,23 +269,23 @@ rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname)
   if (wc == NULL)
   {
     ros::NodeHandle node("~");
-    std::string workcellFile;
-    bool paramFound;
-    paramFound = node.getParam(paramname, workcellFile);
-    if (not paramFound)
+    std::string workcell_file;
+    bool found_param;
+    found_param = node.getParam(paramname, workcell_file);
+    if (not found_param)
     {
       ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
       return NULL;
     }
-    else if (workcellFile.empty())
+    else if (workcell_file.empty())
     {
       ROS_ERROR_STREAM("The value of the parameter is empty!");
       return NULL;
     }
-    ROS_DEBUG_STREAM("loading file: " << workcellFile);
+    ROS_DEBUG_STREAM("loading file: " << workcell_file);
     try
     {
-      wc = rw::loaders::WorkCellFactory::load(workcellFile);
+      wc = rw::loaders::WorkCellFactory::load(workcell_file);
     }
     catch (const std::exception& exp)
     {
@@ -309,9 +309,9 @@ rw::common::Ptr<rw::kinematics::State> getState()
 
   rw::models::WorkCell::Ptr wc = getWorkCell();
 
-  ros::ServiceClient global = node.serviceClient<caros_common_robwork_msgs::get_rw_state>("/caros/get_workcell_state");
+  ros::ServiceClient global = node.serviceClient<caros_common_robwork_msgs::GetRwState>("/caros/get_workcell_state");
 
-  caros_common_robwork_msgs::get_rw_state service;
+  caros_common_robwork_msgs::GetRwState service;
 
   global.call(service);
 

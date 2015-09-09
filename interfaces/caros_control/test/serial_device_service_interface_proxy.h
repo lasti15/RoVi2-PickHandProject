@@ -16,9 +16,9 @@
 
 namespace
 {
-typedef std::vector<std::tuple<std::function<bool(caros::SerialDeviceSIProxy &)>, const std::string>> services_t;
+typedef std::vector<std::tuple<std::function<bool(caros::SerialDeviceSIProxy &)>, const std::string>> Services_t;
 
-const services_t servicesToTest = {
+const Services_t services_to_test = {
     {std::make_tuple(
         std::bind(&caros::SerialDeviceSIProxy::moveLin, std::placeholders::_1, rw::math::Transform3D<>(), 0, 0),
         "virtual bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t&)")},

@@ -64,7 +64,7 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
  protected:
   // hooks implemented from CarosNodeServiceInterface base class
   bool activateHook();
-  bool recoverHook(const std::string& errorMsg, const int64_t errorCode);
+  bool recoverHook(const std::string& error_msg, const int64_t error_code);
 
   void runLoopHook();
   void errorLoopHook();
@@ -79,29 +79,29 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   bool supportedQSize(const rw::math::Q& q);
 
  private:
-  ros::NodeHandle nodeHandle_;
+  ros::NodeHandle node_handle_;
 
   enum SDH_STATE
   {
     WAIT,
     MOVE_WAIT
   };
-  SDH_STATE currentState_, nextState_;
+  SDH_STATE current_state_, next_state_;
 
-  rw::common::Timer moveStartTimer_, velUpdateTimer_;
-  rw::math::Q moveQ_, velQ_, currentQ_, lastQ_;
+  rw::common::Timer move_start_timer_, vel_update_timer_;
+  rw::math::Q move_q_, vel_q_, current_q_, last_q_;
 
   rwhw::SDHDriver* sdh_;
 
   /* Variables that are to be fetched from a ROS parameter server */
-  std::string interfaceType_;
-  std::string rs232Device_;
-  int rs232Port_;
-  int rs232BaudRate_;
-  double rs232Timeout_;
-  std::string canDevice_;
-  int canBaudRate_;
-  double canTimeout_;
+  std::string interface_type_;
+  std::string rs232_device_;
+  int rs232_port_;
+  int rs232_baudrate_;
+  double rs232_timeout_;
+  std::string can_device_;
+  int can_baudrate_;
+  double can_timeout_;
 };
 
 }  // end namespace

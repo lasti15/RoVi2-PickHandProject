@@ -17,9 +17,9 @@
 namespace
 {
 // Container type to hold the services that should be tested
-typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy &)>, const std::string>> services_t;
+typedef std::list<std::tuple<std::function<bool(caros::GripperSIProxy &)>, const std::string>> Services_t;
 
-const services_t servicesToTest = {
+const Services_t services_to_test = {
     {std::make_tuple(std::bind(&caros::GripperSIProxy::moveQ, std::placeholders::_1, rw::math::Q()),
                      "virtual bool GripperServiceInterfaceDummy::moveQ(const rw::math::Q&)")},
     {std::make_tuple(std::bind(&caros::GripperSIProxy::gripQ, std::placeholders::_1, rw::math::Q()),
@@ -35,4 +35,4 @@ typedef GripperServiceInterfaceDummy D_t;
 typedef caros::GripperSIProxy P_t;
 }  // end namespace
 
-#endif // include guard
+#endif  // include guard

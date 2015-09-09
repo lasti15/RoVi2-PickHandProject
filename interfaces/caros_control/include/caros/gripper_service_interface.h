@@ -5,11 +5,11 @@
 
 #include <ros/ros.h>
 
-#include <caros_control_msgs/gripper_move_q.h>
-#include <caros_control_msgs/gripper_grip_q.h>
-#include <caros_control_msgs/gripper_set_force_q.h>
-#include <caros_control_msgs/gripper_set_velocity_q.h>
-#include <caros_control_msgs/gripper_stop_movement.h>
+#include <caros_control_msgs/GripperMoveQ.h>
+#include <caros_control_msgs/GripperGripQ.h>
+#include <caros_control_msgs/GripperSetForceQ.h>
+#include <caros_control_msgs/GripperSetVelocityQ.h>
+#include <caros_control_msgs/GripperStopMovement.h>
 
 #include <string>
 
@@ -89,14 +89,14 @@ class GripperServiceInterface
    * @brief publish the state of the gripper. Uses GripperState messages
    * @param[in] q joint configuration
    * @param[in] dq joint velocity
-   * @param[in] jointforce joint force
-   * @param[in] isMoving is moving
-   * @param[in] isBlocked is blocked
-   * @param[in] isStopped is stopped
-   * @param[in] isEstopped is emergency stopped
+   * @param[in] joint_force joint force
+   * @param[in] is_moving is moving
+   * @param[in] is_blocked is blocked
+   * @param[in] is_stopped is stopped
+   * @param[in] is_e_stopped is emergency stopped
    */
-  void publishState(const rw::math::Q& q, const rw::math::Q& dq, const rw::math::Q& jointforce, bool isMoving,
-                    bool isBlocked, bool isStopped, bool isEstopped);
+  void publishState(const rw::math::Q& q, const rw::math::Q& dq, const rw::math::Q& joint_force, bool is_moving,
+                    bool is_blocked, bool is_stopped, bool is_e_stopped);
 
  private:
   /**
@@ -115,31 +115,31 @@ class GripperServiceInterface
 
   /* - these functions should be grouped together in the documentation t shortly describe that these are converting from
    * ROS types to e.g. RobWork types according to what the interface expects - */
-  bool moveQHandle(caros_control_msgs::gripper_move_q::Request& request,
-                   caros_control_msgs::gripper_move_q::Response& response);
+  bool moveQHandle(caros_control_msgs::GripperMoveQ::Request& request,
+                   caros_control_msgs::GripperMoveQ::Response& response);
 
-  bool gripQHandle(caros_control_msgs::gripper_grip_q::Request& request,
-                   caros_control_msgs::gripper_grip_q::Response& response);
+  bool gripQHandle(caros_control_msgs::GripperGripQ::Request& request,
+                   caros_control_msgs::GripperGripQ::Response& response);
 
-  bool setForceQHandle(caros_control_msgs::gripper_set_force_q::Request& request,
-                       caros_control_msgs::gripper_set_force_q::Response& response);
+  bool setForceQHandle(caros_control_msgs::GripperSetForceQ::Request& request,
+                       caros_control_msgs::GripperSetForceQ::Response& response);
 
-  bool setVelocityQHandle(caros_control_msgs::gripper_set_velocity_q::Request& request,
-                          caros_control_msgs::gripper_set_velocity_q::Response& response);
+  bool setVelocityQHandle(caros_control_msgs::GripperSetVelocityQ::Request& request,
+                          caros_control_msgs::GripperSetVelocityQ::Response& response);
 
-  bool stopMovementHandle(caros_control_msgs::gripper_stop_movement::Request& request,
-                          caros_control_msgs::gripper_stop_movement::Response& response);
+  bool stopMovementHandle(caros_control_msgs::GripperStopMovement::Request& request,
+                          caros_control_msgs::GripperStopMovement::Response& response);
 
  private:
-  ros::NodeHandle nodeHandle_;
+  ros::NodeHandle nodehandle_;
 
-  ros::Publisher gripperStatePublisher_;
+  ros::Publisher gripper_state_publisher_;
 
-  ros::ServiceServer srvMoveQ_;
-  ros::ServiceServer srvGripQ_;
-  ros::ServiceServer srvSetForceQ_;
-  ros::ServiceServer srvSetVelocityQ_;
-  ros::ServiceServer srvStopMovement_;
+  ros::ServiceServer srv_move_q_;
+  ros::ServiceServer srv_grip_q_;
+  ros::ServiceServer srv_set_force_q_;
+  ros::ServiceServer srv_set_velocity_q_;
+  ros::ServiceServer srv_stop_movement_;
 
   /************************************************************************
    * Notes:

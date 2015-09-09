@@ -1,12 +1,12 @@
 #ifndef CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
 #define CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
 
-#include <caros_universalrobot/ur_service_servo_q.h>
-#include <caros_universalrobot/ur_service_servo_t.h>
-#include <caros_universalrobot/ur_service_empty.h>
-#include <caros_universalrobot/ur_service_force_mode_update.h>
-#include <caros_universalrobot/ur_service_force_mode_start.h>
-#include <caros_universalrobot/ur_service_force_mode_stop.h>
+#include <caros_universalrobot/UrServiceServoQ.h>
+#include <caros_universalrobot/UrServiceServoT.h>
+#include <caros_universalrobot/UrServiceEmpty.h>
+#include <caros_universalrobot/UrServiceForceModeUpdate.h>
+#include <caros_universalrobot/UrServiceForceModeStart.h>
+#include <caros_universalrobot/UrServiceForceModeStop.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
@@ -52,35 +52,35 @@ class URServiceInterface
   /* FIXME:
    * Properly document what these functions do and when/why they should be used
    */
-  virtual bool urForceModeStart(const rw::math::Transform3D<>& refToffset, const rw::math::Q& selection,
-                              const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& limits) = 0;
-  virtual bool urForceModeUpdate(const rw::math::Wrench6D<>& wrenchTarget) = 0;
+  virtual bool urForceModeStart(const rw::math::Transform3D<>& ref_t_offset, const rw::math::Q& selection,
+                                const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& limits) = 0;
+  virtual bool urForceModeUpdate(const rw::math::Wrench6D<>& wrench_target) = 0;
   virtual bool urForceModeStop() = 0;
 
  private:
-  bool urServoTHandle(caros_universalrobot::ur_service_servo_t::Request& request,
-                    caros_universalrobot::ur_service_servo_t::Response& response);
+  bool urServoTHandle(caros_universalrobot::UrServiceServoT::Request& request,
+                      caros_universalrobot::UrServiceServoT::Response& response);
 
-  bool urServoQHandle(caros_universalrobot::ur_service_servo_q::Request& request,
-                    caros_universalrobot::ur_service_servo_q::Response& response);
+  bool urServoQHandle(caros_universalrobot::UrServiceServoQ::Request& request,
+                      caros_universalrobot::UrServiceServoQ::Response& response);
 
-  bool urForceModeStartHandle(caros_universalrobot::ur_service_force_mode_start::Request& request,
-                            caros_universalrobot::ur_service_force_mode_start::Response& response);
+  bool urForceModeStartHandle(caros_universalrobot::UrServiceForceModeStart::Request& request,
+                              caros_universalrobot::UrServiceForceModeStart::Response& response);
 
-  bool urForceModeUpdateHandle(caros_universalrobot::ur_service_force_mode_update::Request& request,
-                             caros_universalrobot::ur_service_force_mode_update::Response& response);
+  bool urForceModeUpdateHandle(caros_universalrobot::UrServiceForceModeUpdate::Request& request,
+                               caros_universalrobot::UrServiceForceModeUpdate::Response& response);
 
-  bool urForceModeStopHandle(caros_universalrobot::ur_service_force_mode_stop::Request& request,
-                           caros_universalrobot::ur_service_force_mode_stop::Response& response);
+  bool urForceModeStopHandle(caros_universalrobot::UrServiceForceModeStop::Request& request,
+                             caros_universalrobot::UrServiceForceModeStop::Response& response);
 
  protected:
   ros::NodeHandle nodehandle_;
 
-  ros::ServiceServer srvUrServoT_;
-  ros::ServiceServer srvUrServoQ_;
-  ros::ServiceServer srvUrForceModeStart_;
-  ros::ServiceServer srvUrForceModeUpdate_;
-  ros::ServiceServer srvUrForceModeStop_;
+  ros::ServiceServer srv_ur_servo_t_;
+  ros::ServiceServer srv_ur_servo_q_;
+  ros::ServiceServer srv_ur_force_mode_start_;
+  ros::ServiceServer srv_ur_force_mode_update_;
+  ros::ServiceServer srv_ur_force_mode_stop_;
 };
 
 #endif  // include guard

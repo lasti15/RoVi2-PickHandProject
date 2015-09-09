@@ -1,17 +1,17 @@
 #ifndef CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
 #define CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
 
-#include <caros_control_msgs/robot_state.h>
-#include <caros_control_msgs/serial_device_move_lin.h>
-#include <caros_control_msgs/serial_device_move_ptp.h>
-#include <caros_control_msgs/serial_device_move_ptp_t.h>
-#include <caros_control_msgs/serial_device_move_vel_q.h>
-#include <caros_control_msgs/serial_device_move_vel_t.h>
-#include <caros_control_msgs/serial_device_move_lin_fc.h>
-#include <caros_control_msgs/serial_device_move_servo_q.h>
-#include <caros_control_msgs/serial_device_move_servo_t.h>
-#include <caros_common_msgs/config_bool.h>
-#include <caros_common_msgs/empty_srv.h>
+#include <caros_control_msgs/RobotState.h>
+#include <caros_control_msgs/SerialDeviceMoveLin.h>
+#include <caros_control_msgs/SerialDeviceMovePtp.h>
+#include <caros_control_msgs/SerialDeviceMovePtpT.h>
+#include <caros_control_msgs/SerialDeviceMoveVelQ.h>
+#include <caros_control_msgs/SerialDeviceMoveVelT.h>
+#include <caros_control_msgs/SerialDeviceMoveLinFc.h>
+#include <caros_control_msgs/SerialDeviceMoveServoQ.h>
+#include <caros_control_msgs/SerialDeviceMoveServoT.h>
+#include <caros_common_msgs/ConfigBool.h>
+#include <caros_common_msgs/EmptySrv.h>
 
 #include <rw/math/Q.hpp>
 #include <rw/math/Transform3D.hpp>
@@ -58,17 +58,19 @@ class SerialDeviceServiceInterface
   //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
   //! @brief move robot with a hybrid position/force control
-  virtual bool moveLinFc(const rw::math::Transform3D<>& posTarget, const rw::math::Transform3D<>& offset,
-                         const rw::math::Wrench6D<>& wrenchTarget, const rw::math::Q& controlGain) = 0;
+  virtual bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
+                         const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain) = 0;
 
   /**
    * @brief move robot in a servoing fashion specifying a joint configuration
-   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified target is chosen. Make sure to look at the specific implementation for the node you are using.
+   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified
+   * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
   virtual bool moveServoQ(const QAndSpeedContainer_t& targets) = 0;
   /**
    * @brief move robot in a servoing fashion specifying a pose
-   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified target is chosen. Make sure to look at the specific implementation for the node you are using.
+   * @note It is implementation specific whether the targets are being moved to individually, or just the last specified
+   * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
   virtual bool moveServoT(const TransformAndSpeedContainer_t& targets) = 0;
   //! @brief start the robot
@@ -90,7 +92,7 @@ class SerialDeviceServiceInterface
   bool configureInterface();
 
   //! publish robot state
-  void publishState(const caros_control_msgs::robot_state& state);
+  void publishState(const caros_control_msgs::RobotState& state);
 
  private:
   /**
@@ -102,60 +104,58 @@ class SerialDeviceServiceInterface
 
   bool initService();
 
-  bool moveLinHandle(caros_control_msgs::serial_device_move_lin::Request& request,
-                     caros_control_msgs::serial_device_move_lin::Response& response);
+  bool moveLinHandle(caros_control_msgs::SerialDeviceMoveLin::Request& request,
+                     caros_control_msgs::SerialDeviceMoveLin::Response& response);
 
-  bool movePtpHandle(caros_control_msgs::serial_device_move_ptp::Request& request,
-                     caros_control_msgs::serial_device_move_ptp::Response& response);
+  bool movePtpHandle(caros_control_msgs::SerialDeviceMovePtp::Request& request,
+                     caros_control_msgs::SerialDeviceMovePtp::Response& response);
 
-  bool movePtpTHandle(caros_control_msgs::serial_device_move_ptp_t::Request& request,
-                      caros_control_msgs::serial_device_move_ptp_t::Response& response);
+  bool movePtpTHandle(caros_control_msgs::SerialDeviceMovePtpT::Request& request,
+                      caros_control_msgs::SerialDeviceMovePtpT::Response& response);
 
-  bool moveVelQHandle(caros_control_msgs::serial_device_move_vel_q::Request& request,
-                      caros_control_msgs::serial_device_move_vel_q::Response& response);
+  bool moveVelQHandle(caros_control_msgs::SerialDeviceMoveVelQ::Request& request,
+                      caros_control_msgs::SerialDeviceMoveVelQ::Response& response);
 
-  bool moveVelTHandle(caros_control_msgs::serial_device_move_vel_t::Request& request,
-                      caros_control_msgs::serial_device_move_vel_t::Response& response);
+  bool moveVelTHandle(caros_control_msgs::SerialDeviceMoveVelT::Request& request,
+                      caros_control_msgs::SerialDeviceMoveVelT::Response& response);
 
-  bool moveServoQHandle(caros_control_msgs::serial_device_move_servo_q::Request& request,
-                        caros_control_msgs::serial_device_move_servo_q::Response& response);
+  bool moveServoQHandle(caros_control_msgs::SerialDeviceMoveServoQ::Request& request,
+                        caros_control_msgs::SerialDeviceMoveServoQ::Response& response);
 
-  bool moveServoTHandle(caros_control_msgs::serial_device_move_servo_t::Request& request,
-                        caros_control_msgs::serial_device_move_servo_t::Response& response);
+  bool moveServoTHandle(caros_control_msgs::SerialDeviceMoveServoT::Request& request,
+                        caros_control_msgs::SerialDeviceMoveServoT::Response& response);
 
-  bool moveLinFcHandle(caros_control_msgs::serial_device_move_lin_fc::Request& request,
-                       caros_control_msgs::serial_device_move_lin_fc::Response& response);
+  bool moveLinFcHandle(caros_control_msgs::SerialDeviceMoveLinFc::Request& request,
+                       caros_control_msgs::SerialDeviceMoveLinFc::Response& response);
 
-  bool moveStartHandle(caros_common_msgs::empty_srv::Request& request,
-                       caros_common_msgs::empty_srv::Response& response);
+  bool moveStartHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
 
-  bool moveStopHandle(caros_common_msgs::empty_srv::Request& request, caros_common_msgs::empty_srv::Response& response);
+  bool moveStopHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
 
-  bool movePauseHandle(caros_common_msgs::empty_srv::Request& request,
-                       caros_common_msgs::empty_srv::Response& response);
+  bool movePauseHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
 
-  bool moveSetSafeModeEnabledHandle(caros_common_msgs::config_bool::Request& request,
-                                    caros_common_msgs::config_bool::Response& response);
+  bool moveSetSafeModeEnabledHandle(caros_common_msgs::ConfigBool::Request& request,
+                                    caros_common_msgs::ConfigBool::Response& response);
 
  protected:
   std::string service_name_;
   ros::NodeHandle nodehandle_;
 
-  ros::Publisher deviceStatePublisher_;
+  ros::Publisher device_state_publisher_;
 
-  ros::ServiceServer srvMoveLin_;
-  ros::ServiceServer srvMovePtp_;
-  ros::ServiceServer srvMovePtpT_;
-  ros::ServiceServer srvMoveVelQ_;
-  ros::ServiceServer srvMoveVelT_;
-  ros::ServiceServer srvMoveLinFc_;
-  ros::ServiceServer srvMoveServoQ_;
-  ros::ServiceServer srvMoveServoT_;
+  ros::ServiceServer srv_move_lin_;
+  ros::ServiceServer srv_move_ptp_;
+  ros::ServiceServer srv_move_ptp_t_;
+  ros::ServiceServer srv_move_vel_q_;
+  ros::ServiceServer srv_move_vel_t_;
+  ros::ServiceServer srv_move_lin_fc_;
+  ros::ServiceServer srv_move_servo_q_;
+  ros::ServiceServer srv_move_servo_t_;
 
-  ros::ServiceServer srvMoveStart_;
-  ros::ServiceServer srvMoveStop_;
-  ros::ServiceServer srvMovePause_;
-  ros::ServiceServer srvSetSafeModeEnabled_;
+  ros::ServiceServer srv_move_start_;
+  ros::ServiceServer srv_move_stop_;
+  ros::ServiceServer srv_move_pause_;
+  ros::ServiceServer srv_set_safe_mode_enabled_;
 };
 }
 #endif  //#ifndef

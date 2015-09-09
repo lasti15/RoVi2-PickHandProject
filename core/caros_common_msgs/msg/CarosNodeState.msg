@@ -2,9 +2,9 @@
 string state
 
 bool inError
-string errorMsg
-int64 errorCode
+string error_msg
+int64 error_code
 
 # true if
-bool changedEvent
-string previousState
+bool changed_event
+string previous_state

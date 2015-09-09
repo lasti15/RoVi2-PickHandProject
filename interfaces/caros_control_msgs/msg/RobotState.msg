@@ -5,16 +5,16 @@ Header header
 
 #Joint configuration.
 # Angles should be represented as radians and distances in meters.
-caros_common_msgs/q q
+caros_common_msgs/Q q
 
 #Velocities should be represented as radians per sec
-caros_common_msgs/q dq
+caros_common_msgs/Q dq
 
 #Is the robot moving
-bool isMoving
+bool is_moving
 
 #Is the robot in collision
-bool isColliding
+bool is_colliding
 
 #Is Emergency Stopped
-bool estopped
+bool e_stopped

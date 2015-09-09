@@ -1,12 +1,12 @@
 #include "serial_device_service_interface_dummy.h"
 #include <gtest/gtest.h>
 
-SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle, const bool returnValue,
-                                                                     const bool causeError)
+SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle,
+                                                                     const bool return_value, const bool cause_error)
     : caros::SerialDeviceServiceInterface(nodehandle),
-      returnValue_(returnValue),
-      causeError_(causeError),
-      causingErrorMsg_("Intentionally causing error - please ignore it")
+      return_value_(return_value),
+      cause_error_(cause_error),
+      causing_error_msg_("Intentionally causing error - please ignore it")
 {
   /* make ROS publish the services */
   if (not SerialDeviceServiceInterface::configureInterface())
@@ -23,128 +23,128 @@ SerialDeviceServiceInterfaceDummy::~SerialDeviceServiceInterfaceDummy()
 
 const std::string& SerialDeviceServiceInterfaceDummy::getMostRecentFunctionCalled() const
 {
-  return mostRecentFunctionCalled_;
+  return most_recent_function_called_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveLin(const TransformAndSpeedContainer_t& targets)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::movePtp(const QAndSpeedContainer_t& targets)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveVelQ(const rw::math::Q& q_vel)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<>& posTarget,
+bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<>& pos_target,
                                                   const rw::math::Transform3D<>& offset,
-                                                  const rw::math::Wrench6D<>& wrenchTarget,
-                                                  const rw::math::Q& controlGain)
+                                                  const rw::math::Wrench6D<>& wrench_target,
+                                                  const rw::math::Q& control_gain)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t& targets)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContainer_t& targets)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveStart()
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveStop()
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::movePause()
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(const bool value)
 {
-  mostRecentFunctionCalled_ = __PRETTY_FUNCTION__;
-  if (causeError_)
+  most_recent_function_called_ = __PRETTY_FUNCTION__;
+  if (cause_error_)
   {
-    throw std::runtime_error(causingErrorMsg_);
+    throw std::runtime_error(causing_error_msg_);
   }
-  return returnValue_;
+  return return_value_;
 }

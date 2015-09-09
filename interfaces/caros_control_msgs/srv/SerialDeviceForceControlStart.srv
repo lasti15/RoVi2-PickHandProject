@@ -1,7 +1,7 @@
 # Service for starting running the robot in force mode
 
 # Transformation between robot base and the reference frame in which the force is computed
-geometry_msgs/Transform base2forceFrame
+geometry_msgs/Transform base2forceframe
 
 # Selection of which elements to force control in (x, y, z, rx, ry, rz)
 uint32[] selection

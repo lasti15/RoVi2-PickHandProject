@@ -10,8 +10,8 @@ TEST(TypeConversion, toRosFromFloat)
 
   for (const auto f : floats)
   {
-    const auto toRos = caros::toRos(f);
-    EXPECT_DOUBLE_EQ(f, toRos);
+    const auto to_ros = caros::toRos(f);
+    EXPECT_DOUBLE_EQ(f, to_ros);
   }
 }
 
@@ -20,12 +20,13 @@ TEST(TypeConversion, toRosFromFloat)
  ************************************************************************/
 TEST(TypeConversion, toRosFromDouble)
 {
-  const double doubles[] = {0.0975404016208, 0.547220596345, 0.278498218395, 0.188381975982, 0.546881519025, 0.99288130179, 0.95750682964, 0.996461325325, 0.96488853381, 0.967694936786};
+  const double doubles[] = {0.0975404016208, 0.547220596345, 0.278498218395, 0.188381975982, 0.546881519025,
+                            0.99288130179,   0.95750682964,  0.996461325325, 0.96488853381,  0.967694936786};
 
   for (const auto d : doubles)
   {
-    const auto toRos = caros::toRos(d);
-    EXPECT_DOUBLE_EQ(d, toRos);
+    const auto to_ros = caros::toRos(d);
+    EXPECT_DOUBLE_EQ(d, to_ros);
   }
 }
 
@@ -38,8 +39,8 @@ TEST(TypeConversion, toRosFromBool)
 
   for (const auto d : bools)
   {
-    const auto toRos = caros::toRos(d);
-    EXPECT_EQ(d, toRos);
+    const auto to_ros = caros::toRos(d);
+    EXPECT_EQ(d, to_ros);
   }
 }
 

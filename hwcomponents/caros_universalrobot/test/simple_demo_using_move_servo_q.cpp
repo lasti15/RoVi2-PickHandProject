@@ -6,11 +6,11 @@ int main(int argc, char* argv[])
 {
   ros::init(argc, argv, "ur_simple_demo");
 
-  const double qChange = 0.2;
+  const double q_change = 0.2;
 
-  UrTest urTest;
+  UrTest ur_test;
   bool ret = false;
-  ret = urTest.testMoveServoQ(qChange);
+  ret = ur_test.testMoveServoQ(q_change);
 
   if (not ret)
   {

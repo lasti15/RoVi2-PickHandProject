@@ -2,7 +2,7 @@
 
 TEST(GripperSIProxy, badServiceCall)
 {
-  caros::test::testServices<D_t, P_t, services_t>(servicesToTest, caros::test::TestType::BadServiceCall);
+  caros::test::testServices<D_t, P_t, Services_t>(services_to_test, caros::test::TestType::BadServiceCall);
 }
 
 int main(int argc, char *argv[])

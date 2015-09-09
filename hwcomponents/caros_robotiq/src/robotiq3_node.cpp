@@ -36,12 +36,12 @@ Robotiq3Node::~Robotiq3Node()
 
 bool Robotiq3Node::activateHook()
 {
-  if (!configureRobotiqDevice())
+  if (not configureRobotiqDevice())
   {
     return false;
   }
 
-  if (!connectToRobotiqDevice())
+  if (not connectToRobotiqDevice())
   {
     return false;
   }
@@ -49,7 +49,7 @@ bool Robotiq3Node::activateHook()
   return true;
 }
 
-bool Robotiq3Node::recoverHook(const std::string& errorMsg, const int64_t errorCode)
+bool Robotiq3Node::recoverHook(const std::string& error_msg, const int64_t error_code)
 {
   /* TODO: */
 
@@ -69,7 +69,7 @@ void Robotiq3Node::runLoopHook()
       return;
     }
 
-    if (!robotiq3_->isConnected())
+    if (not robotiq3_->isConnected())
     {
       CAROS_ERROR("There is no established connection to the Robotiq3 device.",
                   ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
@@ -155,7 +155,7 @@ bool Robotiq3Node::configureRobotiqDevice()
 
   if (not GripperServiceInterface::configureInterface())
   {
-    CAROS_FATALERROR("The CAROS GripperService could not be configured correctly.",
+    CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
                      ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
     return false;
   }
@@ -207,17 +207,17 @@ bool Robotiq3Node::connectToRobotiqDevice()
   }
 
   /* Connect according to configured parameters */
-  if (!robotiq3_->connect(ip_, port_))
+  if (not robotiq3_->connect(ip_, port_))
   {
-    CAROS_FATALERROR("The Robotiq3 hand was not able to connect to" << ip_ << " : " << port_, CONNECTION_ERROR);
+    CAROS_FATALERROR("The Robotiq3 hand was not able to connect to " << ip_ << ":" << port_,
+                     ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
     return false;
   }
 
-  /* Verify that the connection to the Robotiq3 device has been established - this eliminates the need for verifying
-   * that the _robotiq->connect() function calls actually succeed */
-  if (!robotiq3_->isConnected())
+  /* Only very rare and obscure situations should cause this to fail, since the above connect was successful */
+  if (not robotiq3_->isConnected())
   {
-    /* Something went wrong when connecting */
+    /* Something went wrong right after connecting */
     CAROS_FATALERROR("Failed to properly connect to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
     return false;
   }
@@ -334,7 +334,7 @@ bool Robotiq3Node::stopMovement()
  ************************************************************************/
 bool Robotiq3Node::isInWorkingCondition()
 {
-  if (!isInRunning())
+  if (not isInRunning())
   {
     ROS_WARN_STREAM("Not in running state!");
     return false;

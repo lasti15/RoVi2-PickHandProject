@@ -23,31 +23,34 @@ URServiceInterface::~URServiceInterface()
 
 bool URServiceInterface::configureInterface()
 {
-  if (srvUrServoT_ || srvUrServoQ_ || srvUrForceModeStart_ || srvUrForceModeUpdate_ || srvUrForceModeStop_)
+  if (srv_ur_servo_t_ || srv_ur_servo_q_ || srv_ur_force_mode_start_ || srv_ur_force_mode_update_ ||
+      srv_ur_force_mode_stop_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more URServiceInterface services. If this is not fully intended then this should be "
         "considered a bug!");
   }
 
-  srvUrServoT_ = nodehandle_.advertiseService("servo_t", &URServiceInterface::urServoTHandle, this);
-  ROS_ERROR_STREAM_COND(!srvUrServoT_, "The servo_t service is empty!");
+  srv_ur_servo_t_ = nodehandle_.advertiseService("servo_t", &URServiceInterface::urServoTHandle, this);
+  ROS_ERROR_STREAM_COND(not srv_ur_servo_t_, "The servo_t service is empty!");
 
-  srvUrServoQ_ = nodehandle_.advertiseService("servo_q", &URServiceInterface::urServoQHandle, this);
-  ROS_ERROR_STREAM_COND(!srvUrServoQ_, "The servo_q service is empty!");
+  srv_ur_servo_q_ = nodehandle_.advertiseService("servo_q", &URServiceInterface::urServoQHandle, this);
+  ROS_ERROR_STREAM_COND(not srv_ur_servo_q_, "The servo_q service is empty!");
 
-  srvUrForceModeStart_ =
+  srv_ur_force_mode_start_ =
       nodehandle_.advertiseService("force_mode_start", &URServiceInterface::urForceModeStartHandle, this);
-  ROS_ERROR_STREAM_COND(!srvUrForceModeStart_, "The force_mode_start service is empty!");
+  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_start_, "The force_mode_start service is empty!");
 
-  srvUrForceModeUpdate_ =
+  srv_ur_force_mode_update_ =
       nodehandle_.advertiseService("force_mode_update", &URServiceInterface::urForceModeUpdateHandle, this);
-  ROS_ERROR_STREAM_COND(!srvUrForceModeUpdate_, "The force_mode_update service is empty!");
+  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_update_, "The force_mode_update service is empty!");
 
-  srvUrForceModeStop_ = nodehandle_.advertiseService("force_mode_stop", &URServiceInterface::urForceModeStopHandle, this);
-  ROS_ERROR_STREAM_COND(!srvUrForceModeStop_, "The force_mode_stop service is empty!");
+  srv_ur_force_mode_stop_ =
+      nodehandle_.advertiseService("force_mode_stop", &URServiceInterface::urForceModeStopHandle, this);
+  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_stop_, "The force_mode_stop service is empty!");
 
-  if (srvUrServoT_ && srvUrServoQ_ && srvUrForceModeStart_ && srvUrForceModeUpdate_ && srvUrForceModeStop_)
+  if (srv_ur_servo_t_ && srv_ur_servo_q_ && srv_ur_force_mode_start_ && srv_ur_force_mode_update_ &&
+      srv_ur_force_mode_stop_)
   {
     /* Everything seems to have been properly initialised */
   }
@@ -62,34 +65,34 @@ bool URServiceInterface::configureInterface()
   return true;
 }
 
-bool URServiceInterface::urServoTHandle(caros_universalrobot::ur_service_servo_t::Request& request,
-                                      caros_universalrobot::ur_service_servo_t::Response& response)
+bool URServiceInterface::urServoTHandle(caros_universalrobot::UrServiceServoT::Request& request,
+                                        caros_universalrobot::UrServiceServoT::Response& response)
 {
   rw::math::Transform3D<> target = caros::toRw(request.target);
   response.success = urServoT(target);
   return true;
 }
 
-bool URServiceInterface::urServoQHandle(caros_universalrobot::ur_service_servo_q::Request& request,
-                                      caros_universalrobot::ur_service_servo_q::Response& response)
+bool URServiceInterface::urServoQHandle(caros_universalrobot::UrServiceServoQ::Request& request,
+                                        caros_universalrobot::UrServiceServoQ::Response& response)
 {
   rw::math::Q target = caros::toRw(request.target);
   response.success = urServoQ(target);
   return true;
 }
 
-bool URServiceInterface::urForceModeStartHandle(caros_universalrobot::ur_service_force_mode_start::Request& request,
-                                              caros_universalrobot::ur_service_force_mode_start::Response& response)
+bool URServiceInterface::urForceModeStartHandle(caros_universalrobot::UrServiceForceModeStart::Request& request,
+                                                caros_universalrobot::UrServiceForceModeStart::Response& response)
 {
-  rw::math::Transform3D<> refToffset = caros::toRw(request.base2forceFrame);
-  rw::math::Wrench6D<> wrenchTarget;
-  wrenchTarget(0) = request.wrench.force.x;
-  wrenchTarget(1) = request.wrench.force.y;
-  wrenchTarget(2) = request.wrench.force.z;
+  rw::math::Transform3D<> ref_t_offset = caros::toRw(request.base2forceFrame);
+  rw::math::Wrench6D<> wrench_target;
+  wrench_target(0) = request.wrench.force.x;
+  wrench_target(1) = request.wrench.force.y;
+  wrench_target(2) = request.wrench.force.z;
 
-  wrenchTarget(3) = request.wrench.torque.x;
-  wrenchTarget(4) = request.wrench.torque.y;
-  wrenchTarget(5) = request.wrench.torque.z;
+  wrench_target(3) = request.wrench.torque.x;
+  wrench_target(4) = request.wrench.torque.y;
+  wrench_target(5) = request.wrench.torque.z;
 
   std::size_t index;
   rw::math::Q selection(request.selection.size());
@@ -106,28 +109,28 @@ bool URServiceInterface::urForceModeStartHandle(caros_universalrobot::ur_service
     limits(index++) = static_cast<double>(item);
   }
 
-  response.success = urForceModeStart(refToffset, selection, wrenchTarget, limits);
+  response.success = urForceModeStart(ref_t_offset, selection, wrench_target, limits);
   return true;
 }
 
-bool URServiceInterface::urForceModeUpdateHandle(caros_universalrobot::ur_service_force_mode_update::Request& request,
-                                               caros_universalrobot::ur_service_force_mode_update::Response& response)
+bool URServiceInterface::urForceModeUpdateHandle(caros_universalrobot::UrServiceForceModeUpdate::Request& request,
+                                                 caros_universalrobot::UrServiceForceModeUpdate::Response& response)
 {
-  rw::math::Wrench6D<> wrenchTarget;
-  wrenchTarget(0) = request.wrench.force.x;
-  wrenchTarget(1) = request.wrench.force.y;
-  wrenchTarget(2) = request.wrench.force.z;
+  rw::math::Wrench6D<> wrench_target;
+  wrench_target(0) = request.wrench.force.x;
+  wrench_target(1) = request.wrench.force.y;
+  wrench_target(2) = request.wrench.force.z;
 
-  wrenchTarget(3) = request.wrench.torque.x;
-  wrenchTarget(4) = request.wrench.torque.y;
-  wrenchTarget(5) = request.wrench.torque.z;
+  wrench_target(3) = request.wrench.torque.x;
+  wrench_target(4) = request.wrench.torque.y;
+  wrench_target(5) = request.wrench.torque.z;
 
-  response.success = urForceModeUpdate(wrenchTarget);
+  response.success = urForceModeUpdate(wrench_target);
   return true;
 }
 
-bool URServiceInterface::urForceModeStopHandle(caros_universalrobot::ur_service_force_mode_stop::Request& request,
-                                             caros_universalrobot::ur_service_force_mode_stop::Response& response)
+bool URServiceInterface::urForceModeStopHandle(caros_universalrobot::UrServiceForceModeStop::Request& request,
+                                               caros_universalrobot::UrServiceForceModeStop::Response& response)
 {
   response.success = urForceModeStop();
   return true;
