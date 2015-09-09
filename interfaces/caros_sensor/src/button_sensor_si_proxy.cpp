@@ -2,19 +2,12 @@
 using namespace std;
 using namespace caros;
 
-ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nhandle) : nodeHnd_(nhandle)
-{
-}
-
-ButtonSensorSIProxy::ButtonSensorSIProxy(const std::string& name) : nodeHnd_(name)
-{
-}
-
-bool ButtonSensorSIProxy::configureProxy()
+ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                                         const bool usePersistentConnections)
+    : nodeHnd_(nodehandle)
 {
   buttonSensorState_ =
       nodeHnd_.subscribe(nodeHnd_.getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
-  return true;
 }
 
 ButtonSensorSIProxy::~ButtonSensorSIProxy()

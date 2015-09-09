@@ -4,12 +4,9 @@
 
 using namespace caros;
 
-FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nhandle) : nodeHnd_(nhandle)
-{
-  _ftState = nodeHnd_.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
-}
-
-FTSensorSIProxy::FTSensorSIProxy(const std::string& name) : nodeHnd_(name)
+FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                                 const bool usePersistentConnections)
+    : nodeHnd_(nodehandle)
 {
   _ftState = nodeHnd_.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }

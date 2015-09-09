@@ -24,11 +24,13 @@ class PoseSensorSIProxy
   //! pointer type
   typedef std::shared_ptr<PoseSensorSIProxy> Ptr;
 
-  //! constructor
-  PoseSensorSIProxy(const ros::NodeHandle& nhandle);
-
-  //! constructor
-  PoseSensorSIProxy(const std::string& devname);
+  /**
+   * @brief Constructor
+   * @param[in] nodehandle
+   * @param[in] devname The name of the node
+   * @param[in] usePersistentConnections Define usage of persistent connections
+   */
+  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
 
   //! destructor
   virtual ~PoseSensorSIProxy();
@@ -50,8 +52,6 @@ class PoseSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  void configureProxy();
-
   void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
 
  protected:

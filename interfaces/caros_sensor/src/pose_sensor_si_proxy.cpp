@@ -8,22 +8,16 @@ using namespace std;
 
 using namespace caros;
 
-PoseSensorSIProxy::PoseSensorSIProxy(const ros::NodeHandle& nhandle) : node_hnd_(nhandle)
+PoseSensorSIProxy::PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                                     const bool usePersistentConnections)
+    : node_hnd_(nodehandle)
 {
-}
-
-PoseSensorSIProxy::PoseSensorSIProxy(const std::string& devname) : node_hnd_(devname)
-{
+  poseSensorState_ =
+      node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
 }
 
 PoseSensorSIProxy::~PoseSensorSIProxy()
 {
-}
-
-void PoseSensorSIProxy::configureProxy()
-{
-  poseSensorState_ =
-      node_hnd_.subscribe(node_hnd_.getNamespace() + "/poses", 1, &PoseSensorSIProxy::handlePoseSensorState, this);
 }
 
 void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state)

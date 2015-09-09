@@ -23,11 +23,13 @@ class FTSensorSIProxy
   //! pointer type
   typedef std::shared_ptr<FTSensorSIProxy> Ptr;
 
-  //! constructor
-  FTSensorSIProxy(ros::NodeHandle nhandle);
-
-  //! constructor
-  FTSensorSIProxy(const std::string& devname);
+  /**
+   * @brief Constructor
+   * @param[in] nodehandle
+   * @param[in] devname The name of the node
+   * @param[in] usePersistentConnections Define usage of persistent connections
+   */
+  FTSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
 
   //! destructor
   virtual ~FTSensorSIProxy();

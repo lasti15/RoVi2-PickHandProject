@@ -21,11 +21,14 @@ class ButtonSensorSIProxy
   //! pointer type
   typedef std::shared_ptr<ButtonSensorSIProxy> Ptr;
 
-  //! constructor
-  ButtonSensorSIProxy(ros::NodeHandle nhandle);
-
-  //! constructor
-  ButtonSensorSIProxy(const std::string& devname);
+  /**
+   * @brief Constructor
+   * @param[in] nodehandle
+   * @param[in] devname The name of the node
+   * @param[in] usePersistentConnections Define usage of persistent connections
+   */
+  ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                      const bool usePersistentConnections = true);
 
   //! destructor
   virtual ~ButtonSensorSIProxy();
@@ -46,8 +49,6 @@ class ButtonSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  bool configureProxy();
-
   void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
 
  protected:
