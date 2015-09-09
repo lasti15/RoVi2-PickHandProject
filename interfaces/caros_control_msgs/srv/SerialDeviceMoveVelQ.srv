@@ -1,4 +1,4 @@
-# Speed in percentage of max speed(might depend on robot state), 0=no speed, 100=full speed
+# Speed of the joints. Default units of speed are rad/s and m/s for revolute and prismatic joints. 
 caros_common_msgs/Q vel
 
 ---
