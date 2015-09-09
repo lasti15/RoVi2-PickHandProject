@@ -15,10 +15,10 @@ find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msg
 
 add_message_files(
   FILES
-  pose_sensor_state.msg
-  tactile_array_data.msg
-  tactile_array_state.msg
-  button_sensor_state.msg
+  ButtonSensorState.msg
+  PoseSensorState.msg
+  TactileArrayData.msg
+  TactileArrayState.msg
 )
 
 generate_messages(

@@ -1,5 +1,5 @@
 #include <caros/pose_sensor_service_interface.h>
-#include <caros_sensor_msgs/pose_sensor_state.h>
+#include <caros_sensor_msgs/PoseSensorState.h>
 
 #include <caros/common_robwork.h>
 
@@ -12,14 +12,14 @@ PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& no
 
 bool PoseSensorServiceInterface::configureInterface()
 {
-  pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::pose_sensor_state>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
+  pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
   return true;
 }
 
 void PoseSensorServiceInterface::publishPoses(const std::vector<rw::math::Transform3D<>>& poses,
                                               const std::vector<int>& ids, const std::vector<float>& qualities)
 {
-  caros_sensor_msgs::pose_sensor_state pstate;
+  caros_sensor_msgs::PoseSensorState pstate;
   pstate.poses.resize(poses.size());
   pstate.ids.resize(poses.size());
   pstate.qualities.resize(poses.size());

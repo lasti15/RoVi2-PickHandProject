@@ -1,7 +1,8 @@
 #ifndef CAROS_POSESENSORSIPROXY_HPP
 #define CAROS_POSESENSORSIPROXY_HPP
 
-#include <caros_sensor_msgs/pose_sensor_state.h>
+#include <caros_sensor_msgs/ButtonSensorState.h>
+#include <caros_sensor_msgs/PoseSensorState.h>
 
 #include <rw/math.hpp>
 
@@ -52,7 +53,7 @@ class PoseSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
+  void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
 
  protected:
   ros::NodeHandle node_hnd_;

@@ -20,7 +20,7 @@ PoseSensorSIProxy::~PoseSensorSIProxy()
 {
 }
 
-void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state)
+void PoseSensorSIProxy::handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state)
 {
   std::lock_guard<std::mutex> lock(mutex_);
   _poses.resize(state.poses.size());

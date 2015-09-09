@@ -1,7 +1,7 @@
 #ifndef CAROS_BUTTONSESORSIPROXY_H
 #define CAROS_BUTTONSESORSIPROXY_H
 
-#include <caros_sensor_msgs/button_sensor_state.h>
+#include <caros_sensor_msgs/ButtonSensorState.h>
 
 #include <memory>
 #include <mutex>
@@ -49,7 +49,7 @@ class ButtonSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
+  void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
 
  protected:
   ros::NodeHandle nodeHnd_;

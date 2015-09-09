@@ -1,4 +1,5 @@
 #include <caros/button_sensor_si_proxy.h>
+
 using namespace std;
 using namespace caros;
 
@@ -14,7 +15,7 @@ ButtonSensorSIProxy::~ButtonSensorSIProxy()
 {
 }
 
-void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state)
+void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state)
 {
   std::lock_guard<std::mutex> lock(mutex_);
   stamp_ = state.header.stamp;
