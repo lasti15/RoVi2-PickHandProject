@@ -80,6 +80,7 @@ bool GripperServiceInterface::initService()
         "properly initialised.");
     return false;
   }
+
   return true;
 }
 
