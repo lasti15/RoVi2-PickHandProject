@@ -240,7 +240,6 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
   try
   {
     robotiq3_->moveCmd(q);
-    last_cmd_ = MOVE;
   }
   catch (const rw::common::Exception& exp)
   {
@@ -260,7 +259,6 @@ bool Robotiq3Node::gripQ(const rw::math::Q& q)
   try
   {
     robotiq3_->moveCmd(q);
-    last_cmd_ = GRIP;
   }
   catch (const rw::common::Exception& exp)
   {
