@@ -3,7 +3,7 @@
 
 using namespace caros;
 
-ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodeHnd) : node_hnd_(nodeHnd)
+ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle) : nodehandle_(nodehandle)
 {
 }
 
@@ -14,31 +14,31 @@ ButtonSensorServiceInterface::~ButtonSensorServiceInterface()
 
 bool ButtonSensorServiceInterface::configureInterface()
 {
-  button_pub_ = node_hnd_.advertise<caros_sensor_msgs::ButtonSensorState>("buttons",
+  button_pub_ = nodehandle_.advertise<caros_sensor_msgs::ButtonSensorState>("buttons",
                                                                             BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE);
   return true;
 }
 
-void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string, bool>>& digitalbuttons_,
-                                                  const std::vector<std::pair<std::string, bool>>& analogbuttons_)
+void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string, bool>>& digital_buttons,
+                                                  const std::vector<std::pair<std::string, bool>>& analog_buttons)
 {
-  caros_sensor_msgs::ButtonSensorState pstate;
-  pstate.digital_ids.resize(digitalbuttons_.size());
-  pstate.digital.resize(digitalbuttons_.size());
-  pstate.analog_ids.resize(analogbuttons_.size());
-  pstate.analog.resize(analogbuttons_.size());
+  caros_sensor_msgs::ButtonSensorState button_state;
+  button_state.digital_ids.resize(digital_buttons.size());
+  button_state.digital.resize(digital_buttons.size());
+  button_state.analog_ids.resize(analog_buttons.size());
+  button_state.analog.resize(analog_buttons.size());
 
-  for (size_t i = 0; i < digitalbuttons_.size(); i++)
+  for (size_t i = 0; i < digital_buttons.size(); i++)
   {
-    pstate.digital_ids[i] = digitalbuttons_[i].first;
-    pstate.digital[i] = digitalbuttons_[i].second;
+    button_state.digital_ids[i] = digital_buttons[i].first;
+    button_state.digital[i] = digital_buttons[i].second;
   }
 
-  for (size_t i = 0; i < analogbuttons_.size(); i++)
+  for (size_t i = 0; i < analog_buttons.size(); i++)
   {
-    pstate.analog_ids[i] = analogbuttons_[i].first;
-    pstate.analog[i] = analogbuttons_[i].second;
+    button_state.analog_ids[i] = analog_buttons[i].first;
+    button_state.analog[i] = analog_buttons[i].second;
   }
 
-  button_pub_.publish(pstate);
+  button_pub_.publish(button_state);
 }

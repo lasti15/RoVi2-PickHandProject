@@ -34,10 +34,10 @@ class FTSensorServiceInterface
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
  protected:
-  ros::NodeHandle nodeHnd_;
+  ros::NodeHandle nodehandle_;
 
  private:
-  ros::Publisher wrenchDataPublisher_;
+  ros::Publisher wrench_data_publisher_;
 };
 
 #endif

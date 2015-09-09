@@ -30,11 +30,11 @@ class ButtonSensorServiceInterface
   bool configureInterface();
 
   //! publish button states read by sensor
-  void publishButtons(const std::vector<std::pair<std::string, bool>>& digitalbuttons_,
-                      const std::vector<std::pair<std::string, bool>>& analogbuttons_);
+  void publishButtons(const std::vector<std::pair<std::string, bool>>& digital_buttons,
+                      const std::vector<std::pair<std::string, bool>>& analog_buttons);
 
  protected:
-  ros::NodeHandle node_hnd_;
+  ros::NodeHandle nodehandle_;
 
  private:
   ros::Publisher button_pub_;

@@ -28,7 +28,7 @@ class ButtonSensorSIProxy
    * @param[in] usePersistentConnections Define usage of persistent connections
    */
   ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                      const bool usePersistentConnections = true);
+                      const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~ButtonSensorSIProxy();
@@ -38,7 +38,7 @@ class ButtonSensorSIProxy
   {
     float button;
     std::string id;
-    bool isAnalog;
+    bool is_analog;
     ros::Time stamp;
   };
 
@@ -52,10 +52,10 @@ class ButtonSensorSIProxy
   void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
 
  protected:
-  ros::NodeHandle nodeHnd_;
+  ros::NodeHandle nodehandle_;
 
   // states
-  ros::Subscriber buttonSensorState_;
+  ros::Subscriber button_sensor_state_sub_;
 
  private:
   std::mutex mutex_;

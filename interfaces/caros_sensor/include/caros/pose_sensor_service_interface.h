@@ -38,7 +38,7 @@ class PoseSensorServiceInterface
   PoseSensorServiceInterface(){};
 
  protected:
-  ros::NodeHandle node_hnd_;
+  ros::NodeHandle nodehandle_;
 
  private:
   ros::Publisher pose_pub_;

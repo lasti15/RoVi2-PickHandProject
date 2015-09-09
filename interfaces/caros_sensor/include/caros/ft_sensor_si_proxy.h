@@ -27,9 +27,9 @@ class FTSensorSIProxy
    * @brief Constructor
    * @param[in] nodehandle
    * @param[in] devname The name of the node
-   * @param[in] usePersistentConnections Define usage of persistent connections
+   * @param[in] use_persistent_connections Define usage of persistent connections
    */
-  FTSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
+  FTSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~FTSensorSIProxy();
@@ -41,10 +41,10 @@ class FTSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  ros::NodeHandle nodeHnd_;
+  ros::NodeHandle nodehandle_;
 
   // states
-  ros::Subscriber _ftState;
+  ros::Subscriber ft_state_sub_;
 
  private:
   std::mutex mutex_;
@@ -54,7 +54,7 @@ class FTSensorSIProxy
 
   void handleFTState(const geometry_msgs::WrenchStamped& state);
 
-  geometry_msgs::WrenchStamped pFTState_;
+  geometry_msgs::WrenchStamped ft_state_;
 };
 }
 

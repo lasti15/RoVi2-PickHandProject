@@ -29,9 +29,9 @@ class PoseSensorSIProxy
    * @brief Constructor
    * @param[in] nodehandle
    * @param[in] devname The name of the node
-   * @param[in] usePersistentConnections Define usage of persistent connections
+   * @param[in] use_persistent_connections Define usage of persistent connections
    */
-  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool usePersistentConnections = true);
+  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~PoseSensorSIProxy();
@@ -56,16 +56,16 @@ class PoseSensorSIProxy
   void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
 
  protected:
-  ros::NodeHandle node_hnd_;
+  ros::NodeHandle nodehandle_;
 
   // states
-  ros::Subscriber poseSensorState_;
+  ros::Subscriber pose_sensor_state_sub_;
 
  private:
   std::mutex mutex_;
 
   // state variables
-  std::vector<PoseData> _poses;
+  std::vector<PoseData> poses_;
   ros::Time stamp_;
 };
 }

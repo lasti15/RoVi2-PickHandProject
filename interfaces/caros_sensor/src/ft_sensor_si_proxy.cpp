@@ -5,10 +5,10 @@
 using namespace caros;
 
 FTSensorSIProxy::FTSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                                 const bool usePersistentConnections)
-    : nodeHnd_(nodehandle)
+                                 const bool use_persistent_connections)
+    : nodehandle_(nodehandle)
 {
-  _ftState = nodeHnd_.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
+  ft_state_sub_ = nodehandle_.subscribe("wrench", 1, &FTSensorSIProxy::handleFTState, this);
 }
 
 FTSensorSIProxy::~FTSensorSIProxy()
@@ -19,7 +19,7 @@ void FTSensorSIProxy::handleFTState(const geometry_msgs::WrenchStamped& state)
 {
   std::lock_guard<std::mutex> lock(mutex_);
   wrench_ = caros::toRw(state.wrench);
-  pFTState_ = state;
+  ft_state_ = state;
 }
 
 rw::math::Wrench6D<> FTSensorSIProxy::getWrench()
@@ -31,5 +31,5 @@ rw::math::Wrench6D<> FTSensorSIProxy::getWrench()
 ros::Time FTSensorSIProxy::getTimeStamp()
 {
   std::lock_guard<std::mutex> lock(mutex_);
-  return pFTState_.header.stamp;
+  return ft_state_.header.stamp;
 }

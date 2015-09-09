@@ -6,13 +6,13 @@
 using namespace rw::common;
 using namespace caros;
 
-PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& nodeHnd) : node_hnd_(nodeHnd)
+PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& nodehandle) : nodehandle_(nodehandle)
 {
 }
 
 bool PoseSensorServiceInterface::configureInterface()
 {
-  pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
+  pose_pub_ = nodehandle_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
   return true;
 }
 

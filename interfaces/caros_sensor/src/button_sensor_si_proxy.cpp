@@ -4,11 +4,11 @@ using namespace std;
 using namespace caros;
 
 ButtonSensorSIProxy::ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
-                                         const bool usePersistentConnections)
-    : nodeHnd_(nodehandle)
+                                         const bool use_persistent_connections)
+    : nodehandle_(nodehandle)
 {
-  buttonSensorState_ =
-      nodeHnd_.subscribe(nodeHnd_.getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
+  button_sensor_state_sub_ =
+      nodehandle_.subscribe(nodehandle_.getNamespace() + "/buttons", 1, &ButtonSensorSIProxy::handleButtonSensorState, this);
 }
 
 ButtonSensorSIProxy::~ButtonSensorSIProxy()
@@ -23,19 +23,19 @@ void ButtonSensorSIProxy::handleButtonSensorState(const caros_sensor_msgs::Butto
 
   for (size_t i = 0; i < state.digital.size(); i++)
   {
-    ButtonData& pdata = buttons_[i];
-    pdata.button = state.digital[i];
-    pdata.id = state.digital_ids[i];
-    pdata.isAnalog = false;
-    pdata.stamp = stamp_;
+    ButtonData& data = buttons_[i];
+    data.button = state.digital[i];
+    data.id = state.digital_ids[i];
+    data.is_analog = false;
+    data.stamp = stamp_;
   }
   for (size_t j = 0; j < state.analog.size(); j++)
   {
-    ButtonData& pdata = buttons_[state.digital.size() + j];
-    pdata.button = state.analog[j];
-    pdata.id = state.analog_ids[j];
-    pdata.isAnalog = true;
-    pdata.stamp = stamp_;
+    ButtonData& data = buttons_[state.digital.size() + j];
+    data.button = state.analog[j];
+    data.id = state.analog_ids[j];
+    data.is_analog = true;
+    data.stamp = stamp_;
   }
 }
 
