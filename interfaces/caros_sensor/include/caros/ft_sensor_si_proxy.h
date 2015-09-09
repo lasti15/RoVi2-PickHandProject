@@ -39,20 +39,20 @@ class FTSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  ros::NodeHandle _nodeHnd;
+  ros::NodeHandle nodeHnd_;
 
   // states
   ros::Subscriber _ftState;
 
  private:
-  std::mutex _mutex;
+  std::mutex mutex_;
 
   // state variables
-  rw::math::Wrench6D<> _wrench;
+  rw::math::Wrench6D<> wrench_;
 
   void handleFTState(const geometry_msgs::WrenchStamped& state);
 
-  geometry_msgs::WrenchStamped _pFTState;
+  geometry_msgs::WrenchStamped pFTState_;
 };
 }
 

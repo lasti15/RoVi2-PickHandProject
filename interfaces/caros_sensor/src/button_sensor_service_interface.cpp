@@ -19,25 +19,25 @@ bool ButtonSensorServiceInterface::configureInterface()
   return true;
 }
 
-void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string, bool>>& digital_buttons,
-                                                  const std::vector<std::pair<std::string, bool>>& analog_buttons)
+void ButtonSensorServiceInterface::publishButtons(const std::vector<std::pair<std::string, bool>>& digitalbuttons_,
+                                                  const std::vector<std::pair<std::string, bool>>& analogbuttons_)
 {
   caros_sensor_msgs::button_sensor_state pstate;
-  pstate.digital_ids.resize(digital_buttons.size());
-  pstate.digital.resize(digital_buttons.size());
-  pstate.analog_ids.resize(analog_buttons.size());
-  pstate.analog.resize(analog_buttons.size());
+  pstate.digital_ids.resize(digitalbuttons_.size());
+  pstate.digital.resize(digitalbuttons_.size());
+  pstate.analog_ids.resize(analogbuttons_.size());
+  pstate.analog.resize(analogbuttons_.size());
 
-  for (size_t i = 0; i < digital_buttons.size(); i++)
+  for (size_t i = 0; i < digitalbuttons_.size(); i++)
   {
-    pstate.digital_ids[i] = digital_buttons[i].first;
-    pstate.digital[i] = digital_buttons[i].second;
+    pstate.digital_ids[i] = digitalbuttons_[i].first;
+    pstate.digital[i] = digitalbuttons_[i].second;
   }
 
-  for (size_t i = 0; i < analog_buttons.size(); i++)
+  for (size_t i = 0; i < analogbuttons_.size(); i++)
   {
-    pstate.analog_ids[i] = analog_buttons[i].first;
-    pstate.analog[i] = analog_buttons[i].second;
+    pstate.analog_ids[i] = analogbuttons_[i].first;
+    pstate.analog[i] = analogbuttons_[i].second;
   }
 
   button_pub_.publish(pstate);

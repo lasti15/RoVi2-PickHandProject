@@ -58,14 +58,14 @@ class PoseSensorSIProxy
   ros::NodeHandle node_hnd_;
 
   // states
-  ros::Subscriber _poseSensorState;
+  ros::Subscriber poseSensorState_;
 
  private:
-  std::mutex _mutex;
+  std::mutex mutex_;
 
   // state variables
   std::vector<PoseData> _poses;
-  ros::Time _stamp;
+  ros::Time stamp_;
 };
 }
 
