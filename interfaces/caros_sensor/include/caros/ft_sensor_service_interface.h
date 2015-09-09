@@ -5,7 +5,10 @@
 
 #include <ros/ros.h>
 
+#include <memory>
 #include <string>
+
+#define FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE 1
 
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
@@ -14,7 +17,7 @@ class FTSensorServiceInterface
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<FTSensorServiceInterface> Ptr;
+  typedef std::shared_ptr<FTSensorServiceInterface> Ptr;
 
   //! constructor
   FTSensorServiceInterface(const std::string& service_name);
@@ -31,10 +34,10 @@ class FTSensorServiceInterface
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
  protected:
-  ros::NodeHandle _nodeHnd;
+  ros::NodeHandle nodehandle_;
 
  private:
-  ros::Publisher _wrenchDataPublisher;
+  ros::Publisher wrench_data_publisher_;
 };
 
 #endif

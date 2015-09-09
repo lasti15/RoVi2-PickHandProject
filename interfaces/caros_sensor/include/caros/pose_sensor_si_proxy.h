@@ -1,15 +1,15 @@
 #ifndef CAROS_POSESENSORSIPROXY_HPP
 #define CAROS_POSESENSORSIPROXY_HPP
 
-#include <caros_sensor_msgs/pose_sensor_state.h>
+#include <caros_sensor_msgs/ButtonSensorState.h>
+#include <caros_sensor_msgs/PoseSensorState.h>
 
-#include <rw/common/Ptr.hpp>
 #include <rw/math.hpp>
-
-#include <boost/thread.hpp>
 
 #include <ros/ros.h>
 
+#include <memory>
+#include <mutex>
 #include <vector>
 #include <string>
 
@@ -23,13 +23,15 @@ class PoseSensorSIProxy
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<PoseSensorSIProxy> Ptr;
+  typedef std::shared_ptr<PoseSensorSIProxy> Ptr;
 
-  //! constructor
-  PoseSensorSIProxy(const ros::NodeHandle& nhandle);
-
-  //! constructor
-  PoseSensorSIProxy(const std::string& devname);
+  /**
+   * @brief Constructor
+   * @param[in] nodehandle
+   * @param[in] devname The name of the node
+   * @param[in] use_persistent_connections Define usage of persistent connections
+   */
+  PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname, const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~PoseSensorSIProxy();
@@ -51,22 +53,20 @@ class PoseSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  void configureProxy();
-
-  void handlePoseSensorState(const caros_sensor_msgs::pose_sensor_state& state);
+  void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
 
  protected:
-  ros::NodeHandle node_hnd_;
+  ros::NodeHandle nodehandle_;
 
   // states
-  ros::Subscriber _poseSensorState;
+  ros::Subscriber pose_sensor_state_sub_;
 
  private:
-  boost::mutex _mutex;
+  std::mutex mutex_;
 
   // state variables
-  std::vector<PoseData> _poses;
-  ros::Time _stamp;
+  std::vector<PoseData> poses_;
+  ros::Time stamp_;
 };
 }
 

@@ -1,10 +1,10 @@
 #ifndef CAROS_BUTTONSESORSIPROXY_H
 #define CAROS_BUTTONSESORSIPROXY_H
 
-#include <caros_sensor_msgs/button_sensor_state.h>
+#include <caros_sensor_msgs/ButtonSensorState.h>
 
-#include <rw/common/Ptr.hpp>
-#include <boost/thread.hpp>
+#include <memory>
+#include <mutex>
 
 #include <ros/ros.h>
 
@@ -19,13 +19,16 @@ class ButtonSensorSIProxy
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<ButtonSensorSIProxy> Ptr;
+  typedef std::shared_ptr<ButtonSensorSIProxy> Ptr;
 
-  //! constructor
-  ButtonSensorSIProxy(ros::NodeHandle nhandle);
-
-  //! constructor
-  ButtonSensorSIProxy(const std::string& devname);
+  /**
+   * @brief Constructor
+   * @param[in] nodehandle
+   * @param[in] devname The name of the node
+   * @param[in] usePersistentConnections Define usage of persistent connections
+   */
+  ButtonSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,
+                      const bool use_persistent_connections = true);
 
   //! destructor
   virtual ~ButtonSensorSIProxy();
@@ -35,7 +38,7 @@ class ButtonSensorSIProxy
   {
     float button;
     std::string id;
-    bool isAnalog;
+    bool is_analog;
     ros::Time stamp;
   };
 
@@ -46,26 +49,24 @@ class ButtonSensorSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  bool configureProxy();
-
-  void handleButtonSensorState(const caros_sensor_msgs::button_sensor_state& state);
+  void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
 
  protected:
-  ros::NodeHandle _nodeHnd;
+  ros::NodeHandle nodehandle_;
 
   // states
-  ros::Subscriber _buttonSensorState;
+  ros::Subscriber button_sensor_state_sub_;
 
  private:
-  boost::mutex _mutex;
+  std::mutex mutex_;
 
   // state variables
   /* Notes:
    * std::vector could potentially, depending on the number of elements, be an ineffective container for looking up
    * specific button IDs, since the list has to be traversed until the ID is found.
    */
-  std::vector<ButtonData> _buttons;
-  ros::Time _stamp;
+  std::vector<ButtonData> buttons_;
+  ros::Time stamp_;
 };
 }
 #endif  // end include guard

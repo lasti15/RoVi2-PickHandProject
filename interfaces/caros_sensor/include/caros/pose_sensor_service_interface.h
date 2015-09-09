@@ -6,7 +6,10 @@
 
 #include <ros/ros.h>
 
+#include <memory>
 #include <vector>
+
+#define POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE 1
 
 namespace caros
 {
@@ -18,7 +21,7 @@ class PoseSensorServiceInterface
 {
  public:
   //! pointer type
-  typedef rw::common::Ptr<PoseSensorServiceInterface> Ptr;
+  typedef std::shared_ptr<PoseSensorServiceInterface> Ptr;
 
   //! constructor
   PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);
@@ -26,9 +29,6 @@ class PoseSensorServiceInterface
  protected:
   //! initialize ros interface
   bool configureInterface();
-
-  //! shutdown ros interface
-  bool cleanupInterface();
 
   //! publish poses read by sensor
   void publishPoses(const std::vector<rw::math::Transform3D<>>& poses, const std::vector<int>& ids,
@@ -38,7 +38,7 @@ class PoseSensorServiceInterface
   PoseSensorServiceInterface(){};
 
  protected:
-  ros::NodeHandle node_hnd_;
+  ros::NodeHandle nodehandle_;
 
  private:
   ros::Publisher pose_pub_;

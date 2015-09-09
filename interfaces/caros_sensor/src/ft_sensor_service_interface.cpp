@@ -7,13 +7,15 @@ using namespace rw::common;
 
 FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)
 {
-  _wrenchDataPublisher = _nodeHnd.advertise<geometry_msgs::WrenchStamped>("wrench", 5);
+  wrench_data_publisher_ =
+      nodehandle_.advertise<geometry_msgs::WrenchStamped>("wrench", FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE);
 }
 
 FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nh)
 {
-  _nodeHnd = nh;
-  _wrenchDataPublisher = _nodeHnd.advertise<geometry_msgs::WrenchStamped>("wrench", 5);
+  nodehandle_ = nh;
+  wrench_data_publisher_ =
+      nodehandle_.advertise<geometry_msgs::WrenchStamped>("wrench", FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE);
 }
 
 void FTSensorServiceInterface::publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe)
@@ -31,5 +33,5 @@ void FTSensorServiceInterface::publish(const rw::math::Wrench6D<>& wrench, const
   wdata.wrench.torque.y = wrench(4);
   wdata.wrench.torque.z = wrench(5);
 
-  _wrenchDataPublisher.publish(wdata);
+  wrench_data_publisher_.publish(wdata);
 }

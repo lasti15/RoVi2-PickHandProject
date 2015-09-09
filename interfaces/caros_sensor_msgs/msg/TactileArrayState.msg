@@ -5,4 +5,4 @@
 Header header
 
 # The tactile arrays
-tactile_array_data[] data
+TactileArrayData[] data
