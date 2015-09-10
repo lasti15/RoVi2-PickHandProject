@@ -235,6 +235,12 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
     return false;
   }
 
+  if (robotiq3_->getNumberOfJoints() != q.size())
+  {
+    CAROS_ERROR("MoveQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    return false;
+  }
+
   ROS_DEBUG_STREAM("moveQ with " << q.size() << " joint(s).");
 
   try
@@ -253,6 +259,12 @@ bool Robotiq3Node::gripQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
+    return false;
+  }
+
+  if (robotiq3_->getNumberOfJoints() != q.size())
+  {
+    CAROS_ERROR("GripQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -275,6 +287,12 @@ bool Robotiq3Node::setForceQ(const rw::math::Q& q)
     return false;
   }
 
+  if (robotiq3_->getNumberOfJoints() != q.size())
+  {
+    CAROS_ERROR("SetForceQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    return false;
+  }
+
   try
   {
     robotiq3_->setTargetQForce(q);
@@ -291,6 +309,12 @@ bool Robotiq3Node::setVelocityQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
+    return false;
+  }
+
+  if (robotiq3_->getNumberOfJoints() != q.size())
+  {
+    CAROS_ERROR("SetVelocityQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
