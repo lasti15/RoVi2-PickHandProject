@@ -72,13 +72,6 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   bool isInWorkingCondition();
 
  protected:
-  typedef enum
-  {
-    MOVE,
-    GRIP,
-    STOP
-  } CmdType;
-  int last_cmd_;
   ros::Time last_loop_time_;
   rw::math::Q last_Q_;
   std::string ip_;
