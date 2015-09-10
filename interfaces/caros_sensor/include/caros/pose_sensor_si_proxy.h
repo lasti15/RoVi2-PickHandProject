@@ -56,15 +56,11 @@ class PoseSensorSIProxy
  protected:
   void handlePoseSensorState(const caros_sensor_msgs::PoseSensorState& state);
 
- protected:
   ros::NodeHandle nodehandle_;
-
   // states
   ros::Subscriber pose_sensor_state_sub_;
 
- private:
   std::mutex mutex_;
-
   // state variables
   std::vector<PoseData> poses_;
   ros::Time stamp_;

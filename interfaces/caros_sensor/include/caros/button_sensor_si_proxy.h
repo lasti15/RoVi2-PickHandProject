@@ -51,15 +51,11 @@ class ButtonSensorSIProxy
  protected:
   void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
 
- protected:
   ros::NodeHandle nodehandle_;
-
   // states
   ros::Subscriber button_sensor_state_sub_;
 
- private:
   std::mutex mutex_;
-
   // state variables
   /* Notes:
    * std::vector could potentially, depending on the number of elements, be an ineffective container for looking up
