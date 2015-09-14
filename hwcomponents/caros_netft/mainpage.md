@@ -1,9 +1,14 @@
-
 \mainpage
-\htmlinclude manifest.html
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
-[TOC]
+- [caros_netft](#carosnetft)
+- [Generic kinect calibration process #](#generic-kinect-calibration-process-)
+- [Marvin kinect calibration process](#marvin-kinect-calibration-process)
 
+<!-- markdown-toc end -->
+
+# caros_netft #
 This component enables the stereo calibration of kinect cameras using the standard 
 stereo calibration component from ros (camera__calibration).
 

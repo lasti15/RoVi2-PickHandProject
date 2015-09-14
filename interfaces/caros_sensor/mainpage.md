@@ -1,8 +1,11 @@
-
 \mainpage
-\htmlinclude manifest.html
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
-[TOC]
+- [caros_sensor](#carossensor)
 
+<!-- markdown-toc end -->
+
+# caros_sensor #
 This component contains interfaces for communicating with various types of sensors. Examples hereof are camera sensors, RGB-D sensors, force/torque sensors and tactile array sensors.
 
