@@ -1,40 +1,52 @@
-#include <caros/robotiq3_node.h>
+#include "../include/caros/robotiq_node.h"
+
 #include <rw/rw.hpp>
+#include <rwhw/robotiq/Robotiq3.hpp>
+#include <rwhw/robotiq/Robotiq2.hpp>
 
 USE_ROBWORK_NAMESPACE
 
 using namespace caros;
 using namespace robwork;
 
-Robotiq3Node::Robotiq3Node(const ros::NodeHandle& node_handle)
+RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand_type)
     : caros::CarosNodeServiceInterface(node_handle),
       caros::GripperServiceInterface(node_handle),
       last_Q_(4, 0, 0, 0, 0),
-      robotiq3_(NULL),
-      node_handle_(node_handle)
+      robotiq_(NULL),
+      node_handle_(node_handle),
+      hand_type_(hand_type)
 
 {
-  /* Currently nothing specific should happen */
+  switch (hand_type_)
+  {
+    case ROBOTIQ2:
+      last_Q_ = rw::math::Q(1, 0.0);
+      break;
+    case ROBOTIQ3:
+      last_Q_ = rw::math::Q(4, 0.0, 0.0, 0.0, 0.0);
+      break;
+  }
 }
 
-Robotiq3Node::~Robotiq3Node()
+RobotiqNode::~RobotiqNode()
 {
-  if (robotiq3_ != NULL)
+  if (robotiq_ != NULL)
   {
-    if (robotiq3_->isConnected())
+    if (robotiq_->isConnected())
     {
-      ROS_DEBUG_STREAM("Still connected to the Robotiq3 device - going to stop the device and disconnect.");
-      robotiq3_->disconnect();
+      ROS_DEBUG_STREAM("Still connected to the Robotiq device - going to stop the device and disconnect.");
+      robotiq_->disconnect();
     }
-    robotiq3_ = NULL;
+    robotiq_ = NULL;
   }
   else
   {
-    ROS_DEBUG_STREAM("There was no Robotiq3 device to destroy before deallocating/destroying the Robotci3Node object.");
+    ROS_DEBUG_STREAM("There was no Robotiq device to destroy before deallocating/destroying the Robotci3Node object.");
   }
 }
 
-bool Robotiq3Node::activateHook()
+bool RobotiqNode::activateHook()
 {
   if (not configureRobotiqDevice())
   {
@@ -49,7 +61,7 @@ bool Robotiq3Node::activateHook()
   return true;
 }
 
-bool Robotiq3Node::recoverHook(const std::string& error_msg, const int64_t error_code)
+bool RobotiqNode::recoverHook(const std::string& error_msg, const int64_t error_code)
 {
   /* TODO: */
 
@@ -59,20 +71,20 @@ bool Robotiq3Node::recoverHook(const std::string& error_msg, const int64_t error
   return false;
 }
 
-void Robotiq3Node::runLoopHook()
+void RobotiqNode::runLoopHook()
 {
   try
   {
-    if (robotiq3_ == 0)
+    if (robotiq_ == 0)
     {
-      CAROS_FATALERROR("The Robotiq3 device is not configured", ROBOTIQ3NODE_INTERNAL_ERROR);
+      CAROS_FATALERROR("The Robotiq device is not configured", ROBOTIQNODE_INTERNAL_ERROR);
       return;
     }
 
-    if (not robotiq3_->isConnected())
+    if (not robotiq_->isConnected())
     {
-      CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                  ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+      CAROS_ERROR("There is no established connection to the Robotiq device.",
+                  ROBOTIQNODE_ROBOTIQ_DEVICE_NO_CONNECTION);
       return;
     }
 
@@ -85,13 +97,13 @@ void Robotiq3Node::runLoopHook()
     /************************************************************************
      * Get current gripper state and split values
      ************************************************************************/
-    robotiq3_->getAllStatusCMD();
-    Q q = robotiq3_->getQ();
+    robotiq_->getAllStatusCMD();
+    Q q = robotiq_->getQ();
     Q dq_calc = (q - last_Q_) / diff.toSec();
-    Q force = robotiq3_->getQCurrent();
-    bool is_moving = robotiq3_->isGripperMoving();
-    bool is_blocked = robotiq3_->isGripperBlocked();
-    bool is_stopped = !robotiq3_->isGripperMoving() && !robotiq3_->isGripperBlocked();
+    Q force = robotiq_->getQCurrent();
+    bool is_moving = robotiq_->isGripperMoving();
+    bool is_blocked = robotiq_->isGripperBlocked();
+    bool is_stopped = !robotiq_->isGripperMoving() && !robotiq_->isGripperBlocked();
     /* FIXME: hardcoded isEstop value */
     bool is_emergency_stopped = false;
     publishState(q, dq_calc, force, is_moving, is_blocked, is_stopped, is_emergency_stopped);
@@ -101,70 +113,79 @@ void Robotiq3Node::runLoopHook()
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return;
   }
 }
 
-void Robotiq3Node::errorLoopHook()
+void RobotiqNode::errorLoopHook()
 {
   /* Stop the Robotiq's current action(s) */
-  if (robotiq3_ == 0)
+  if (robotiq_ == 0)
   {
-    ROS_DEBUG_STREAM("The Robotiq3 device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
+    ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
   }
   else
   {
-    robotiq3_->stopCmd();
-    robotiq3_->disconnect();
+    robotiq_->stopCmd();
+    robotiq_->disconnect();
   }
 }
 
-void Robotiq3Node::fatalErrorLoopHook()
+void RobotiqNode::fatalErrorLoopHook()
 {
   /* Stop the Robotiq's current action(s) */
-  if (robotiq3_ == 0)
+  if (robotiq_ == 0)
   {
-    ROS_DEBUG_STREAM("The Robotiq3 device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
+    ROS_DEBUG_STREAM("The Robotiq device was not configured when '" << __PRETTY_FUNCTION__ << "' was invoked!");
   }
   else
   {
-    robotiq3_->stopCmd();
-    robotiq3_->disconnect();
+    robotiq_->stopCmd();
+    robotiq_->disconnect();
   }
 }
 
-bool Robotiq3Node::configureRobotiqDevice()
+bool RobotiqNode::configureRobotiqDevice()
 {
-  if (robotiq3_ != 0)
+  if (robotiq_ != 0)
   {
     /* Could also just silently return true or false and ignore the error that configure is being invoked twice... */
     CAROS_FATALERROR(
-        "The Robotiq3 device is already active - trying to configure an already configured Robotiq3 node is a bug!",
-        ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE);
+        "The Robotiq device is already active - trying to configure an already configured Robotiq node is a bug!",
+        ROBOTIQNODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE);
     return false;
   }
 
   /* Fetch parameters (if any) or use the defaults */
-  node_handle_.param("ip", ip_, std::string("192.168.100.21"));
   node_handle_.param("port", port_, 502);
 
   // TODO: Verify that the chosen parameters are valid?
 
-  robotiq3_ = ownedPtr(new rwhw::Robotiq3());
+  switch (hand_type_)
+  {
+    case ROBOTIQ2:
+      node_handle_.param("ip", ip_, std::string("192.168.100.22"));
+      robotiq_ = ownedPtr(new rwhw::Robotiq2());
+      break;
+    case ROBOTIQ3:
+      node_handle_.param("ip", ip_, std::string("192.168.100.21"));
+      robotiq_ = ownedPtr(new rwhw::Robotiq3());
+      break;
+  }
 
   if (not GripperServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
-                     ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
+                     ROBOTIQNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
     return false;
   }
 
   /* Outputting information on supported value ranges */
   typedef std::pair<rw::math::Q, rw::math::Q> pair_q;
-  pair_q position_limits = robotiq3_->getLimitPos();
-  pair_q velocity_limits = robotiq3_->getLimitVel();
-  pair_q force_limits = robotiq3_->getLimitForce();
+  pair_q position_limits = robotiq_->getLimitPos();
+  pair_q velocity_limits = robotiq_->getLimitVel();
+  pair_q force_limits = robotiq_->getLimitForce();
 
   ROS_ERROR_STREAM_COND(position_limits.first.size() != position_limits.second.size(),
                         "The sizes of the Q's in the position limit pair are not equal. first contains "
@@ -189,36 +210,36 @@ bool Robotiq3Node::configureRobotiqDevice()
   return true;
 }
 
-bool Robotiq3Node::connectToRobotiqDevice()
+bool RobotiqNode::connectToRobotiqDevice()
 {
-  if (robotiq3_ == 0)
+  if (robotiq_ == 0)
   {
-    CAROS_FATALERROR("The Robotiq3 device is not configured", ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_FATALERROR("The Robotiq device is not configured", ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
 
-  if (robotiq3_->isConnected())
+  if (robotiq_->isConnected())
   {
     ROS_ERROR_STREAM(
         "'"
         << __PRETTY_FUNCTION__
-        << "' invoked even though a connection to the Robotiq3 device has already been established - this is a bug!");
+        << "' invoked even though a connection to the Robotiq device has already been established - this is a bug!");
     return false;
   }
 
   /* Connect according to configured parameters */
-  if (not robotiq3_->connect(ip_, port_))
+  if (not robotiq_->connect(ip_, port_))
   {
-    CAROS_FATALERROR("The Robotiq3 hand was not able to connect to " << ip_ << ":" << port_,
-                     ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
+    CAROS_FATALERROR("The Robotiq hand was not able to connect to " << ip_ << ":" << port_,
+                     ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
     return false;
   }
 
   /* Only very rare and obscure situations should cause this to fail, since the above connect was successful */
-  if (not robotiq3_->isConnected())
+  if (not robotiq_->isConnected())
   {
     /* Something went wrong right after connecting */
-    CAROS_FATALERROR("Failed to properly connect to the Robotiq3 device.", ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
+    CAROS_FATALERROR("Failed to properly connect to the Robotiq device.", ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
     return false;
   }
 
@@ -228,16 +249,16 @@ bool Robotiq3Node::connectToRobotiqDevice()
 /************************************************************************
  * GripperServiceInterface
  ************************************************************************/
-bool Robotiq3Node::moveQ(const rw::math::Q& q)
+bool RobotiqNode::moveQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
     return false;
   }
 
-  if (robotiq3_->getNumberOfJoints() != q.size())
+  if (robotiq_->getNumberOfJoints() != q.size())
   {
-    CAROS_ERROR("MoveQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    CAROS_ERROR("MoveQ called with a wrong number of joints.", ROBOTIQNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
@@ -245,93 +266,93 @@ bool Robotiq3Node::moveQ(const rw::math::Q& q)
 
   try
   {
-    robotiq3_->moveCmd(q);
+    robotiq_->moveCmd(q);
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
   return true;
 }
 
-bool Robotiq3Node::gripQ(const rw::math::Q& q)
+bool RobotiqNode::gripQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
     return false;
   }
 
-  if (robotiq3_->getNumberOfJoints() != q.size())
+  if (robotiq_->getNumberOfJoints() != q.size())
   {
-    CAROS_ERROR("GripQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    CAROS_ERROR("GripQ called with a wrong number of joints.", ROBOTIQNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
   try
   {
-    robotiq3_->moveCmd(q);
+    robotiq_->moveCmd(q);
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
   return true;
 }
 
-bool Robotiq3Node::setForceQ(const rw::math::Q& q)
+bool RobotiqNode::setForceQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
     return false;
   }
 
-  if (robotiq3_->getNumberOfJoints() != q.size())
+  if (robotiq_->getNumberOfJoints() != q.size())
   {
-    CAROS_ERROR("SetForceQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    CAROS_ERROR("SetForceQ called with a wrong number of joints.", ROBOTIQNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
   try
   {
-    robotiq3_->setTargetQForce(q);
+    robotiq_->setTargetQForce(q);
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
   return true;
 }
 
-bool Robotiq3Node::setVelocityQ(const rw::math::Q& q)
+bool RobotiqNode::setVelocityQ(const rw::math::Q& q)
 {
   if (not isInWorkingCondition())
   {
     return false;
   }
 
-  if (robotiq3_->getNumberOfJoints() != q.size())
+  if (robotiq_->getNumberOfJoints() != q.size())
   {
-    CAROS_ERROR("SetVelocityQ called with a wrong number of joints.", ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH);
+    CAROS_ERROR("SetVelocityQ called with a wrong number of joints.", ROBOTIQNODE_UNSUPPORTED_Q_LENGTH);
     return false;
   }
 
   try
   {
-    robotiq3_->setTargetQVel(q);
+    robotiq_->setTargetQVel(q);
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
 
   return true;
 }
 
-bool Robotiq3Node::stopMovement()
+bool RobotiqNode::stopMovement()
 {
   if (not isInWorkingCondition())
   {
@@ -340,11 +361,11 @@ bool Robotiq3Node::stopMovement()
 
   try
   {
-    robotiq3_->stopCmd();
+    robotiq_->stopCmd();
   }
   catch (const rw::common::Exception& exp)
   {
-    CAROS_ERROR(exp.what(), ROBOTIQ3NODE_INTERNAL_ERROR);
+    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
     return false;
   }
 
@@ -354,7 +375,7 @@ bool Robotiq3Node::stopMovement()
 /************************************************************************
  * Utility functions
  ************************************************************************/
-bool Robotiq3Node::isInWorkingCondition()
+bool RobotiqNode::isInWorkingCondition()
 {
   if (not isInRunning())
   {
@@ -362,16 +383,15 @@ bool Robotiq3Node::isInWorkingCondition()
     return false;
   }
 
-  if (robotiq3_ == 0)
+  if (robotiq_ == 0)
   {
-    CAROS_FATALERROR("The Robotiq3 device is not configured.", ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE);
+    CAROS_FATALERROR("The Robotiq device is not configured.", ROBOTIQNODE_NO_ROBOTIQ_DEVICE);
     return false;
   }
 
-  if (not robotiq3_->isConnected())
+  if (not robotiq_->isConnected())
   {
-    CAROS_ERROR("There is no established connection to the Robotiq3 device.",
-                ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION);
+    CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQNODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
   }
 

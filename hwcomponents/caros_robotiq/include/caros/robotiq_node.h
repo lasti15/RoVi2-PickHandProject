@@ -1,10 +1,10 @@
-#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
-#define CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
+#ifndef CAROS_ROBOTIQ_ROBOTIQ_NODE_H
+#define CAROS_ROBOTIQ_ROBOTIQ_NODE_H
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/gripper_service_interface.h>
 
-#include <rwhw/robotiq/Robotiq3.hpp>
+#include <rwhw/robotiq/Robotiq.hpp>
 
 #include <rw/math/Transform3D.hpp>
 #include <rw/math/Q.hpp>
@@ -14,16 +14,23 @@
 namespace caros
 {
 /**
- * @brief Ros node for controlling Robotiq-3 gripper.
+ * @brief Ros node for controlling Robotiq-3 and Robotiq-2 grippers.
  */
-class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
+class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
  public:
+  enum HandType
+  {
+    ROBOTIQ3,
+    ROBOTIQ2
+  };
+
+ public:
   //! constructor
-  Robotiq3Node(const ros::NodeHandle& node_handle);
+  RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand_type);
 
   //! destructor
-  virtual ~Robotiq3Node();
+  virtual ~RobotiqNode();
 
   //! @copydoc caros::GripperServiceInterface::moveQ
   bool moveQ(const rw::math::Q& q);
@@ -41,17 +48,17 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   bool stopMovement(void);
 
   /* TODO: Properly document the error codes */
-  /* TODO: Consider better error codes for ROBOTIQ3NODE_INTERNAL_ERROR */
+  /* TODO: Consider better error codes for ROBOTIQNODE_INTERNAL_ERROR */
   /* The enum order should not be changed, as recorded ROS sessions would then be invalidated */
-  enum ROBOTIQ3NODE_ERRORCODE
+  enum ROBOTIQNODE_ERRORCODE
   {
-    ROBOTIQ3NODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE = 1,
-    ROBOTIQ3NODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL,
-    ROBOTIQ3NODE_ROBOTIQ_DEVICE_CONNECT_FAILED,
-    ROBOTIQ3NODE_INTERNAL_ERROR,
-    ROBOTIQ3NODE_ROBOTIQ_DEVICE_NO_CONNECTION,
-    ROBOTIQ3NODE_NO_ROBOTIQ_DEVICE,
-    ROBOTIQ3NODE_UNSUPPORTED_Q_LENGTH
+    ROBOTIQNODE_ROBOTIQ_DEVICE_ALREADY_ACTIVE = 1,
+    ROBOTIQNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL,
+    ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED,
+    ROBOTIQNODE_INTERNAL_ERROR,
+    ROBOTIQNODE_ROBOTIQ_DEVICE_NO_CONNECTION,
+    ROBOTIQNODE_NO_ROBOTIQ_DEVICE,
+    ROBOTIQNODE_UNSUPPORTED_Q_LENGTH
   };
 
  protected:
@@ -77,10 +84,11 @@ class Robotiq3Node : public caros::CarosNodeServiceInterface, public caros::Grip
   int port_;
 
  private:
-  rw::common::Ptr<rwhw::Robotiq3> robotiq3_;
+  rw::common::Ptr<rwhw::Robotiq> robotiq_;
   ros::NodeHandle node_handle_;
+  HandType hand_type_;
 };
 
 }  // end namespace
 
-#endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
+#endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ_NODE_H
