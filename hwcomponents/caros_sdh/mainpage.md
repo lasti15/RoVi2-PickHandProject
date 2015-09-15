@@ -1,7 +1,18 @@
 \mainpage
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
-[TOC]
+- [caros_sdh](#carossdh)
+- [Interfaces - how to use this node](#interfaces---how-to-use-this-node)
+- [Requirements](#requirements)
+- [Launching the node](#launching-the-node)
+    - [Parameters](#parameters)
+        - [Status of RS232 support](#status-of-rs232-support)
+    - [Using debug verbosity](#using-debug-verbosity)
 
+<!-- markdown-toc end -->
+
+# caros_sdh #
 caros_sdh is a ROS node for controlling the (physical) 3-finger SCHUNK dexterous hand.
 
 # Interfaces - how to use this node #

@@ -1,5 +1,21 @@
 \mainpage
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
+- [caros_robotiq3](#carosrobotiq3)
+- [Interfaces - how to use this node](#interfaces---how-to-use-this-node)
+    - [Gripper Service Interface](#gripper-service-interface)
+- [Requirements](#requirements)
+- [Launching the node](#launching-the-node)
+    - [Parameters](#parameters)
+- [Small demo(s)](#small-demos)
+    - [Available demo(s)](#available-demos)
+    - [Launching the demo(s)](#launching-the-demos)
+        - [Using debug verbosity](#using-debug-verbosity)
+
+<!-- markdown-toc end -->
+
+# caros_robotiq3 #
 caros_robotiq3 is a ROS node for controlling a physical Robotiq3 hand. A few interfaces are available for controlling the hand.
 
 # Interfaces - how to use this node #

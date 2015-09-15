@@ -1,5 +1,23 @@
 \mainpage
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
+- [caros_universalrobot](#carosuniversalrobot)
+- [Interfaces - how to use this node](#interfaces---how-to-use-this-node)
+    - [Serial Device Service Interface](#serial-device-service-interface)
+    - [UR Service Interface](#ur-service-interface)
+    - [Warning](#warning)
+- [Requirements](#requirements)
+- [Launching the node](#launching-the-node)
+    - [Parameters](#parameters)
+- [Small demo(s)](#small-demos)
+    - [Available demo(s)](#available-demos)
+    - [Launching the demo(s)](#launching-the-demos)
+        - [Using debug verbosity](#using-debug-verbosity)
+
+<!-- markdown-toc end -->
+
+# caros_universalrobot #
 caros_universalrobot is a ROS node for controlling a physical UniversalRobot. A few interfaces are available for controlling the robot.
 
 # Interfaces - how to use this node #

@@ -1,9 +1,14 @@
-
 \mainpage
-\htmlinclude manifest.html
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+**Table of Contents**
 
-[TOC]
+- [caros_trakstar](#carostrakstar)
+- [Using the trakstar node #](#using-the-trakstar-node-)
+- [Calibration](#calibration)
 
+<!-- markdown-toc end -->
+
+# caros_trakstar #
 The Trakstar component is a ros wrapper for the magnetic pose tracker system from TrakStar. It consist of 4 pose trackers and some digital io inputs.
 
 IMPORTANT: the driver needs to be running. This is done by making sure ATCdaemon64 is running. Start it in the terminal and test if the connection is find using the APITest64 which is normally found in "/opt/3DGuidance.Rev.E.64/Binaries". 
