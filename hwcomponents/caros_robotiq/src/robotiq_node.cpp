@@ -12,7 +12,6 @@ using namespace robwork;
 RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand_type)
     : caros::CarosNodeServiceInterface(node_handle),
       caros::GripperServiceInterface(node_handle),
-      last_Q_(4, 0, 0, 0, 0),
       robotiq_(NULL),
       node_handle_(node_handle),
       hand_type_(hand_type)
@@ -20,10 +19,10 @@ RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand
 {
   switch (hand_type_)
   {
-    case ROBOTIQ2:
+    case HandType::ROBOTIQ2:
       last_Q_ = rw::math::Q(1, 0.0);
       break;
-    case ROBOTIQ3:
+    case HandType::ROBOTIQ3:
       last_Q_ = rw::math::Q(4, 0.0, 0.0, 0.0, 0.0);
       break;
   }
@@ -42,7 +41,7 @@ RobotiqNode::~RobotiqNode()
   }
   else
   {
-    ROS_DEBUG_STREAM("There was no Robotiq device to destroy before deallocating/destroying the Robotci3Node object.");
+    ROS_DEBUG_STREAM("There was no Robotiq device to destroy before deallocating/destroying the RobotiqNode object.");
   }
 }
 
@@ -159,20 +158,21 @@ bool RobotiqNode::configureRobotiqDevice()
 
   /* Fetch parameters (if any) or use the defaults */
   std::string port_param_name = "device_port";
-  ROS_DEBUG_STREAM_COND( not node_handle_.hasParam(port_param_name), "Parameter device_port not found from param server. Using default.");
+  ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(port_param_name),
+                        "Parameter device_port not found from param server. Using default.");
   node_handle_.param(port_param_name, port_, 502);
 
-
   std::string ip_param_name = "device_ip";
-  ROS_DEBUG_STREAM_COND( not node_handle_.hasParam(ip_param_name), "Parameter device_ip not found from param server. Using default.");
+  ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(ip_param_name),
+                        "Parameter device_ip not found from param server. Using default.");
 
   switch (hand_type_)
   {
-    case ROBOTIQ2:
+    case HandType::ROBOTIQ2:
       node_handle_.param(ip_param_name, ip_, std::string("192.168.100.22"));
       robotiq_ = ownedPtr(new rwhw::Robotiq2());
       break;
-    case ROBOTIQ3:
+    case HandType::ROBOTIQ3:
       node_handle_.param(ip_param_name, ip_, std::string("192.168.100.21"));
       robotiq_ = ownedPtr(new rwhw::Robotiq3());
       break;

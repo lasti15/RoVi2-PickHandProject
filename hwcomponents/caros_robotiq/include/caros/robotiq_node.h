@@ -19,7 +19,7 @@ namespace caros
 class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
  public:
-  enum HandType
+  enum class HandType
   {
     ROBOTIQ3,
     ROBOTIQ2
