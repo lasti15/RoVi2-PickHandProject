@@ -1,10 +1,10 @@
 <launch>
   <group>
     <!-- Loading default pameters for hand ip and tcp port. -->
-    <include file="$(find caros_robotiq)/launch/caros_robotiq3_param.xml" ns="robotiq3_simple_demo_node">
+    <include file="$(find caros_robotiq)/launch/caros_robotiq3_param.xml" ns="caros_robotiq3">
       <!-- no parameters have to be set - relying on default values -->
     </include>
-    <node pkg="caros_robotiq" type="caros_robotiq3" name="robotiq3_simple_demo_node" required="true" output="screen">
+    <node pkg="caros_robotiq" type="caros_robotiq3" name="caros_robotiq3" required="true" output="screen">
       <!-- Nothing -->
     </node>
   </group>

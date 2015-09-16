@@ -158,21 +158,26 @@ bool RobotiqNode::configureRobotiqDevice()
   }
 
   /* Fetch parameters (if any) or use the defaults */
-  node_handle_.param("port", port_, 502);
+  std::string port_param_name = "device_port";
+  ROS_DEBUG_STREAM_COND( not node_handle_.hasParam(port_param_name), "Parameter device_port not found from param server. Using default.");
+  node_handle_.param(port_param_name, port_, 502);
 
-  // TODO: Verify that the chosen parameters are valid?
+
+  std::string ip_param_name = "device_ip";
+  ROS_DEBUG_STREAM_COND( not node_handle_.hasParam(ip_param_name), "Parameter device_ip not found from param server. Using default.");
 
   switch (hand_type_)
   {
     case ROBOTIQ2:
-      node_handle_.param("ip", ip_, std::string("192.168.100.22"));
+      node_handle_.param(ip_param_name, ip_, std::string("192.168.100.22"));
       robotiq_ = ownedPtr(new rwhw::Robotiq2());
       break;
     case ROBOTIQ3:
-      node_handle_.param("ip", ip_, std::string("192.168.100.21"));
+      node_handle_.param(ip_param_name, ip_, std::string("192.168.100.21"));
       robotiq_ = ownedPtr(new rwhw::Robotiq3());
       break;
   }
+  // TODO: Verify that the chosen parameters are valid?
 
   if (not GripperServiceInterface::configureInterface())
   {

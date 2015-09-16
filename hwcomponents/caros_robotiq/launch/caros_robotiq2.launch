@@ -1,9 +1,9 @@
 <launch>
   <group>
-    <include file="$(find caros_robotiq)/launch/caros_robotiq2_param.xml">
+    <include file="$(find caros_robotiq)/launch/caros_robotiq2_param.xml" ns="caros_robotiq2">
       <!-- no parameters have to be set - relying on default values -->
     </include>
-    <node pkg="caros_robotiq" type="caros_robotiq2" name="robotiq2">
+    <node pkg="caros_robotiq" type="caros_robotiq2" name="caros_robotiq2">
     </node>
   </group>
 </launch>

@@ -3,7 +3,7 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "robotiq2");
+  ros::init(argc, argv, "caros_robotiq2");
 
   ros::NodeHandle nh("~");
   std::string name = nh.getNamespace();

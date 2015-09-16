@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
   ros::init(argc, argv, "robotiq2_simple_demo");
   ros::NodeHandle n("~");
 
-  const std::string node_under_test_name = "robotiq2_simple_demo_node";
+  const std::string node_under_test_name = "caros_robotiq2";
 
   const std::string info_prefix = ros::this_node::getName() + ": ";
 

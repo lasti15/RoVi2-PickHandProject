@@ -1,10 +1,9 @@
 #include <ros/ros.h>
-
-#include "caros/robotiq_node.h"
+#include <caros/robotiq_node.h>
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "robotiq3");
+  ros::init(argc, argv, "caros_robotiq3");
 
   ros::NodeHandle nh("~");
   std::string name = nh.getNamespace();
