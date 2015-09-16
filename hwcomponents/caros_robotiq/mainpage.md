@@ -16,14 +16,16 @@
 <!-- markdown-toc end -->
 
 # caros_robotiq2/3 #
-The caros_robotiq2 and caros_robotiq3 ROS nodes are for controlling a physical Robotiq2 or Robotiq3 hand. A few interfaces are available for controlling these hands.
+The caros_robotiq2 and caros_robotiq3 ROS nodes are for controlling a physical Robotiq2 or Robotiq3 hand. There is one interface available for controlling these hands.
+
+While we would not be suprised if these nodes work for other robotics hands we have only tested them with "2-Finger Adaptive Robot Gripper, C-Model, controller version 3.0" and "3-Finger Adaptive Robot Gripper, version ???". 
 
 # Interfaces - how to use this node #
 
 ## Gripper Service Interface ##
-The @ref caros::GripperServiceInterface interface is fully supported by this node.
+The @ref caros::GripperServiceInterface interface is fully supported by the nodes.
 
-The Robotiq2 hand has one joint, the Robotiq3 has four. Therefore all service calls expecting input of type Q need to be provided one or four dimensional Qs. All Q values should be between 0 and 255 (see Robotiq datasheet).
+The Robotiq2 hand has one joint, the Robotiq3 has four. Therefore all service calls expecting input of type Q need to be provided one or four dimensional Qs. All Q values should be between 0 and 255 both values inclusive (see Robotiq datasheets, SDU's robotiq2 - http://support.robotiq.com/download/attachments/1181172/2-FINGER-85-130206.pdf?version=1&modificationDate=1407264261000 robotiq3 - http://support.robotiq.com/download/attachments/5963880/3-FINGER-140613.pdf?version=1&modificationDate=1416424959000 ).
 
 # Requirements #
 RobWorkHardware with the *robotiq* component enabled, is required and can be obtained from http://www.robwork.dk
@@ -34,24 +36,23 @@ The CAROS Robotiq nodes can be launched by using one of the following:
     roslaunch caros_robotiq caros_robotiq3.launch
     roslaunch caros_robotiq caros_robotiq2.launch
 
-The launch scripts is using the default ip and port used in the marvin setup. This can be changed in the hwcomponents/caros_robotiq/launch/caros_robotiq3_param.xml and hwcomponents/caros_robotiq/launch/caros_robotiq2_param.xml files.
+The launch scripts are using the default ip and port used in the marvin setup. This can be changed in the hwcomponents/caros_robotiq/launch/caros_robotiq3_param.xml and hwcomponents/caros_robotiq/launch/caros_robotiq2_param.xml files.
 
 ## Parameters ##
 The following parameters are supported:
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| ip | IP of the hand to control | 192.168.100.21 for robotiq3|
-|  |  | 192.168.100.22 for robotiq2|
+| ip | IP of the hand to control | 192.168.100.21 for robotiq3 and 192.168.100.22 for robotiq2|
 | port | The modbus communication port used | 502 |
 
 # Small demo(s) #
-To quickly and easily verify that the communication with the hands is working, there is one simple demo for each device that can be run. The expected behaviour should be both observed and verified by the user.
+To quickly and easily verify that the communication with one of the hands is working, there is one simple demo for each device that can be run. The expected behaviour should be both observed and verified by the user.
 
 ## Available demo(s) ##
 | Demo | Expected behaviour | Notes |
 | ---- | ------------------ | ----- |
-| simple_robotiq2_demo | Initiallising the Robotiq2 hand and moving the fingers to a position. | None |
-| simple_robotiq3_demo | Initiallising the Robotiq3 hand and moving the fingers to a position. | None |
+| simple_robotiq2_demo | Initialising the Robotiq2 hand and moving the fingers to a position. | None |
+| simple_robotiq3_demo | Initialising the Robotiq3 hand and moving the fingers to a position. | None |
 
 ## Launching the demo(s) ##
 In order to make ROS properly find the demos, then the <your_catkin_workspace>/devel/setup.bash file should be sourced. If standing in your catkin workspace then it's as simple as (if you are using BASH or similar shell - default on Ubuntu):
@@ -60,7 +61,7 @@ In order to make ROS properly find the demos, then the <your_catkin_workspace>/d
 
 To launch the demos:
 
-    roslaunch caros_universalrobot <demo name>.test
+    roslaunch caros_robotiq <demo name>.test
 
 For example to launch the simple_robotiq3_demo:
 
