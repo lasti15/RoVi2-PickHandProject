@@ -1,7 +1,7 @@
-<!-- Parameters for the caros_robotiq3 node -->
+<!-- Parameters for the caros_robotiq2 node -->
 <launch>
   <!-- Define the parameterisation of the ROS parameters -->
-  <arg name="device_ip" default="192.168.100.21" />
+  <arg name="device_ip" default="192.168.100.22" />
   <arg name="device_port" default="502" />
 
   <!-- Set the ROS parameters -->

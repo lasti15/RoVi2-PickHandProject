@@ -48,13 +48,24 @@ else()
 ########################################################################
 #### Executables
 ########################################################################
-  add_executable(caros_robotiq3 src/main_robotiq3.cpp src/robotiq3_node.cpp)
-  target_link_libraries(caros_robotiq3 ${conv_library}
+  add_executable(caros_robotiq3 src/main_robotiq3.cpp src/robotiq_node.cpp)
+  target_link_libraries(caros_robotiq3
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
   )
   add_dependencies(caros_robotiq3
+    caros_common
+    caros_control
+  )
+  
+  add_executable(caros_robotiq2 src/main_robotiq2.cpp src/robotiq_node.cpp)
+  target_link_libraries(caros_robotiq2
+    ${ROBWORK_LIBRARIES}
+    ${ROBWORKHARDWARE_LIBRARIES}
+    ${catkin_LIBRARIES}
+  )
+  add_dependencies(caros_robotiq2
     caros_common
     caros_control
   )
@@ -65,5 +76,8 @@ else()
   if(CATKIN_ENABLE_TESTING)
     add_executable(simple_caros_robotiq3_demo test/simple_robotiq3_demo.cpp)
     target_link_libraries(simple_caros_robotiq3_demo ${catkin_LIBRARIES})
+    
+    add_executable(simple_caros_robotiq2_demo test/simple_robotiq2_demo.cpp)
+    target_link_libraries(simple_caros_robotiq2_demo ${catkin_LIBRARIES})
   endif()
 endif()

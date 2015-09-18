@@ -6,17 +6,17 @@
 
 int main(int argc, char* argv[])
 {
-  ros::init(argc, argv, "robotiq3_simple_demo");
+  ros::init(argc, argv, "robotiq2_simple_demo");
   ros::NodeHandle n("~");
 
-  const std::string node_under_test_name = "caros_robotiq3";
+  const std::string node_under_test_name = "caros_robotiq2";
 
   const std::string info_prefix = ros::this_node::getName() + ": ";
 
   ROS_INFO_STREAM(ros::this_node::getName() << " started!");
 
   ROS_INFO_STREAM(info_prefix << "Setting up GripperSIProxy");
-  caros::GripperSIProxy r3_test(n, node_under_test_name);
+  caros::GripperSIProxy r2_test(n, node_under_test_name);
   ROS_INFO_STREAM(info_prefix << "GripperSIProxy setup. The hand should be initializing if it was not before!");
 
   const std::string node_stateTopicName = node_under_test_name + "/" + "caros_node/caros_node_state";
@@ -31,12 +31,12 @@ int main(int argc, char* argv[])
 
   ros::spinOnce();
 
-  ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r3_test.getQ());
+  ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r2_test.getQ());
 
-  rw::math::Q target(4, 200, 200, 200, 100);
+  rw::math::Q target(1, 200.0);
   ROS_INFO_STREAM(info_prefix << "Trying to move to: " << target);
 
-  bool ret = r3_test.moveQ(target);
+  bool ret = r2_test.moveQ(target);
 
   if (not ret)
   {
@@ -48,14 +48,14 @@ int main(int argc, char* argv[])
     ROS_INFO_STREAM(info_prefix << "Movement command successfully accepted");
   }
 
-  rw::math::Q current = r3_test.getQ();
+  rw::math::Q current = r2_test.getQ();
 
   while (ros::ok() && current != target)
   {
     ros::Duration(1).sleep();  // In seconds
     ros::spinOnce();
-    current = r3_test.getQ();
-    ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r3_test.getQ());
+    current = r2_test.getQ();
+    ROS_INFO_STREAM(info_prefix << "The hand is now at: " << r2_test.getQ());
   }
 
   ROS_WARN_STREAM(info_prefix << "This node will now end. This is intended behavior. When used with the test script "
