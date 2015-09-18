@@ -1,4 +1,4 @@
-#include "../include/caros/robotiq_node.h"
+#include <caros/robotiq_node.h>
 
 #include <rw/rw.hpp>
 #include <rwhw/robotiq/Robotiq3.hpp>
@@ -24,6 +24,10 @@ RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand
       break;
     case HandType::ROBOTIQ3:
       last_Q_ = rw::math::Q(4, 0.0, 0.0, 0.0, 0.0);
+      break;
+    default:
+      /* No supported initialisation for the chosen HandType */
+      throw std::invalid_argument("The chosen HandType is not supported - this is a bug!");
       break;
   }
 }
@@ -159,12 +163,12 @@ bool RobotiqNode::configureRobotiqDevice()
   /* Fetch parameters (if any) or use the defaults */
   std::string port_param_name = "device_port";
   ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(port_param_name),
-                        "Parameter device_port not found from param server. Using default.");
+                        "Parameter " << port_param_name << " not found from param server. Using default.");
   node_handle_.param(port_param_name, port_, 502);
 
   std::string ip_param_name = "device_ip";
   ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(ip_param_name),
-                        "Parameter device_ip not found from param server. Using default.");
+                        "Parameter " << ip_param_name << " not found from param server. Using default.");
 
   switch (hand_type_)
   {
@@ -187,10 +191,10 @@ bool RobotiqNode::configureRobotiqDevice()
   }
 
   /* Outputting information on supported value ranges */
-  typedef std::pair<rw::math::Q, rw::math::Q> pair_q;
-  pair_q position_limits = robotiq_->getLimitPos();
-  pair_q velocity_limits = robotiq_->getLimitVel();
-  pair_q force_limits = robotiq_->getLimitForce();
+  typedef std::pair<rw::math::Q, rw::math::Q> PairQ;
+  PairQ position_limits = robotiq_->getLimitPos();
+  PairQ velocity_limits = robotiq_->getLimitVel();
+  PairQ force_limits = robotiq_->getLimitForce();
 
   ROS_ERROR_STREAM_COND(position_limits.first.size() != position_limits.second.size(),
                         "The sizes of the Q's in the position limit pair are not equal. first contains "

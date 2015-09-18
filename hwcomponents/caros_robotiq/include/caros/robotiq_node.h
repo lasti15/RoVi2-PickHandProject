@@ -11,6 +11,8 @@
 
 #include <ros/ros.h>
 
+#include <stdexcept>
+
 namespace caros
 {
 /**
@@ -26,7 +28,11 @@ class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::Gripp
   };
 
  public:
-  //! constructor
+  /**
+   * \brief Constructor
+   * \param [in] hand_type Specify what type of Robotiq hand to use
+   * \throws std::invalid_argument if the chosen HandType is not supported
+   */
   RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand_type);
 
   //! destructor

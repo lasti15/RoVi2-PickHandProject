@@ -16,7 +16,7 @@
 <!-- markdown-toc end -->
 
 # caros_robotiq2/3 #
-The caros_robotiq2 and caros_robotiq3 ROS nodes are for controlling a physical Robotiq2 or Robotiq3 hand. There is one interface available for controlling these hands.
+The caros_robotiq2 and caros_robotiq3 ROS nodes are for controlling a physical Robotiq2 or Robotiq3 hand.
 
 While we would not be suprised if these nodes work for other robotics hands we have only tested them with "2-Finger Adaptive Robot Gripper, C-Model, controller version 3.0" and "3-Finger Adaptive Robot Gripper, version ???". 
 
