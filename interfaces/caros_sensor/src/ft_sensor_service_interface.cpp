@@ -4,6 +4,7 @@
 #include <geometry_msgs/WrenchStamped.h>
 
 using namespace rw::common;
+using namespace caros;
 
 FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)
 {

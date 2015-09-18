@@ -10,6 +10,9 @@
 
 #define FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE 1
 
+namespace caros
+{
+
 /**
  * @brief describe the minimum interface of a Force/Torque sensing device.
  */
@@ -39,5 +42,6 @@ class FTSensorServiceInterface
  private:
   ros::Publisher wrenchDataPublisher_;
 };
+}
 
 #endif
