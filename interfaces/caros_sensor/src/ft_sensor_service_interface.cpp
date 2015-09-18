@@ -13,6 +13,10 @@ FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nh)
       nodeHnd_.advertise<geometry_msgs::WrenchStamped>("wrench", FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE);
 }
 
+FTSensorServiceInterface::~FTSensorServiceInterface()
+{
+}
+
 void FTSensorServiceInterface::publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe)
 {
   geometry_msgs::WrenchStamped wdata;

@@ -20,6 +20,7 @@ class ButtonSensorServiceInterface
   //! constructor
   ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
+  //! destructor
   virtual ~ButtonSensorServiceInterface();
 
  protected:

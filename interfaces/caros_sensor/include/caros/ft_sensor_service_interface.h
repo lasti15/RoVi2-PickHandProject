@@ -26,9 +26,7 @@ class FTSensorServiceInterface
   FTSensorServiceInterface(ros::NodeHandle nh);
 
   //! destructor
-  virtual ~FTSensorServiceInterface()
-  {
-  }
+  virtual ~FTSensorServiceInterface();
 
   //! send the current F/T reading
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);

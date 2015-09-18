@@ -26,6 +26,9 @@ class PoseSensorServiceInterface
   //! constructor
   PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
+  //! destructor
+  virtual ~PoseSensorServiceInterface();
+
  protected:
   //! initialize ros interface
   bool configureInterface();

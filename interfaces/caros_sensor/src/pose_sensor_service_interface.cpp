@@ -10,6 +10,10 @@ PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& no
 {
 }
 
+PoseSensorServiceInterface::~PoseSensorServiceInterface()
+{
+}
+
 bool PoseSensorServiceInterface::configureInterface()
 {
   pose_pub_ = node_hnd_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
