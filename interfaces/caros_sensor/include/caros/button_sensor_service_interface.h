@@ -18,9 +18,6 @@ class ButtonSensorServiceInterface
 {
  public:
   //! constructor
-  ButtonSensorServiceInterface(const std::string& service_name);
-
-  //! constructor
   ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
   virtual ~ButtonSensorServiceInterface();

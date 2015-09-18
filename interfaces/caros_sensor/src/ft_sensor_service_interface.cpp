@@ -6,12 +6,6 @@
 using namespace rw::common;
 using namespace caros;
 
-FTSensorServiceInterface::FTSensorServiceInterface(const std::string& service_name)
-{
-  wrenchDataPublisher_ =
-      nodeHnd_.advertise<geometry_msgs::WrenchStamped>("wrench", FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE);
-}
-
 FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nh)
 {
   nodeHnd_ = nh;

@@ -23,9 +23,6 @@ class FTSensorServiceInterface
   typedef std::shared_ptr<FTSensorServiceInterface> Ptr;
 
   //! constructor
-  FTSensorServiceInterface(const std::string& service_name);
-
-  //! constructor
   FTSensorServiceInterface(ros::NodeHandle nh);
 
   //! destructor
