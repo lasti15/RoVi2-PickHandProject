@@ -12,6 +12,10 @@ PoseSensorServiceInterface::PoseSensorServiceInterface(const ros::NodeHandle& no
   /* Nothing specific to do */
 }
 
+PoseSensorServiceInterface::~PoseSensorServiceInterface()
+{
+}
+
 bool PoseSensorServiceInterface::configureInterface()
 {
   if (pose_publisher_)

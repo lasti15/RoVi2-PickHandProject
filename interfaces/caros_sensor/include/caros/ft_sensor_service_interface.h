@@ -26,9 +26,7 @@ class FTSensorServiceInterface
   FTSensorServiceInterface(ros::NodeHandle nodehandle);
 
   //! destructor
-  virtual ~FTSensorServiceInterface()
-  {
-  }
+  virtual ~FTSensorServiceInterface();
 
  protected:
   //! initialize ros interface

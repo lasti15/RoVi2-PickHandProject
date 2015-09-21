@@ -11,7 +11,6 @@ ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle
 
 ButtonSensorServiceInterface::~ButtonSensorServiceInterface()
 {
-  /* Nothing specific to do */
 }
 
 bool ButtonSensorServiceInterface::configureInterface()

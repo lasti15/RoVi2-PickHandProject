@@ -12,6 +12,11 @@ FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nodehandle)
   /* Nothing specific to do */
 }
 
+FTSensorServiceInterface::~FTSensorServiceInterface()
+{
+  /* Nothing specific to do */
+}
+
 bool FTSensorServiceInterface::configureInterface()
 {
   if (wrench_data_publisher_)
