@@ -11,6 +11,7 @@
     <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="UR">
       <!-- No parameters have to be set - relying on default values, but they are highly dependent on the workcell that is being used -->
     </include>
+    <!-- The 'name' parameter has to match the 'ns' parameter used in the include tag above -->
     <node pkg="caros_universalrobot" type="caros_universalrobot_node" name="UR">
     </node>
   </group>

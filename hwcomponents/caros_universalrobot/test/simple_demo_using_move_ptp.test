@@ -6,6 +6,7 @@
     <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="ur_simple_demo_node">
       <arg name="deviceName" value="UR1" />
     </include>
+    <!-- The 'name' parameter has to match the 'ns' parameter used in the include tag above -->
     <node pkg="caros_universalrobot" type="caros_universalrobot_node" name="ur_simple_demo_node" required="true">
       <!-- Nothing -->
     </node>
@@ -15,6 +16,7 @@
     <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo">
       <arg name="deviceName" value="UR1" />
     </include>
+    <!-- The 'name' parameter has to match the 'ns' parameter used in the include tag above -->
     <node pkg="caros_universalrobot" type="simple_caros_universalrobot_demo_using_move_ptp" name="caros_universalrobot_simple_demo" required="true">
     </node>
   </group>
