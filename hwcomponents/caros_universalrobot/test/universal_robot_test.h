@@ -87,10 +87,10 @@ class UrTest
   void initDevice()
   {
     std::string device_name;
-    if (not nodehandle_.getParam("deviceName", device_name))
+    if (not nodehandle_.getParam("device_name", device_name))
     {
       ROS_FATAL_STREAM("The parameter '" << nodehandle_.getNamespace()
-                                         << "/deviceName' was not present on the parameter "
+                                         << "/device_name' was not present on the parameter "
                                             "server! This parameter has to be specified "
                                             "for this test-node to work properly.");
       throw std::runtime_error("Not able to obtain device name.");

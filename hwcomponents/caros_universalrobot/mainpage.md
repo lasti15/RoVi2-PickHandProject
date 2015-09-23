@@ -59,12 +59,12 @@ Or specify the scene to use, when launching the node:
 The following parameters are supported:
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| deviceName | The name of the robot device within the scene | None |
-| FTFrame | The name of the force/torque frame in the scene | "WORLD" |
-| IP | IP of the robot to control | None |
-| callbackPort | Port (on the computer/host) to be used for communicating with the robot | None |
-| callbackIP | The IP of the computer/host that should communicate with the robot | None |
-| WrenchTopic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) | "" |
+| device_name | The name of the robot device within the scene | None |
+| ft_frame | The name of the force/torque frame in the scene | "WORLD" |
+| device_ip | IP of the robot to control | None |
+| callback_port | Port (on the computer/host) to be used for communicating with the robot | None |
+| callback_ip | The IP of the computer/host that should communicate with the robot | None |
+| Wrench_topic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) | "" |
 
 # Small demo(s) #
 To quickly and easily verify that the communication with the robot is working, then there are one or more simple demos that can be run. The expected behaviour should be both observed and verified by the user.

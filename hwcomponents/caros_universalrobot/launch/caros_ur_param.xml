@@ -1,18 +1,18 @@
 <!-- Parameters for the caros_universalrobot node -->
 <launch>
   <!-- Define the parameterisation of the ROS parameters -->
-  <arg name="deviceName" default="UR1" />
-  <arg name="ftFrame" default="WORLD" />
-  <arg name="ip" default="192.168.100.4" />
-  <arg name="callbackPort" default="33333" />
-  <arg name="callbackIp" default="192.168.100.1" />
-  <arg name="wrenchTopic" default="wrenchData" />
+  <arg name="device_name" default="UR1" />
+  <arg name="ft_frame" default="WORLD" />
+  <arg name="device_ip" default="192.168.100.4" />
+  <arg name="callback_port" default="33333" />
+  <arg name="callback_ip" default="192.168.100.1" />
+  <arg name="wrench_topic" default="wrenchData" />
 
   <!-- Set the ROS parameters -->
-  <param name="deviceName" type="str" value="$(arg deviceName)" />
-  <param name="ftFrame" type="str" value="$(arg ftFrame)"/>
-  <param name="ip" type="str" value="$(arg ip)"/>
-  <param name="callbackPort" type="str" value="$(arg callbackPort)"/>
-  <param name="callbackIp" type="str" value="$(arg callbackIp)"/>
-  <param name="wrenchTopic" type="str" value="$(arg wrenchTopic)"/>
+  <param name="device_name" type="str" value="$(arg device_name)" />
+  <param name="ft_frame" type="str" value="$(arg ft_frame)"/>
+  <param name="device_ip" type="str" value="$(arg device_ip)"/>
+  <param name="callback_port" type="str" value="$(arg callback_port)"/>
+  <param name="callback_ip" type="str" value="$(arg callback_ip)"/>
+  <param name="wrench_topic" type="str" value="$(arg wrench_topic)"/>
 </launch>
