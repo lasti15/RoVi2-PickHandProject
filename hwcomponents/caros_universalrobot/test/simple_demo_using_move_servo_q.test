@@ -13,6 +13,7 @@
   </group>
 
   <group>
+    <!-- Including the caros_universalrobot ROS parameters, as they are used for collision detection within the demo -->
     <include file="$(find caros_universalrobot)/launch/caros_ur_param.xml" ns="caros_universalrobot_simple_demo_using_move_servo_q">
       <arg name="device_name" value="UR1" />
     </include>
