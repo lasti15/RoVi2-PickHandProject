@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-  ros::init(argc, argv, "sdh");
+  ros::init(argc, argv, "caros_sdh");
 
   ros::NodeHandle nh("~");
 

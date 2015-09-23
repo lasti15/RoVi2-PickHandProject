@@ -45,15 +45,15 @@ RobWorkHardware with the *universalrobots* component enabled, is required and ca
 # Launching the node #
 The CAROS UniversalRobot node can be launched by using the following:
 
-    roslaunch caros_universalrobot caros_ur.launch
+    roslaunch caros_universalrobot caros_universalrobot.launch
 
 Currently the launch script is complaining if no scene (workcell) is provided. The scene should be specified on the parameter server according to @ref caros::getWorkCell. To use the scene specified through the parameter server, then use:
 
-    roslaunch caros_universalrobot caros_ur.launch set_workcell:=0
+    roslaunch caros_universalrobot caros_universalrobot.launch set_workcell:=0
 
 Or specify the scene to use, when launching the node:
 
-    roslaunch caros_universalrobot caros_ur.launch workcell_path:=/path/to/the/scene_or_workcell.xml
+    roslaunch caros_universalrobot caros_universalrobot.launch workcell_path:=/path/to/the/scene_or_workcell.xml
 
 ## Parameters ##
 The following parameters are supported:

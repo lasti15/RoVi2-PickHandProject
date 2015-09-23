@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-  ros::init(argc, argv, "ur_simple_demo");
+  ros::init(argc, argv, "simple_caros_universalrobot_demo_using_move_servo_q");
 
   const double q_change = 0.2;
 

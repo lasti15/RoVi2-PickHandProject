@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(caros_trakstar)
 
+########################################################################
+#### Local Variables
+########################################################################
+set(node_name "${PROJECT_NAME}_node")
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -37,18 +42,14 @@ catkin_package(
     DEPENDS RobWork 
 )
 
-  ########################################################################
-  #### Build
-  ########################################################################
+########################################################################
+#### Build
+########################################################################
 include_directories(
     include
     ${ROBWORK_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
 )
-
-########################################################################
-#### Extra temporary - can contain information that can be useful for setting up this CMakeLists.txt
-########################################################################
 
 # TrakStar stuff (6D Pose sensors)
 ADD_DEFINITIONS( -DLINUX )
@@ -65,8 +66,8 @@ add_library(trakstar
 )
 TARGET_LINK_LIBRARIES(trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})
 
-add_executable(caros_trakstar src/main.cpp)
-target_link_libraries(caros_trakstar trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})
+add_executable(${node_name} src/main.cpp)
+target_link_libraries(${node_name} trakstar ${ROBWORK_LIBRARIES} ${TRAKSTAR_LIBRARIES} ${catkin_LIBRARIES})
 
 ########################################################################
 #### Testing
