@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-  ros::init(argc, argv, "universalrobots");
+  ros::init(argc, argv, "caros_universalrobot");
 
   ros::NodeHandle nh("~");
 

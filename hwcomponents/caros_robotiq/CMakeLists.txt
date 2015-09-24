@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(caros_robotiq)
 
+########################################################################
+# Local variables
+########################################################################
+set(robotiq2_node_name "${PROJECT_NAME}2_node")
+set(robotiq3_node_name "${PROJECT_NAME}3_node")
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -48,24 +54,24 @@ else()
 ########################################################################
 #### Executables
 ########################################################################
-  add_executable(caros_robotiq3 src/main_robotiq3.cpp src/robotiq_node.cpp)
-  target_link_libraries(caros_robotiq3
+  add_executable(${robotiq3_node_name} src/main_robotiq3.cpp src/robotiq_node.cpp)
+  target_link_libraries(${robotiq3_node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
   )
-  add_dependencies(caros_robotiq3
+  add_dependencies(${robotiq3_node_name}
     caros_common
     caros_control
   )
   
-  add_executable(caros_robotiq2 src/main_robotiq2.cpp src/robotiq_node.cpp)
-  target_link_libraries(caros_robotiq2
+  add_executable(${robotiq2_node_name} src/main_robotiq2.cpp src/robotiq_node.cpp)
+  target_link_libraries(${robotiq2_node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
   )
-  add_dependencies(caros_robotiq2
+  add_dependencies(${robotiq2_node_name}
     caros_common
     caros_control
   )

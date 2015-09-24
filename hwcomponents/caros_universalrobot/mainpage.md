@@ -45,26 +45,26 @@ RobWorkHardware with the *universalrobots* component enabled, is required and ca
 # Launching the node #
 The CAROS UniversalRobot node can be launched by using the following:
 
-    roslaunch caros_universalrobot caros_ur.launch
+    roslaunch caros_universalrobot caros_universalrobot.launch
 
 Currently the launch script is complaining if no scene (workcell) is provided. The scene should be specified on the parameter server according to @ref caros::getWorkCell. To use the scene specified through the parameter server, then use:
 
-    roslaunch caros_universalrobot caros_ur.launch set_workcell:=0
+    roslaunch caros_universalrobot caros_universalrobot.launch set_workcell:=0
 
 Or specify the scene to use, when launching the node:
 
-    roslaunch caros_universalrobot caros_ur.launch workcell_path:=/path/to/the/scene_or_workcell.xml
+    roslaunch caros_universalrobot caros_universalrobot.launch workcell_path:=/path/to/the/scene_or_workcell.xml
 
 ## Parameters ##
 The following parameters are supported:
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| deviceName | The name of the robot device within the scene | None |
-| FTFrame | The name of the force/torque frame in the scene | "WORLD" |
-| IP | IP of the robot to control | None |
-| callbackPort | Port (on the computer/host) to be used for communicating with the robot | None |
-| callbackIP | The IP of the computer/host that should communicate with the robot | None |
-| WrenchTopic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) | "" |
+| device_name | The name of the robot device within the scene | None |
+| ft_frame | The name of the force/torque frame in the scene | "WORLD" |
+| device_ip | IP of the robot to control | None |
+| callback_port | Port (on the computer/host) to be used for communicating with the robot | None |
+| callback_ip | The IP of the computer/host that should communicate with the robot | None |
+| Wrench_topic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) | "" |
 
 # Small demo(s) #
 To quickly and easily verify that the communication with the robot is working, then there are one or more simple demos that can be run. The expected behaviour should be both observed and verified by the user.

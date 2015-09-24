@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[])
 {
-  ros::init(argc, argv, "robotiq2_simple_demo");
+  ros::init(argc, argv, "simple_caros_robotiq2_demo");
   ros::NodeHandle n("~");
 
   const std::string node_under_test_name = "caros_robotiq2";

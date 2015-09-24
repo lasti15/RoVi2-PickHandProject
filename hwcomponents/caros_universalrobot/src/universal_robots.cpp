@@ -47,9 +47,9 @@ bool UniversalRobots::activateHook()
    * Parameters
    ************************************************************************/
   std::string device_name;
-  if (not nodehandle_.getParam("deviceName", device_name))
+  if (not nodehandle_.getParam("device_name", device_name))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/deviceName' was not present on the parameter "
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/device_name' was not present on the parameter "
                                                                         "server! This parameter has to be specified "
                                                                         "for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
@@ -58,12 +58,12 @@ bool UniversalRobots::activateHook()
   }
 
   std::string ft_frame_name;
-  nodehandle_.param("ftFrame", ft_frame_name, std::string("WORLD"));
+  nodehandle_.param("ft_frame", ft_frame_name, std::string("WORLD"));
 
-  std::string ip;
-  if (not nodehandle_.getParam("ip", ip))
+  std::string device_ip;
+  if (not nodehandle_.getParam("device_ip", device_ip))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/ip' was not present on the parameter server! "
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/device_ip' was not present on the parameter server! "
                                                                         "This parameter has to be specified for this "
                                                                         "node to work properly.",
                      URNODE_MISSING_PARAMETER);
@@ -71,9 +71,9 @@ bool UniversalRobots::activateHook()
   }
 
   std::string callback_ip;
-  if (not nodehandle_.getParam("callbackIp", callback_ip))
+  if (not nodehandle_.getParam("callback_ip", callback_ip))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callbackIp' was not present on the parameter "
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callback_ip' was not present on the parameter "
                                                                         "server! This parameter has to be specified "
                                                                         "for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
@@ -81,9 +81,9 @@ bool UniversalRobots::activateHook()
   }
 
   std::string callback_port;
-  if (not nodehandle_.getParam("callbackPort", callback_port))
+  if (not nodehandle_.getParam("callback_port", callback_port))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callbackPort' was not present on the "
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callback_port' was not present on the "
                                                                         "parameter server! This parameter has to be "
                                                                         "specified for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
@@ -91,7 +91,7 @@ bool UniversalRobots::activateHook()
   }
 
   std::string wrench_topic;
-  nodehandle_.param("wrenchTopic", wrench_topic, std::string());
+  nodehandle_.param("wrench_topic", wrench_topic, std::string());
   if (not wrench_topic.empty())
   {
     sub_ft_data_ = nodehandle_.subscribe(wrench_topic, WRENCHTOPIC_QUEUE_SIZE, &UniversalRobots::addFTData, this);
@@ -137,7 +137,7 @@ bool UniversalRobots::activateHook()
 
   try
   {
-    urrt_.connect(ip, URRT_PORT);
+    urrt_.connect(device_ip, URRT_PORT);
   }
   catch (rw::common::Exception& exp)
   {
@@ -147,7 +147,7 @@ bool UniversalRobots::activateHook()
 
   try
   {
-    ur_.connect(ip, UR_PORT);
+    ur_.connect(device_ip, UR_PORT);
   }
   catch (rw::common::Exception& exp)
   {

@@ -63,8 +63,8 @@ bool TrakstarNode::activateHook()
   /************************************************************************
    * Parameters
    ************************************************************************/
-  //if (! nodehandle_.getParam("deviceName", deviceName)) {
-  //    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/deviceName' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
+  //if (! nodehandle_.getParam("device_name", deviceName)) {
+  //    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/device_name' was not present on the parameter server! This parameter has to be specified for this node to work properly.", URNODE_MISSING_PARAMETER);
   //    return false;
   //}
   nodehandle_.param("rate", max_pub_frequency_, 100.0);
