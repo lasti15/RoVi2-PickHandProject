@@ -3,7 +3,7 @@
   <name>caros_trakstar</name>
   <version>0.0.1</version>
   <description>Hardware driver for 6D pose sensor Trakstar. </description>
-  <maintainer email="jimali@mmmi.sdu.dk">jimali</maintainer>
+  <maintainer email="trs@mmmi.sdu.dk">trs</maintainer>
   <license>BSD</license>
   <url type="website">https://gitlab.com/caro-sdu/caros/wikis/home</url>
   <url type="repository">https://gitlab.com/caro-sdu/caros.git</url>

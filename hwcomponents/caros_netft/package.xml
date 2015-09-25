@@ -3,7 +3,7 @@
   <name>caros_netft</name>
   <version>0.0.1</version>
   <description>Virtual platform for dynamic and kinematic simulation of different hardware components </description>
-  <maintainer email="jimali@mmmi.sdu.dk">jimali</maintainer>
+  <maintainer email="lpe@mmmi.sdu.dk">lpe</maintainer>
   <license>BSD</license>
   <url type="website">https://gitlab.com/caro-sdu/caros/wikis/home</url>
   <url type="repository">https://gitlab.com/caro-sdu/caros.git</url>

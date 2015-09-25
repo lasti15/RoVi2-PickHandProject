@@ -3,7 +3,7 @@
   <name>caros_control_msgs</name>
   <version>0.0.1</version>
   <description>CAROS control interface messages</description>
-  <maintainer email="jimali@mmmi.sdu.dk">jimali</maintainer>
+  <maintainer email="mband@mmmi.sdu.dk">mband</maintainer>
   <license>BSD</license>
   <url type="website">https://gitlab.com/caro-sdu/caros/wikis/home</url>
   <url type="repository">https://gitlab.com/caro-sdu/caros.git</url>
