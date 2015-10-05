@@ -1,6 +1,10 @@
 #include <caros/button_sensor_service_interface.h>
 #include <caros_sensor_msgs/ButtonSensorState.h>
 
+#include <utility>
+#include <string>
+#include <vector>
+
 using namespace caros;
 
 ButtonSensorServiceInterface::ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle)
@@ -22,9 +26,9 @@ bool ButtonSensorServiceInterface::configureInterface()
         "then this should be considered a bug!");
   }
 
-  button_publisher_ = nodehandle_.advertise<caros_sensor_msgs::ButtonSensorState>("buttons",
-                                                                            BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE);
-  ROS_ERROR_STREAM_COND(not button_publisher_, "The ButtonSensor buttons publisher is empty!");
+  button_publisher_ = nodehandle_.advertise<caros_sensor_msgs::ButtonSensorState>(
+      "buttons", BUTTON_SENSOR_BUTTONS_PUBLISHER_QUEUE_SIZE);
+  ROS_ERROR_STREAM_COND(!button_publisher_, "The ButtonSensor buttons publisher is empty!");
 
   /* Verify that the various ROS services have actually been created properly */
   if (button_publisher_)

@@ -1,5 +1,8 @@
 #include <caros/button_sensor_si_proxy.h>
 
+#include <string>
+#include <vector>
+
 using namespace std;
 using namespace caros;
 

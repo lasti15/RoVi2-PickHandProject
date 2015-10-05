@@ -1,10 +1,11 @@
 #include <caros/pose_sensor_si_proxy.h>
-
 #include <caros/common_robwork.h>
+
+#include <string>
+#include <vector>
 
 using namespace rw::math;
 using namespace std;
-
 using namespace caros;
 
 PoseSensorSIProxy::PoseSensorSIProxy(ros::NodeHandle nodehandle, const std::string& devname,

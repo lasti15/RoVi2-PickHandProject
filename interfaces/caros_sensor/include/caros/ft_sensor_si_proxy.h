@@ -1,5 +1,5 @@
-#ifndef CAROS_FTSENSORSIPROXY_HPP
-#define CAROS_FTSENSORSIPROXY_HPP
+#ifndef CAROS_FT_SENSOR_SI_PROXY_H
+#define CAROS_FT_SENSOR_SI_PROXY_H
 
 #include <geometry_msgs/WrenchStamped.h>
 
@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 
 namespace caros
 {
@@ -52,6 +53,6 @@ class FTSensorSIProxy
   rw::math::Wrench6D<> wrench_;
   geometry_msgs::WrenchStamped ft_state_;
 };
-}
+}  // namespace caros
 
-#endif
+#endif  // CAROS_FT_SENSOR_SI_PROXY_H
