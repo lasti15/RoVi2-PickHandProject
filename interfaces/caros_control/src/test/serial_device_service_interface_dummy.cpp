@@ -1,4 +1,4 @@
-#include "serial_device_service_interface_dummy.h"
+#include <caros/test/serial_device_service_interface_dummy.h>
 #include <gtest/gtest.h>
 
 SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHandle nodehandle,
@@ -9,7 +9,7 @@ SerialDeviceServiceInterfaceDummy::SerialDeviceServiceInterfaceDummy(ros::NodeHa
       causing_error_msg_("Intentionally causing error - please ignore it")
 {
   /* make ROS publish the services */
-  if (not SerialDeviceServiceInterface::configureInterface())
+  if (!SerialDeviceServiceInterface::configureInterface())
   {
     /* Invalid object, since the services weren't published within this constructor */
     throw std::runtime_error("The service interface could not be configured!");

@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
-#define CAROS_CONTROL_SERIAL_DEVICE_SERVICE_INTERFACE_H
+#ifndef CAROS_SERIAL_DEVICE_SERVICE_INTERFACE_H
+#define CAROS_SERIAL_DEVICE_SERVICE_INTERFACE_H
 
 #include <caros_control_msgs/RobotState.h>
 #include <caros_control_msgs/SerialDeviceMoveLin.h>
@@ -39,7 +39,7 @@ namespace caros
 class SerialDeviceServiceInterface
 {
  public:
-  SerialDeviceServiceInterface(ros::NodeHandle nodehandle);
+  explicit SerialDeviceServiceInterface(ros::NodeHandle nodehandle);
 
   virtual ~SerialDeviceServiceInterface();
 
@@ -157,5 +157,6 @@ class SerialDeviceServiceInterface
   ros::ServiceServer srv_move_pause_;
   ros::ServiceServer srv_set_safe_mode_enabled_;
 };
-}
-#endif  //#ifndef
+}  // namespace caros
+
+#endif  // CAROS_SERIAL_DEVICE_SERVICE_INTERFACE_H

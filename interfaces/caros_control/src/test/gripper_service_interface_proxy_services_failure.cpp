@@ -1,4 +1,4 @@
-#include "gripper_service_interface_proxy.h"
+#include <caros/test/gripper_service_interface_proxy.h>
 
 TEST(GripperSIProxy, servicesFailure)
 {

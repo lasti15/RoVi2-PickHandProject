@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_DUMMY_H
-#define CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_DUMMY_H
+#ifndef CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_DUMMY_H
+#define CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_DUMMY_H
 
 #include <caros/serial_device_service_interface.h>
 
@@ -36,4 +36,4 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
   std::string most_recent_function_called_;
 };
 
-#endif
+#endif  // CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_DUMMY_H

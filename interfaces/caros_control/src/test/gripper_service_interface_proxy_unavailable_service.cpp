@@ -1,13 +1,13 @@
-#include "serial_device_service_interface_proxy.h"
+#include <caros/test/gripper_service_interface_proxy.h>
 
-TEST(SerialDeviceSIProxy, unavailableService)
+TEST(GripperSIProxy, unavailableService)
 {
   caros::test::testServices<D_t, P_t, Services_t>(services_to_test, caros::test::TestType::UnavailableService);
 }
 
 int main(int argc, char *argv[])
 {
-  ros::init(argc, argv, "serial_device_service_interface_proxy");
+  ros::init(argc, argv, "gripper_service_interface_proxy");
 
   testing::InitGoogleTest(&argc, argv);
 

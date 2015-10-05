@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_GRIPPER_SERVICE_INTERFACE_H
-#define CAROS_CONTROL_GRIPPER_SERVICE_INTERFACE_H
+#ifndef CAROS_GRIPPER_SERVICE_INTERFACE_H
+#define CAROS_GRIPPER_SERVICE_INTERFACE_H
 
 #include <rw/math/Q.hpp>
 
@@ -35,7 +35,7 @@ class GripperServiceInterface
    * @brief constructor.
    * @param[in] nodehandle the nodehandle to use for services.
    */
-  GripperServiceInterface(const ros::NodeHandle& nodehandle);
+  explicit GripperServiceInterface(const ros::NodeHandle& nodehandle);
 
   /**
    * @brief virtual destructor
@@ -148,5 +148,6 @@ class GripperServiceInterface
    *state. This would happen when some of the ros services or publishers fails to be initialised or shutdown properly.
    ************************************************************************/
 };
-}  // namespace
-#endif
+}  // namespace caros
+
+#endif  // CAROS_GRIPPER_SERVICE_INTERFACE_H

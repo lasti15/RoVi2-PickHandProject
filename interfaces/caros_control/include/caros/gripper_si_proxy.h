@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_GRIPPER_SI_PROXY_H
-#define CAROS_CONTROL_GRIPPER_SI_PROXY_H
+#ifndef CAROS_GRIPPER_SI_PROXY_H
+#define CAROS_GRIPPER_SI_PROXY_H
 
 #include <caros/caros_service_client.h>
 #include <caros_control_msgs/GripperState.h>
@@ -131,5 +131,6 @@ class GripperSIProxy
   // implemented within the SIProxy.
   caros_control_msgs::GripperState psv_gripper_state_;
 };
-}
-#endif /* #ifndef */
+}  // namespace caros
+
+#endif  // CAROS_GRIPPER_SI_PROXY_H

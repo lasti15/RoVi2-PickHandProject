@@ -1,4 +1,4 @@
-#include "serial_device_service_interface_proxy.h"
+#include <caros/test/serial_device_service_interface_proxy.h>
 
 TEST(SerialDeviceSIProxy, reestablishPersistentConnection)
 {
