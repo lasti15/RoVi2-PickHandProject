@@ -60,7 +60,7 @@ void verifyValueIsWithin(const float& value, const float& min, const float& max)
   {
     throw std::invalid_argument("The value is considered NaN");
   }
-  else if (not(std::isgreaterequal(value, min) && std::islessequal(value, max)))
+  else if (!(std::isgreaterequal(value, min) && std::islessequal(value, max)))
   {
     std::ostringstream oss;
     oss << "The value is not within [" << min << ";" << max << "]";
@@ -68,4 +68,4 @@ void verifyValueIsWithin(const float& value, const float& min, const float& max)
   }
 }
 
-}  // namespace
+}  // namespace caros

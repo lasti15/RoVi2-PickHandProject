@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_SERVICE_INTERFACE_PROXY_TEST_SETUP_H
-#define CAROS_COMMON_SERVICE_INTERFACE_PROXY_TEST_SETUP_H
+#ifndef CAROS_SERVICE_INTERFACE_PROXY_TEST_SETUP_H
+#define CAROS_SERVICE_INTERFACE_PROXY_TEST_SETUP_H
 
 #include <caros/exceptions.h>
 
@@ -257,7 +257,7 @@ void testServices(const C& services, const TestType test_type)
 /**
  * @}
  */
-}  // end namespace
-}  // end namespace
+}  // namespace test
+}  // namespace caros
 
-#endif
+#endif  // CAROS_SERVICE_INTERFACE_PROXY_TEST_SETUP_H

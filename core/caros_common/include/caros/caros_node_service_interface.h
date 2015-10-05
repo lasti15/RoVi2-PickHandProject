@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_CAROS_NODE_SERVICE_INTERFACE_H
-#define CAROS_COMMON_CAROS_NODE_SERVICE_INTERFACE_H
+#ifndef CAROS_CAROS_NODE_SERVICE_INTERFACE_H
+#define CAROS_CAROS_NODE_SERVICE_INTERFACE_H
 
 #include <ros/ros.h>
 
@@ -116,8 +116,9 @@ class CarosNodeServiceInterface
    * setLoopRateFrequency() for more information.
    *
    * @throws std::runtime_error if the basic functionality can't be properly initialised.
+   * @note Marked explicit to enforce that an actual nodehandle is being passed in.
    */
-  CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loop_rate_frequency = 30);
+  explicit CarosNodeServiceInterface(const ros::NodeHandle& nodehandle, const double loop_rate_frequency = 30);
 
   /**
    * @brief virtual destructor
@@ -190,16 +191,22 @@ class CarosNodeServiceInterface
    * @brief This is invoked in the RUNNING state.
    */
   virtual void runLoopHook() = 0;
+
   /**
    * @brief This is invoked in the ERROR state.
    */
-  virtual void errorLoopHook(){/* Empty */
-  };
+  virtual void errorLoopHook()
+  {
+    /* Empty */
+  }
+
   /**
    * @brief This is invoked in the FATALERROR state.
    */
-  virtual void fatalErrorLoopHook(){/* Empty */
-  };
+  virtual void fatalErrorLoopHook()
+  {
+    /* Empty */
+  }
   /** @} */
 
   /**
@@ -367,5 +374,6 @@ class CarosNodeServiceInterface
    */
   int64_t error_code_;
 };
-}  // namespace
-#endif
+}  // namespace caros
+
+#endif  // CAROS_CAROS_NODE_SERVICE_INTERFACE_H

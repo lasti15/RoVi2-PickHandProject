@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_EXCEPTIONS_H
-#define CAROS_COMMON_EXCEPTIONS_H
+#ifndef CAROS_EXCEPTIONS_H
+#define CAROS_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -97,6 +97,6 @@ class BadServiceCall : public std::runtime_error
 /**
  * @}
  */
-}
+}  // namespace caros
 
-#endif /* CAROS_COMMON_EXCEPTIONS_H */
+#endif  // CAROS_EXCEPTIONS_H
