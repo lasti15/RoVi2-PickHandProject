@@ -323,15 +323,8 @@ bool RobotiqNode::setForceQ(const rw::math::Q& q)
     return false;
   }
 
-  try
-  {
-    robotiq_->setTargetQForce(q);
-  }
-  catch (const rw::common::Exception& exp)
-  {
-    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
-    return false;
-  }
+  robotiq_->setTargetQForce(q);
+
   return true;
 }
 
@@ -348,15 +341,7 @@ bool RobotiqNode::setVelocityQ(const rw::math::Q& q)
     return false;
   }
 
-  try
-  {
-    robotiq_->setTargetQVel(q);
-  }
-  catch (const rw::common::Exception& exp)
-  {
-    CAROS_ERROR(exp.what(), ROBOTIQNODE_INTERNAL_ERROR);
-    return false;
-  }
+  robotiq_->setTargetQVel(q);
 
   return true;
 }
