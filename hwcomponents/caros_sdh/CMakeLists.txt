@@ -7,11 +7,22 @@ project(caros_sdh)
 set(node_name "${PROJECT_NAME}_node")
 set(SHOULD_BUILD_CAROS_SDH 1)
 
-
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS roscpp rosconsole caros_common caros_control)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  roscpp
+  rosconsole
+  caros_common
+  caros_control
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
 
 ########################################################################
 #### RobWork and RobWorkHardware

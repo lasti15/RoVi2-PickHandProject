@@ -16,6 +16,7 @@
 #include <sstream>
 #include <utility>
 #include <cstddef>  // Provides NULL
+#include <cstdint>
 
 /* Notes:
  * This node is designed to be run in a single thread that doesn't allow concurrently processing of the set-commands
@@ -34,8 +35,8 @@
  *it would make it easier to reason/debug "what just happened").
  */
 
-using namespace caros;
-
+namespace caros
+{
 SDHNode::SDHNode(const ros::NodeHandle& nodehandle)
     : caros::CarosNodeServiceInterface(nodehandle),
       caros::GripperServiceInterface(nodehandle),
@@ -70,17 +71,17 @@ SDHNode::~SDHNode()
 
 bool SDHNode::activateHook()
 {
-  if (not configureSDHDevice())
+  if (!configureSDHDevice())
   {
     return false;
   }
 
-  if (not connectToSDHDevice())
+  if (!connectToSDHDevice())
   {
     return false;
   }
 
-  if (not GripperServiceInterface::configureInterface())
+  if (!GripperServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
                      SDHNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
@@ -160,11 +161,11 @@ bool SDHNode::connectToSDHDevice()
   {
     if (rs232_device_.empty())
     {
-      sdh_->connect(rs232_port_, static_cast<unsigned long>(rs232_baudrate_), rs232_timeout_, NULL);
+      sdh_->connect(rs232_port_, static_cast<std::uint64_t>(rs232_baudrate_), rs232_timeout_, NULL);
     }
     else
     {
-      sdh_->connect(rs232_port_, static_cast<unsigned long>(rs232_baudrate_), rs232_timeout_, rs232_device_.c_str());
+      sdh_->connect(rs232_port_, static_cast<std::uint64_t>(rs232_baudrate_), rs232_timeout_, rs232_device_.c_str());
     }
   }
   else if (interface_type_ == "CAN")
@@ -180,7 +181,7 @@ bool SDHNode::connectToSDHDevice()
 
   /* Verify that the connection to the SDH device has been established - this eliminates the need for verifying that the
    * sdh_->connect() function calls actually succeed */
-  if (not sdh_->isConnected())
+  if (!sdh_->isConnected())
   {
     /* Something went wrong when connecting */
     CAROS_FATALERROR("Failed to properly connect to the SDH device.", SDHNODE_SDH_DEVICE_CONNECT_FAILED);
@@ -209,7 +210,7 @@ void SDHNode::runLoopHook()
       return;
     }
 
-    if (not sdh_->isConnected())
+    if (!sdh_->isConnected())
     {
       CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
       return;
@@ -387,7 +388,7 @@ bool SDHNode::moveQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "moveQ: " << q);
 
-  if (not isInWorkingCondition() || not supportedQSize(q))
+  if (!isInWorkingCondition() || !supportedQSize(q))
   {
     return false;
   }
@@ -416,7 +417,7 @@ bool SDHNode::gripQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "gripQ: " << q);
 
-  if (not isInWorkingCondition() || not supportedQSize(q))
+  if (!isInWorkingCondition() || !supportedQSize(q))
   {
     return false;
   }
@@ -443,7 +444,7 @@ bool SDHNode::setForceQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "setForceQ: " << q);
 
-  if (not isInWorkingCondition() || not supportedQSize(q))
+  if (!isInWorkingCondition() || !supportedQSize(q))
   {
     return false;
   }
@@ -468,7 +469,7 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM_NAMED("received_q", "setVelocityQ: " << q);
 
-  if (not isInWorkingCondition() || not supportedQSize(q))
+  if (!isInWorkingCondition() || !supportedQSize(q))
   {
     return false;
   }
@@ -491,7 +492,7 @@ bool SDHNode::setVelocityQ(const rw::math::Q& q)
 
 bool SDHNode::stopMovement()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -518,7 +519,7 @@ bool SDHNode::stopMovement()
  ************************************************************************/
 bool SDHNode::isInWorkingCondition()
 {
-  if (not isInRunning())
+  if (!isInRunning())
   {
     ROS_WARN_STREAM("Not in running state!");
     return false;
@@ -530,7 +531,7 @@ bool SDHNode::isInWorkingCondition()
     return false;
   }
 
-  if (not sdh_->isConnected())
+  if (!sdh_->isConnected())
   {
     CAROS_ERROR("There is no established connection to the SDH device.", SDHNODE_SDH_DEVICE_NO_CONNECTION);
     return false;
@@ -550,3 +551,4 @@ bool SDHNode::supportedQSize(const rw::math::Q& q)
 
   return true;
 }
+}  // namespace caros
