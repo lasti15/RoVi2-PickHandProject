@@ -1,5 +1,5 @@
-#ifndef CAROS_ROBOTIQ_ROBOTIQ_NODE_H
-#define CAROS_ROBOTIQ_ROBOTIQ_NODE_H
+#ifndef CAROS_ROBOTIQ_NODE_H
+#define CAROS_ROBOTIQ_NODE_H
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/gripper_service_interface.h>
@@ -12,6 +12,7 @@
 #include <ros/ros.h>
 
 #include <stdexcept>
+#include <string>
 
 namespace caros
 {
@@ -94,7 +95,6 @@ class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::Gripp
   ros::NodeHandle node_handle_;
   HandType hand_type_;
 };
+}  // namespace caros
 
-}  // end namespace
-
-#endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ_NODE_H
+#endif  // CAROS_ROBOTIQ_NODE_H

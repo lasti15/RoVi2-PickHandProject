@@ -10,7 +10,20 @@ set(robotiq3_node_name "${PROJECT_NAME}3_node")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs caros_common caros_control)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  roscpp
+  std_msgs
+  caros_common
+  caros_control
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -80,10 +93,10 @@ else()
   #### Testing
   ########################################################################
   if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_caros_robotiq3_demo test/simple_robotiq3_demo.cpp)
+    add_executable(simple_caros_robotiq3_demo src/test/simple_robotiq3_demo.cpp)
     target_link_libraries(simple_caros_robotiq3_demo ${catkin_LIBRARIES})
     
-    add_executable(simple_caros_robotiq2_demo test/simple_robotiq2_demo.cpp)
+    add_executable(simple_caros_robotiq2_demo src/test/simple_robotiq2_demo.cpp)
     target_link_libraries(simple_caros_robotiq2_demo ${catkin_LIBRARIES})
   endif()
 endif()
