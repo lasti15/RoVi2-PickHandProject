@@ -1,3 +1,6 @@
+#ifndef CAROS_TEST_UNIVERSAL_ROBOT_TEST_H
+#define CAROS_TEST_UNIVERSAL_ROBOT_TEST_H
+
 #include <caros/serial_device_si_proxy.h>
 #include <caros/common_robwork.h>
 
@@ -32,19 +35,21 @@ class UrTest
     initPathPlannerWithCollisionDetector();
   }
 
-  virtual ~UrTest(){/* Empty */
-  };
+  virtual ~UrTest()
+  {
+    /* Empty */
+  }
 
   bool testMovePtp(const double q_change)
   {
-    if (not doTestMovePtp(q_change))
+    if (!doTestMovePtp(q_change))
     {
       return false;
     }
     ROS_INFO_STREAM("Waiting a little moment for the movement to be finished");
     ros::Duration(5).sleep();  // In seconds
 
-    if (not doTestMovePtp(-q_change))
+    if (!doTestMovePtp(-q_change))
     {
       return false;
     }
@@ -56,14 +61,14 @@ class UrTest
 
   bool testMoveServoQ(const double q_change)
   {
-    if (not doTestMoveServoQ(q_change))
+    if (!doTestMoveServoQ(q_change))
     {
       return false;
     }
     ROS_INFO_STREAM("Waiting a little moment for the movement to be finished");
     ros::Duration(5).sleep();  // In seconds
 
-    if (not doTestMoveServoQ(-q_change))
+    if (!doTestMoveServoQ(-q_change))
     {
       return false;
     }
@@ -87,7 +92,7 @@ class UrTest
   void initDevice()
   {
     std::string device_name;
-    if (not nodehandle_.getParam("device_name", device_name))
+    if (!nodehandle_.getParam("device_name", device_name))
     {
       ROS_FATAL_STREAM("The parameter '" << nodehandle_.getNamespace()
                                          << "/device_name' was not present on the parameter "
@@ -149,7 +154,7 @@ class UrTest
     ROS_ASSERT(planner_);
     valid_path = planner_->query(start_configuration, end_configuration, path);
 
-    if (not valid_path)
+    if (!valid_path)
     {
       ROS_ERROR_STREAM("Could not find a path from '" << start_configuration << "' to '" << end_configuration << "'.");
       throw std::runtime_error("No valid path found.");
@@ -187,7 +192,7 @@ class UrTest
       ROS_INFO_STREAM("Ask to movePtp to '" << p << "'.");
       bool ret = false;
       ret = sdsip_.movePtp(p);
-      if (not ret)
+      if (!ret)
       {
         return_status = false;
         ROS_ERROR_STREAM("The serial device didn't acknowledge the movePtp command.");
@@ -214,7 +219,7 @@ class UrTest
       ROS_INFO_STREAM("Ask to moveServoQ to '" << p << "'.");
       bool ret = false;
       ret = sdsip_.moveServoQ(p);
-      if (not ret)
+      if (!ret)
       {
         return_status = false;
         ROS_ERROR_STREAM("The serial device didn't acknowledge the moveServoQ command.");
@@ -232,3 +237,5 @@ class UrTest
   rw::models::Device::Ptr device_;
   rw::pathplanning::QToQPlanner::Ptr planner_;
 };
+
+#endif  // CAROS_TEST_UNIVERSAL_ROBOT_TEST_H

@@ -1,4 +1,4 @@
-#include "universal_robot_test.h"
+#include <caros/test/universal_robot_test.h>
 
 #include <ros/ros.h>
 
@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
   bool ret = false;
   ret = ur_test.testMovePtp(q_change);
 
-  if (not ret)
+  if (!ret)
   {
     ROS_ERROR_STREAM("Could not properly do the testMovePtp");
     return 1;

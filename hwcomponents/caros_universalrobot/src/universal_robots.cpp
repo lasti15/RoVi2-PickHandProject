@@ -8,8 +8,7 @@
 #include <ros/assert.h>
 
 #include <string>
-
-using namespace caros;
+#include <vector>
 
 #define URRT_PORT 30003
 #define UR_PORT 30001
@@ -17,6 +16,8 @@ using namespace caros;
 #define WRENCH_DATA_QUEUE_MAX_ALLOWED_NUMBER_OF_ELEMENTS 3
 #define URRTDATA_QACTUAL_SIZE 6
 
+namespace caros
+{
 UniversalRobots::UniversalRobots(const ros::NodeHandle& nodehandle)
     : CarosNodeServiceInterface(nodehandle),
       SerialDeviceServiceInterface(nodehandle),
@@ -47,11 +48,12 @@ bool UniversalRobots::activateHook()
    * Parameters
    ************************************************************************/
   std::string device_name;
-  if (not nodehandle_.getParam("device_name", device_name))
+  if (!nodehandle_.getParam("device_name", device_name))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/device_name' was not present on the parameter "
-                                                                        "server! This parameter has to be specified "
-                                                                        "for this node to work properly.",
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace()
+                                       << "/device_name' was not present on the parameter "
+                                          "server! This parameter has to be specified "
+                                          "for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
 
     return false;
@@ -61,27 +63,29 @@ bool UniversalRobots::activateHook()
   nodehandle_.param("ft_frame", ft_frame_name, std::string("WORLD"));
 
   std::string device_ip;
-  if (not nodehandle_.getParam("device_ip", device_ip))
+  if (!nodehandle_.getParam("device_ip", device_ip))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/device_ip' was not present on the parameter server! "
-                                                                        "This parameter has to be specified for this "
-                                                                        "node to work properly.",
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace()
+                                       << "/device_ip' was not present on the parameter server! "
+                                          "This parameter has to be specified for this "
+                                          "node to work properly.",
                      URNODE_MISSING_PARAMETER);
     return false;
   }
 
   std::string callback_ip;
-  if (not nodehandle_.getParam("callback_ip", callback_ip))
+  if (!nodehandle_.getParam("callback_ip", callback_ip))
   {
-    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callback_ip' was not present on the parameter "
-                                                                        "server! This parameter has to be specified "
-                                                                        "for this node to work properly.",
+    CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace()
+                                       << "/callback_ip' was not present on the parameter "
+                                          "server! This parameter has to be specified "
+                                          "for this node to work properly.",
                      URNODE_MISSING_PARAMETER);
     return false;
   }
 
   std::string callback_port;
-  if (not nodehandle_.getParam("callback_port", callback_port))
+  if (!nodehandle_.getParam("callback_port", callback_port))
   {
     CAROS_FATALERROR("The parameter '" << nodehandle_.getNamespace() << "/callback_port' was not present on the "
                                                                         "parameter server! This parameter has to be "
@@ -92,10 +96,10 @@ bool UniversalRobots::activateHook()
 
   std::string wrench_topic;
   nodehandle_.param("wrench_topic", wrench_topic, std::string());
-  if (not wrench_topic.empty())
+  if (!wrench_topic.empty())
   {
     sub_ft_data_ = nodehandle_.subscribe(wrench_topic, WRENCHTOPIC_QUEUE_SIZE, &UniversalRobots::addFTData, this);
-    if (not sub_ft_data_)
+    if (!sub_ft_data_)
     {
       CAROS_FATALERROR("The subscriber for the topic '" << wrench_topic << "' could not be properly created.",
                        URNODE_FAULTY_SUBSCRIBER);
@@ -174,13 +178,13 @@ bool UniversalRobots::activateHook()
   /* No feedback from start() */
   urrt_.start();
 
-  if (not URServiceInterface::configureInterface())
+  if (!URServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The URService could not be configured correctly.", URNODE_URSERVICE_CONFIGURE_FAIL);
     return false;
   }
 
-  if (not SerialDeviceServiceInterface::configureInterface())
+  if (!SerialDeviceServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The SerialDeviceService could not be configured correctly.",
                      URNODE_SERIALDEVICESERVICE_CONFIGURE_FAIL);
@@ -235,7 +239,7 @@ void UniversalRobots::runLoopHook()
                                << "' Running: '" << pur_data.programRunning << "'");
 
   auto messages = ur_.getPrimaryInterface().getMessages();
-  while (not messages.empty())
+  while (!messages.empty())
   {
     ROS_DEBUG_STREAM("UR Message: " << messages.front());
     messages.pop();
@@ -322,7 +326,7 @@ bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 {
   ROS_DEBUG_STREAM("servoT: " << target);
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -338,7 +342,7 @@ bool UniversalRobots::urServoT(const rw::math::Transform3D<>& target)
 
   rw::math::Q closest = solutions.front();
 
-  if (not supportedQSize(closest))
+  if (!supportedQSize(closest))
   {
     return false;
   }
@@ -353,7 +357,7 @@ bool UniversalRobots::urServoQ(const rw::math::Q& q)
 {
   ROS_DEBUG_STREAM("ServoQ: " << q);
 
-  if (not isInWorkingCondition() || not supportedQSize(q))
+  if (!isInWorkingCondition() || !supportedQSize(q))
   {
     return false;
   }
@@ -373,7 +377,7 @@ bool UniversalRobots::urForceModeStart(const rw::math::Transform3D<>& refToffset
   ROS_DEBUG_STREAM("limits: " << limits);
   ROS_DEBUG_STREAM("ForceModeStart arguments end");
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -398,7 +402,7 @@ bool UniversalRobots::urForceModeUpdate(const rw::math::Wrench6D<>& wrench_targe
 {
   ROS_DEBUG_STREAM("New wrench target for forceModeUpdate: " << wrench_target);
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -409,7 +413,7 @@ bool UniversalRobots::urForceModeUpdate(const rw::math::Wrench6D<>& wrench_targe
 
 bool UniversalRobots::urForceModeStop()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -426,7 +430,7 @@ bool UniversalRobots::moveLin(const TransformAndSpeedContainer_t& targets)
 {
   ROS_DEBUG_STREAM("moveLin with " << targets.size() << " target(s).");
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -435,8 +439,8 @@ bool UniversalRobots::moveLin(const TransformAndSpeedContainer_t& targets)
   {
     /* moveT(...) is void, so no errorcode is returned. Furthermore the implementation (at least in revision 5472)
      * doesn't make use of the speeds. */
-    ur_.moveT(std::get<0>(target), std::get<1>(target)); /* This could be rewritten to be more explicit about the
-                                                            parameters, such that std::get<1> is the speed */
+    ur_.moveT(std::get<0>(target), std::get<1>(target));
+    /* This could be rewritten to be more explicit about the parameters, such that std::get<1> is the speed */
   }
 
   /* Simply return true, given there is no feedback from the ur_.moveT(...) function */
@@ -447,7 +451,7 @@ bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
 {
   ROS_DEBUG_STREAM("movePtp with " << targets.size() << " target(s).");
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -455,7 +459,7 @@ bool UniversalRobots::movePtp(const QAndSpeedContainer_t& targets)
   for (const auto& target : targets)
   {
     const auto& q = std::get<0>(target);
-    if (not supportedQSize(q))
+    if (!supportedQSize(q))
     {
       return false;
     }
@@ -470,7 +474,7 @@ bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
 {
   ROS_DEBUG_STREAM("movePtpT with " << targets.size() << " target(s).");
 
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -487,7 +491,7 @@ bool UniversalRobots::movePtpT(const TransformAndSpeedContainer_t& targets)
     }
 
     const rw::math::Q& q = solutions.front();
-    if (not supportedQSize(q))
+    if (!supportedQSize(q))
     {
       return false;
     }
@@ -508,16 +512,17 @@ bool UniversalRobots::moveVelQ(const rw::math::Q& q_vel)
  * Old Implementation
  ******************************/
 #if 0
-  if (not isInWorkingCondition() || not supportedQSize(q_vel))
+  if (!isInWorkingCondition() || !supportedQSize(q_vel))
   {
     return false;
   }
 
-    /* TODO:
-     * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
-     * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
-     */
-    return urServoQ(qcurrent_ + q_vel*0.1);
+  /* TODO:
+   * Missing documentation on why the factor 0.1 is used and not some other arbitrary value?
+   * And 1/10th of the value is added directly to the current joint values/angles, making a q-value of 0-100 (%) up to
+   * 10 radians, which is quite a lot - I doubt that this was the intension when it got implemented in MARVIN...
+   */
+  return urServoQ(qcurrent_ + q_vel * 0.1);
 #endif
 }
 
@@ -531,24 +536,24 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
  * Old Implementation
  ******************************/
 #if 0
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
 
-	device_->setQ(qcurrent_, state_);
-	rw::math::Jacobian jac = device_->baseJend(state_);
-        /* TODO:
-         * Find out where the 'Eigen' got introduced from, since it doesn't exist...
-         *	rw::math::Jacobian jac_inv( rw::math::LinearAlgebra::pseudoInverseEigen(jac.e()) );
-         */
-	rw::math::Jacobian jac_inv( rw::math::LinearAlgebra::pseudoInverse(jac.e()) );
+  device_->setQ(qcurrent_, state_);
+  rw::math::Jacobian jac = device_->baseJend(state_);
+  /* TODO:
+   * Find out where the 'Eigen' got introduced from, since it doesn't exist...
+   *	rw::math::Jacobian jac_inv( rw::math::LinearAlgebra::pseudoInverseEigen(jac.e()) );
+   */
+  rw::math::Jacobian jac_inv(rw::math::LinearAlgebra::pseudoInverse(jac.e()));
 
-	/* TODO:
-         * Could use some more documentation on why the factor of 0.1 is being used (see todo comment for moveVelQ)
-         */
-        rw::math::Q qtarget = qcurrent_ + (jac_inv*t_vel)*0.1;
-	return urServoQ(qtarget);
+  /* TODO:
+   * Could use some more documentation on why the factor of 0.1 is being used (see todo comment for moveVelQ)
+   */
+  rw::math::Q qtarget = qcurrent_ + (jac_inv * t_vel) * 0.1;
+  return urServoQ(qtarget);
 #endif
 }
 
@@ -564,70 +569,80 @@ bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& pos_target, const
  * Old Implementation
  ******************************/
 #if 0
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
 
-    if (ft_frame_ == NULL) {
-      /* It is also possible to go into an error state due to the missing ft_frame, and have a recover scenario handle fetching a the ft_frame name from the parameter server and try to find it in the workcell again. */
-        ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
-        return false;
-    }
+  if (ft_frame_ == NULL)
+  {
+    /* It is also possible to go into an error state due to the missing ft_frame, and have a recover scenario handle
+     * fetching a the ft_frame name from the parameter server and try to find it in the workcell again. */
+    ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
+    return false;
+  }
 
-    rw::kinematics::State state = workcell_->getDefaultState();
-    device_->setQ(qcurrent_, state);
+  rw::kinematics::State state = workcell_->getDefaultState();
+  device_->setQ(qcurrent_, state);
 
-    rw::math::Transform3D<> baseTref = rw::math::Transform3D<>::identity();
-    rw::math::Transform3D<> baseTtarget = baseTref*pos_target;
-    rw::math::Transform3D<> baseToffset = baseTref*offset;
-    rw::math::Transform3D<> base2ft = device_->baseTframe(ft_frame_, state);
-    rw::math::Transform3D<> baseTend = device_->baseTend(state);
-    rw::math::Transform3D<> endTtarget = inverse(baseTend)*baseTtarget;
-    rw::math::Transform3D<> endToffset = inverse(baseTend)*baseToffset;
-    rw::math::Transform3D<> ftToffset = inverse(base2ft)*baseToffset;
+  rw::math::Transform3D<> baseTref = rw::math::Transform3D<>::identity();
+  rw::math::Transform3D<> baseTtarget = baseTref * pos_target;
+  rw::math::Transform3D<> baseToffset = baseTref * offset;
+  rw::math::Transform3D<> base2ft = device_->baseTframe(ft_frame_, state);
+  rw::math::Transform3D<> baseTend = device_->baseTend(state);
+  rw::math::Transform3D<> endTtarget = inverse(baseTend) * baseTtarget;
+  rw::math::Transform3D<> endToffset = inverse(baseTend) * baseToffset;
+  rw::math::Transform3D<> ftToffset = inverse(base2ft) * baseToffset;
 
-    /* TODO:
-     * If control_gain consist of elements that are all 0 then the wrench_data_queue_ element will not be used anyway and could be a case that should still work even when no or not enough wrench data is being published?
-     *
-     * FIXME: TODO:
-     * Should look at the timestamps of the wrench data that has been received and verify that the received wrench data is within the allowed timestamp difference - not too old (or newer - should be caught in a ROS_WARN / test <- should this actually be an error or fatal error - maybe even an assert? as something really bogus could be going on...)
-     * ^- Maybe it would make sense to function-locally(i.e. static) save the last used wrench timestamp to make sure that older samples in the queue are not being used (but then they will still remain there to be used for averaging/mean sampling.
-     */
-    if (wrench_data_queue_.empty()) {
-        ROS_WARN_STREAM("There have been no new wrench data coming from the ROS topic '" << sub_ft_data_.getTopic() << "'");
-        return false;
-    }
-    ROS_ASSERT(not wrench_data_queue_.empty());
-    /* Do not alter the wrench_data_queue_ - just make a copy of the newest element */
-    rw::math::Wrench6D<> wrench_current = wrench_data_queue_.back();
+  /* TODO:
+   * If control_gain consist of elements that are all 0 then the wrench_data_queue_ element will not be used anyway and
+   *could be a case that should still work even when no or not enough wrench data is being published?
+   *
+   * FIXME: TODO:
+   * Should look at the timestamps of the wrench data that has been received and verify that the received wrench data is
+   *within the allowed timestamp difference - not too old (or newer - should be caught in a ROS_WARN / test <- should
+   *this actually be an error or fatal error - maybe even an assert? as something really bogus could be going on...)
+   * ^- Maybe it would make sense to function-locally(i.e. static) save the last used wrench timestamp to make sure that
+   *older samples in the queue are not being used (but then they will still remain there to be used for averaging/mean
+   *sampling.
+   */
+  if (wrench_data_queue_.empty())
+  {
+    ROS_WARN_STREAM("There have been no new wrench data coming from the ROS topic '" << sub_ft_data_.getTopic() << "'");
+    return false;
+  }
+  ROS_ASSERT(!wrench_data_queue_.empty());
+  /* Do not alter the wrench_data_queue_ - just make a copy of the newest element */
+  rw::math::Wrench6D<> wrench_current = wrench_data_queue_.back();
 
-    wrench_current.setForce(ftToffset.R() * wrench_current.force());
-    wrench_current.setTorque(ftToffset.R() * wrench_current.torque());
+  wrench_current.setForce(ftToffset.R() * wrench_current.force());
+  wrench_current.setTorque(ftToffset.R() * wrench_current.torque());
 
-    rw::math::Wrench6D<> wrench_diff (wrench_target.force() - wrench_current.force(), wrench_target.torque() - wrench_current.torque());
+  rw::math::Wrench6D<> wrench_diff(wrench_target.force() - wrench_current.force(),
+                                   wrench_target.torque() - wrench_current.torque());
 
-    rw::math::Vector3D<> pos_offset = endToffset.R() * endTtarget.P();
-    rw::math::EAA<> eaa_offset = endToffset.R() * rw::math::EAA<>(endTtarget.R());
+  rw::math::Vector3D<> pos_offset = endToffset.R() * endTtarget.P();
+  rw::math::EAA<> eaa_offset = endToffset.R() * rw::math::EAA<>(endTtarget.R());
 
-    /* Verify that the size of control_gain is 6 (i.e. the size of Wrench6D) */
-    ROS_ASSERT(control_gain.size() == 6);
-    for (unsigned int index = 0; index < 3; ++index) {
-        pos_offset(index) = control_gain(index) * wrench_diff(index);
-        eaa_offset(index) = control_gain(index+3) * wrench_diff(index+3);
-    }
+  /* Verify that the size of control_gain is 6 (i.e. the size of Wrench6D) */
+  ROS_ASSERT(control_gain.size() == 6);
+  for (unsigned int index = 0; index < 3; ++index)
+  {
+    pos_offset(index) = control_gain(index) * wrench_diff(index);
+    eaa_offset(index) = control_gain(index + 3) * wrench_diff(index + 3);
+  }
 
-    endToffset = rw::math::Transform3D<>(pos_offset, eaa_offset);
+  endToffset = rw::math::Transform3D<>(pos_offset, eaa_offset);
 
-    rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
+  rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
 
-    return urServoT(baseTtarget2);
+  return urServoT(baseTtarget2);
 #endif
 }
 
 bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -639,13 +654,13 @@ bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
   for (const auto& target : targets)
   {
     const auto& q = std::get<0>(target);
-    if (not supportedQSize(q))
+    if (!supportedQSize(q))
     {
       return false;
     }
 
     res = urServoQ(q);
-    if (not res)
+    if (!res)
     {
       break;
     }
@@ -656,7 +671,7 @@ bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 
 bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -666,7 +681,7 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
   for (const auto& target : targets)
   {
     res = urServoT(std::get<0>(target));
-    if (not res)
+    if (!res)
     {
       break;
     }
@@ -677,7 +692,7 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
 
 bool UniversalRobots::moveStart()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -689,7 +704,7 @@ bool UniversalRobots::moveStart()
 
 bool UniversalRobots::moveStop()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -701,7 +716,7 @@ bool UniversalRobots::moveStop()
 
 bool UniversalRobots::movePause()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -712,7 +727,7 @@ bool UniversalRobots::movePause()
 
 bool UniversalRobots::moveSetSafeModeEnabled(const bool value)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -726,7 +741,7 @@ bool UniversalRobots::moveSetSafeModeEnabled(const bool value)
  ************************************************************************/
 bool UniversalRobots::isInWorkingCondition()
 {
-  if (not isInRunning())
+  if (!isInRunning())
   {
     ROS_WARN_STREAM("Not in running state!");
     return false;
@@ -746,3 +761,4 @@ bool UniversalRobots::supportedQSize(const rw::math::Q& q)
 
   return true;
 }
+}  // namespace caros

@@ -1,5 +1,5 @@
-#ifndef CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
-#define CAROS_UNIVERSALROBOT_UR_SERVICE_INTERFACE_H
+#ifndef CAROS_UR_SERVICE_INTERFACE_H
+#define CAROS_UR_SERVICE_INTERFACE_H
 
 #include <caros_universalrobot/UrServiceServoQ.h>
 #include <caros_universalrobot/UrServiceServoT.h>
@@ -23,7 +23,7 @@ class URServiceInterface
    * @brief constructor
    * @param[in] nodehandle the nodehandle to use for services.
    */
-  URServiceInterface(const ros::NodeHandle& nodehandle);
+  explicit URServiceInterface(const ros::NodeHandle& nodehandle);
 
   /**
    * @brief virtual destructor
@@ -83,4 +83,4 @@ class URServiceInterface
   ros::ServiceServer srv_ur_force_mode_stop_;
 };
 
-#endif  // include guard
+#endif  // CAROS_UR_SERVICE_INTERFACE_H

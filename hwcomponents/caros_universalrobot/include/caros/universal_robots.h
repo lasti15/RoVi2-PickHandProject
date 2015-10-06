@@ -1,5 +1,5 @@
-#ifndef CAROS_UNIVERSALROBOT_UNIVERSAL_ROBOTS_H
-#define CAROS_UNIVERSALROBOT_UNIVERSAL_ROBOTS_H
+#ifndef CAROS_UNIVERSAL_ROBOTS_H
+#define CAROS_UNIVERSAL_ROBOTS_H
 
 #include <caros/ur_service_interface.h>
 
@@ -18,6 +18,7 @@
 #include <rwhw/universalrobots/UniversalRobotsRTLogging.hpp>
 
 #include <queue>
+#include <string>
 
 #define SUPPORTED_Q_LENGTH_FOR_UR 6
 
@@ -28,7 +29,7 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
                         public URServiceInterface
 {
  public:
-  UniversalRobots(const ros::NodeHandle& nodehandle);
+  explicit UniversalRobots(const ros::NodeHandle& nodehandle);
 
   virtual ~UniversalRobots();
 
@@ -131,5 +132,5 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
 
   bool use_ft_collision_detection_;
 };
-}
-#endif  // include guard
+}  // namespace caros
+#endif  // CAROS_UNIVERSAL_ROBOTS_H
