@@ -4,11 +4,11 @@
 #include <rwhw/robotiq/Robotiq3.hpp>
 #include <rwhw/robotiq/Robotiq2.hpp>
 
-USE_ROBWORK_NAMESPACE
+#include <utility>
+#include <string>
 
-using namespace caros;
-using namespace robwork;
-
+namespace caros
+{
 RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand_type)
     : caros::CarosNodeServiceInterface(node_handle),
       caros::GripperServiceInterface(node_handle),
@@ -51,12 +51,12 @@ RobotiqNode::~RobotiqNode()
 
 bool RobotiqNode::activateHook()
 {
-  if (not configureRobotiqDevice())
+  if (!configureRobotiqDevice())
   {
     return false;
   }
 
-  if (not connectToRobotiqDevice())
+  if (!connectToRobotiqDevice())
   {
     return false;
   }
@@ -66,7 +66,7 @@ bool RobotiqNode::activateHook()
 
 bool RobotiqNode::recoverHook(const std::string& error_msg, const int64_t error_code)
 {
-  /* TODO: */
+  /* TODO(any): */
 
   ROS_ERROR_STREAM(__PRETTY_FUNCTION__ << " has not been implemented yet!");
   ROS_BREAK();
@@ -84,7 +84,7 @@ void RobotiqNode::runLoopHook()
       return;
     }
 
-    if (not robotiq_->isConnected())
+    if (!robotiq_->isConnected())
     {
       CAROS_ERROR("There is no established connection to the Robotiq device.",
                   ROBOTIQNODE_ROBOTIQ_DEVICE_NO_CONNECTION);
@@ -101,9 +101,9 @@ void RobotiqNode::runLoopHook()
      * Get current gripper state and split values
      ************************************************************************/
     robotiq_->getAllStatusCMD();
-    Q q = robotiq_->getQ();
-    Q dq_calc = (q - last_Q_) / diff.toSec();
-    Q force = robotiq_->getQCurrent();
+    rw::math::Q q = robotiq_->getQ();
+    rw::math::Q dq_calc = (q - last_Q_) / diff.toSec();
+    rw::math::Q force = robotiq_->getQCurrent();
     bool is_moving = robotiq_->isGripperMoving();
     bool is_blocked = robotiq_->isGripperBlocked();
     bool is_stopped = !robotiq_->isGripperMoving() && !robotiq_->isGripperBlocked();
@@ -162,28 +162,28 @@ bool RobotiqNode::configureRobotiqDevice()
 
   /* Fetch parameters (if any) or use the defaults */
   std::string port_param_name = "device_port";
-  ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(port_param_name),
+  ROS_DEBUG_STREAM_COND(!node_handle_.hasParam(port_param_name),
                         "Parameter " << port_param_name << " not found from param server. Using default.");
   node_handle_.param(port_param_name, port_, 502);
 
   std::string ip_param_name = "device_ip";
-  ROS_DEBUG_STREAM_COND(not node_handle_.hasParam(ip_param_name),
+  ROS_DEBUG_STREAM_COND(!node_handle_.hasParam(ip_param_name),
                         "Parameter " << ip_param_name << " not found from param server. Using default.");
 
   switch (hand_type_)
   {
     case HandType::ROBOTIQ2:
       node_handle_.param(ip_param_name, ip_, std::string("192.168.100.22"));
-      robotiq_ = ownedPtr(new rwhw::Robotiq2());
+      robotiq_ = rw::common::ownedPtr(new rwhw::Robotiq2());
       break;
     case HandType::ROBOTIQ3:
       node_handle_.param(ip_param_name, ip_, std::string("192.168.100.21"));
-      robotiq_ = ownedPtr(new rwhw::Robotiq3());
+      robotiq_ = rw::common::ownedPtr(new rwhw::Robotiq3());
       break;
   }
-  // TODO: Verify that the chosen parameters are valid?
+  // TODO(any): Verify that the chosen parameters are valid?
 
-  if (not GripperServiceInterface::configureInterface())
+  if (!GripperServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The CAROS GripperServiceInterface could not be configured correctly.",
                      ROBOTIQNODE_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
@@ -237,7 +237,7 @@ bool RobotiqNode::connectToRobotiqDevice()
   }
 
   /* Connect according to configured parameters */
-  if (not robotiq_->connect(ip_, port_))
+  if (!robotiq_->connect(ip_, port_))
   {
     CAROS_FATALERROR("The Robotiq hand was not able to connect to " << ip_ << ":" << port_,
                      ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
@@ -245,7 +245,7 @@ bool RobotiqNode::connectToRobotiqDevice()
   }
 
   /* Only very rare and obscure situations should cause this to fail, since the above connect was successful */
-  if (not robotiq_->isConnected())
+  if (!robotiq_->isConnected())
   {
     /* Something went wrong right after connecting */
     CAROS_FATALERROR("Failed to properly connect to the Robotiq device.", ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
@@ -260,7 +260,7 @@ bool RobotiqNode::connectToRobotiqDevice()
  ************************************************************************/
 bool RobotiqNode::moveQ(const rw::math::Q& q)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -287,7 +287,7 @@ bool RobotiqNode::moveQ(const rw::math::Q& q)
 
 bool RobotiqNode::gripQ(const rw::math::Q& q)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -312,7 +312,7 @@ bool RobotiqNode::gripQ(const rw::math::Q& q)
 
 bool RobotiqNode::setForceQ(const rw::math::Q& q)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -330,7 +330,7 @@ bool RobotiqNode::setForceQ(const rw::math::Q& q)
 
 bool RobotiqNode::setVelocityQ(const rw::math::Q& q)
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -348,7 +348,7 @@ bool RobotiqNode::setVelocityQ(const rw::math::Q& q)
 
 bool RobotiqNode::stopMovement()
 {
-  if (not isInWorkingCondition())
+  if (!isInWorkingCondition())
   {
     return false;
   }
@@ -371,7 +371,7 @@ bool RobotiqNode::stopMovement()
  ************************************************************************/
 bool RobotiqNode::isInWorkingCondition()
 {
-  if (not isInRunning())
+  if (!isInRunning())
   {
     ROS_WARN_STREAM("Not in running state!");
     return false;
@@ -383,7 +383,7 @@ bool RobotiqNode::isInWorkingCondition()
     return false;
   }
 
-  if (not robotiq_->isConnected())
+  if (!robotiq_->isConnected())
   {
     CAROS_ERROR("There is no established connection to the Robotiq device.", ROBOTIQNODE_ROBOTIQ_DEVICE_NO_CONNECTION);
     return false;
@@ -391,3 +391,4 @@ bool RobotiqNode::isInWorkingCondition()
 
   return true;
 }
+}  // namespace caros

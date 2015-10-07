@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
-#define CAROS_CONTROL_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
+#ifndef CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
+#define CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H
 
 #include <caros/service_interface_proxy_test_setup.h>
 
@@ -52,4 +52,4 @@ typedef SerialDeviceServiceInterfaceDummy D_t;
 typedef caros::SerialDeviceSIProxy P_t;
 }  // end namespace
 
-#endif  // include guard
+#endif  // CAROS_TEST_SERIAL_DEVICE_SERVICE_INTERFACE_PROXY_H

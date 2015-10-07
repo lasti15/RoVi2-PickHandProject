@@ -27,7 +27,7 @@ void testQEqual(const rw::math::Q& value1, const rw::math::Q& value2)
     EXPECT_DOUBLE_EQ(value1[index], value2[index]);
   }
 }
-}
+}  // namespace
 
 /************************************************************************
  * State

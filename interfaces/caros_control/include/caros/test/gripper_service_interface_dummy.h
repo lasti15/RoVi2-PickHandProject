@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
-#define CAROS_CONTROL_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
+#ifndef CAROS_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
+#define CAROS_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H
 
 #include <caros/gripper_service_interface.h>
 
@@ -27,4 +27,4 @@ class GripperServiceInterfaceDummy : public caros::GripperServiceInterface
   std::string most_recent_function_called_;
 };
 
-#endif
+#endif  // CAROS_TEST_GRIPPER_SERVICE_INTERFACE_DUMMY_H

@@ -14,6 +14,8 @@
 
 #include <ros/ros.h>
 
+#include <string>
+
 namespace caros
 {
 /************************************************************************
@@ -39,9 +41,9 @@ caros_common_robwork_msgs::RwState toRos(const rw::kinematics::State& state)
   {
     caros_common_robwork_msgs::RwStateData res_data;
     res_data.name = data->getName();
-    res_data.size =
-        data->size() * sizeof(double); /* This hardcoded sizeof should be provided by the 'data->' object, as the type
-                                          used for storing the state data is highly implementation specific */
+    /* This hardcoded sizeof should be provided by the 'data->' object, as the type used for storing the state data is
+     * highly implementation specific */
+    res_data.size = data->size() * sizeof(double);
     ROS_DEBUG_STREAM("res_data name: " << res_data.name);
     ROS_DEBUG_STREAM("res_data size: " << res_data.size << " where data->size = " << data->size()
                                        << " and sizeof(double) = " << sizeof(double));
@@ -75,7 +77,7 @@ void toRw(const caros_common_robwork_msgs::RwState& state_ros, rw::kinematics::S
       ROS_DEBUG_STREAM("data name: " << state_ros_data.name);
       ROS_DEBUG_STREAM("data size: " << state_ros_data.data.size());
       // Place the state_ros_data.data in a continuous memory space
-      std::uint8_t raw_data[state_ros_data.data.size()];
+      std::uint8_t *raw_data = new std::uint8_t[state_ros_data.data.size()];
       for (std::size_t index = 0; index < state_ros_data.data.size(); ++index)
       {
         raw_data[index] = state_ros_data.data.at(index);
@@ -83,6 +85,7 @@ void toRw(const caros_common_robwork_msgs::RwState& state_ros, rw::kinematics::S
                                      << static_cast<std::uint32_t>(raw_data[index]));
       }
       data->setData(state, reinterpret_cast<const double*>(raw_data));
+      delete[] raw_data;
     }
     else
     {
@@ -272,7 +275,7 @@ rw::models::WorkCell::Ptr getWorkCell(const std::string& paramname)
     std::string workcell_file;
     bool found_param;
     found_param = node.getParam(paramname, workcell_file);
-    if (not found_param)
+    if (!found_param)
     {
       ROS_ERROR_STREAM("No such parameter on the parameter server: " << paramname);
       return NULL;
@@ -301,7 +304,7 @@ rw::common::Ptr<rw::kinematics::State> getState()
 {
   // currently we always get the state from a service and not a topic
   ros::NodeHandle node("~");
-  if (not ros::service::exists("/caros/get_workcell_state", true))
+  if (!ros::service::exists("/caros/get_workcell_state", true))
   {
     ROS_ERROR_STREAM("There are no registered state sources!");
     return NULL;
@@ -320,4 +323,4 @@ rw::common::Ptr<rw::kinematics::State> getState()
   return ownedPtr(new rw::kinematics::State(state));
 }
 
-}  // namespace
+}  // namespace caros

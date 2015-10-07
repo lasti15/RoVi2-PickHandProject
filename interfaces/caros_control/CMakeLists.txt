@@ -13,11 +13,26 @@ set(library_name "${PROJECT_NAME}")
 # Using hardcoded path-strings instead of a variable substitution for the use-c++11.cmake path-name, as catkin_lint doesn't properly do variable substitution (at least in this particular situation)
 include("cmake/use-c++11.cmake")
 
-
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_control_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  std_msgs
+  roscpp
+  geometry_msgs
+  caros_common_msgs
+  caros_common
+  caros_common_robwork
+  caros_control_msgs
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references,-whitespace/braces,-build/namespace,-build/include")
+roslint_cpp()
 
 ########################################################################
 #### RobWork
@@ -85,38 +100,38 @@ target_link_libraries(${library_name}
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   # Template for easy emacs macro generation
-  # add_rostest_gtest(#1# test/#1#.test test/#1#.cpp test/serial_device_service_interface_dummy.cpp)
+  # add_rostest_gtest(#1# test/#1#.test src/test/#1#.cpp src/test/serial_device_service_interface_dummy.cpp)
   # target_link_libraries(#1# ${library_name} ${catkin_LIBRARIES})
   # # SerialDeviceSIProxy
-  add_rostest_gtest(serial_device_service_interface_proxy_services_success test/serial_device_service_interface_proxy_services_success.test test/serial_device_service_interface_proxy_services_success.cpp test/serial_device_service_interface_dummy.cpp)
+  add_rostest_gtest(serial_device_service_interface_proxy_services_success test/serial_device_service_interface_proxy_services_success.test src/test/serial_device_service_interface_proxy_services_success.cpp src/test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_services_success ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(serial_device_service_interface_proxy_services_failure test/serial_device_service_interface_proxy_services_failure.test test/serial_device_service_interface_proxy_services_failure.cpp test/serial_device_service_interface_dummy.cpp)
+  add_rostest_gtest(serial_device_service_interface_proxy_services_failure test/serial_device_service_interface_proxy_services_failure.test src/test/serial_device_service_interface_proxy_services_failure.cpp src/test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_services_failure ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(serial_device_service_interface_proxy_bad_service_call test/serial_device_service_interface_proxy_bad_service_call.test test/serial_device_service_interface_proxy_bad_service_call.cpp test/serial_device_service_interface_dummy.cpp)
+  add_rostest_gtest(serial_device_service_interface_proxy_bad_service_call test/serial_device_service_interface_proxy_bad_service_call.test src/test/serial_device_service_interface_proxy_bad_service_call.cpp src/test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_bad_service_call ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(serial_device_service_interface_proxy_unavailable_service test/serial_device_service_interface_proxy_unavailable_service.test test/serial_device_service_interface_proxy_unavailable_service.cpp test/serial_device_service_interface_dummy.cpp)
+  add_rostest_gtest(serial_device_service_interface_proxy_unavailable_service test/serial_device_service_interface_proxy_unavailable_service.test src/test/serial_device_service_interface_proxy_unavailable_service.cpp src/test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_unavailable_service ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(serial_device_service_interface_proxy_persistent_connection test/serial_device_service_interface_proxy_persistent_connection.test test/serial_device_service_interface_proxy_persistent_connection.cpp test/serial_device_service_interface_dummy.cpp)
+  add_rostest_gtest(serial_device_service_interface_proxy_persistent_connection test/serial_device_service_interface_proxy_persistent_connection.test src/test/serial_device_service_interface_proxy_persistent_connection.cpp src/test/serial_device_service_interface_dummy.cpp)
   target_link_libraries(serial_device_service_interface_proxy_persistent_connection ${library_name} ${catkin_LIBRARIES})
 
   # GripperSIProxy
-  add_rostest_gtest(gripper_service_interface_proxy_services_success test/gripper_service_interface_proxy_services_success.test test/gripper_service_interface_proxy_services_success.cpp test/gripper_service_interface_dummy.cpp)
+  add_rostest_gtest(gripper_service_interface_proxy_services_success test/gripper_service_interface_proxy_services_success.test src/test/gripper_service_interface_proxy_services_success.cpp src/test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy_services_success ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(gripper_service_interface_proxy_services_failure test/gripper_service_interface_proxy_services_failure.test test/gripper_service_interface_proxy_services_failure.cpp test/gripper_service_interface_dummy.cpp)
+  add_rostest_gtest(gripper_service_interface_proxy_services_failure test/gripper_service_interface_proxy_services_failure.test src/test/gripper_service_interface_proxy_services_failure.cpp src/test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy_services_failure ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(gripper_service_interface_proxy_bad_service_call test/gripper_service_interface_proxy_bad_service_call.test test/gripper_service_interface_proxy_bad_service_call.cpp test/gripper_service_interface_dummy.cpp)
+  add_rostest_gtest(gripper_service_interface_proxy_bad_service_call test/gripper_service_interface_proxy_bad_service_call.test src/test/gripper_service_interface_proxy_bad_service_call.cpp src/test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy_bad_service_call ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(gripper_service_interface_proxy_unavailable_service test/gripper_service_interface_proxy_unavailable_service.test test/gripper_service_interface_proxy_unavailable_service.cpp test/gripper_service_interface_dummy.cpp)
+  add_rostest_gtest(gripper_service_interface_proxy_unavailable_service test/gripper_service_interface_proxy_unavailable_service.test src/test/gripper_service_interface_proxy_unavailable_service.cpp src/test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy_unavailable_service ${library_name} ${catkin_LIBRARIES})
 
-  add_rostest_gtest(gripper_service_interface_proxy_persistent_connection test/gripper_service_interface_proxy_persistent_connection.test test/gripper_service_interface_proxy_persistent_connection.cpp test/gripper_service_interface_dummy.cpp)
+  add_rostest_gtest(gripper_service_interface_proxy_persistent_connection test/gripper_service_interface_proxy_persistent_connection.test src/test/gripper_service_interface_proxy_persistent_connection.cpp src/test/gripper_service_interface_dummy.cpp)
   target_link_libraries(gripper_service_interface_proxy_persistent_connection ${library_name} ${catkin_LIBRARIES})
 
 endif()

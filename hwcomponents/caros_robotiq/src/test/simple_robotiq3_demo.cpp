@@ -1,8 +1,11 @@
-#include <ros/ros.h>
-#include <ros/console.h>
 #include <caros/gripper_si_proxy.h>
 #include <caros_common_msgs/CarosNodeState.h>
+
+#include <ros/ros.h>
+#include <ros/console.h>
 #include <ros/topic.h>
+
+#include <string>
 
 int main(int argc, char* argv[])
 {
@@ -21,7 +24,7 @@ int main(int argc, char* argv[])
 
   const std::string node_stateTopicName = node_under_test_name + "/" + "caros_node/caros_node_state";
   bool is_running = false;
-  while (not is_running)
+  while (!is_running)
   {
     auto node_state_message = ros::topic::waitForMessage<caros_common_msgs::CarosNodeState>(node_stateTopicName);
     is_running = node_state_message->state == "RUNNING";
@@ -38,7 +41,7 @@ int main(int argc, char* argv[])
 
   bool ret = r3_test.moveQ(target);
 
-  if (not ret)
+  if (!ret)
   {
     ROS_ERROR_STREAM(info_prefix << "Could not properly move the hand");
     return 1;

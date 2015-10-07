@@ -1,5 +1,5 @@
-#ifndef CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
-#define CAROS_CONTROL_SERIAL_DEVICE_SI_PROXY_H
+#ifndef CAROS_SERIAL_DEVICE_SI_PROXY_H
+#define CAROS_SERIAL_DEVICE_SI_PROXY_H
 
 #include <caros/caros_service_client.h>
 #include <caros_control_msgs/RobotState.h>
@@ -215,8 +215,9 @@ class SerialDeviceSIProxy
   ros::Time getTimeStamp();
 
  protected:
-  ros::NodeHandle nodehandle_;
+  void handleRobotState(const caros_control_msgs::RobotState& state);
 
+  ros::NodeHandle nodehandle_;
   bool use_persistent_connections_;
   std::string ros_namespace_;
 
@@ -237,10 +238,9 @@ class SerialDeviceSIProxy
   caros::CarosServiceClient srv_set_safe_mode_enabled_;
 
   // states
-  void handleRobotState(const caros_control_msgs::RobotState& state);
   ros::Subscriber sub_robot_state_;
   caros_control_msgs::RobotState robot_state_;
 };
-}
+}  // namespace caros
 
-#endif  // end include guard
+#endif  // CAROS_SERIAL_DEVICE_SI_PROXY_H

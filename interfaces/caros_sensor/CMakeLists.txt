@@ -9,7 +9,22 @@ set(library_name "${PROJECT_NAME}")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  std_msgs
+  geometry_msgs
+  caros_common_msgs
+  caros_common
+  caros_common_robwork
+  caros_sensor_msgs
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-build/namespaces,-build/c++11")
+roslint_cpp()
 
 ########################################################################
 #### RobWork

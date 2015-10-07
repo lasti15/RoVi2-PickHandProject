@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_COMMON_H
-#define CAROS_COMMON_COMMON_H
+#ifndef CAROS_COMMON_H
+#define CAROS_COMMON_H
 
 /**
  * \brief CAROS specific functionality
@@ -54,6 +54,6 @@ void verifyValueIsWithin(const float& value, const float& min, const float& max)
 /**
  * @}
  */
-}  // namespace
+}  // namespace caros
 
-#endif /* CAROS_COMMON_COMMON_H */
+#endif  // CAROS_COMMON_H

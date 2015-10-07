@@ -1,5 +1,5 @@
-#ifndef CAROS_BUTTONSENSORSERVICEINTERFACE_H
-#define CAROS_BUTTONSENSORSERVICEINTERFACE_H
+#ifndef CAROS_BUTTON_SENSOR_SERVICE_INTERFACE_H
+#define CAROS_BUTTON_SENSOR_SERVICE_INTERFACE_H
 
 #include <ros/ros.h>
 
@@ -19,7 +19,7 @@ class ButtonSensorServiceInterface
 {
  public:
   //! constructor
-  ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
+  explicit ButtonSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
   //! destructor
   virtual ~ButtonSensorServiceInterface();
@@ -33,11 +33,14 @@ class ButtonSensorServiceInterface
                       const std::vector<std::pair<std::string, bool>>& analog_buttons);
 
  private:
-  ButtonSensorServiceInterface(){};
+  ButtonSensorServiceInterface()
+  {
+    /* Empty */
+  }
 
   ros::NodeHandle nodehandle_;
   ros::Publisher button_publisher_;
 };
-}
+}  // namespace caros
 
-#endif
+#endif  // CAROS_BUTTON_SENSOR_SERVICE_INTERFACE_H

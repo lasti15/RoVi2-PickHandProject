@@ -17,7 +17,25 @@ include("cmake/use-c++11.cmake")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs roscpp rosconsole caros_common_msgs caros_common caros_common_robwork caros_control caros_control_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  std_msgs
+  geometry_msgs
+  roscpp
+  rosconsole
+  caros_common_msgs
+  caros_common
+  caros_common_robwork
+  caros_control
+  caros_control_msgs
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references")
+roslint_cpp()
 
 ########################################################################
 #### RobWork and RobWorkSim
@@ -91,10 +109,10 @@ else()
   #### Testing
   ########################################################################
   if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_${PROJECT_NAME}_demo_using_move_servo_q test/simple_demo_using_move_servo_q.cpp)
+    add_executable(simple_${PROJECT_NAME}_demo_using_move_servo_q src/test/simple_demo_using_move_servo_q.cpp)
     target_link_libraries(simple_${PROJECT_NAME}_demo_using_move_servo_q ${catkin_LIBRARIES})
 
-    add_executable(simple_${PROJECT_NAME}_demo_using_move_ptp test/simple_demo_using_move_ptp.cpp)
+    add_executable(simple_${PROJECT_NAME}_demo_using_move_ptp src/test/simple_demo_using_move_ptp.cpp)
     target_link_libraries(simple_${PROJECT_NAME}_demo_using_move_ptp ${catkin_LIBRARIES})
   endif()
 

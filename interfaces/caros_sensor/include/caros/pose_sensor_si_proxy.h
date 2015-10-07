@@ -1,5 +1,5 @@
-#ifndef CAROS_POSESENSORSIPROXY_HPP
-#define CAROS_POSESENSORSIPROXY_HPP
+#ifndef CAROS_POSE_SENSOR_SI_PROXY_H
+#define CAROS_POSE_SENSOR_SI_PROXY_H
 
 #include <caros_sensor_msgs/ButtonSensorState.h>
 #include <caros_sensor_msgs/PoseSensorState.h>
@@ -65,6 +65,6 @@ class PoseSensorSIProxy
   std::vector<PoseData> poses_;
   ros::Time stamp_;
 };
-}
+}  // namespace caros
 
-#endif
+#endif  // CAROS_POSE_SENSOR_SI_PROXY_H

@@ -1,5 +1,5 @@
-#ifndef CAROS_SDH_SDH_NODE_H
-#define CAROS_SDH_SDH_NODE_H
+#ifndef CAROS_SDH_NODE_H
+#define CAROS_SDH_NODE_H
 
 #include <caros/caros_node_service_interface.h>
 #include <caros/gripper_service_interface.h>
@@ -30,7 +30,7 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
 {
  public:
   //! constructor
-  SDHNode(const ros::NodeHandle& nodehandle);
+  explicit SDHNode(const ros::NodeHandle& nodehandle);
 
   //! destructor
   virtual ~SDHNode();
@@ -104,6 +104,6 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   double can_timeout_;
 };
 
-}  // end namespace
+}  // namespace caros
 
-#endif /* include guard */
+#endif  // CAROS_SDH_NODE_H

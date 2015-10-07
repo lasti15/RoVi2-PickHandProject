@@ -18,6 +18,7 @@ include("cmake/use-c++11.cmake")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
+  roslint
   message_generation
   std_msgs
   roscpp
@@ -25,6 +26,13 @@ find_package(catkin REQUIRED COMPONENTS
   caros_common_msgs
   caros_common_robwork_msgs
 )
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references,-whitespace/braces,-readability/check")
+roslint_cpp()
+
 
 ########################################################################
 #### RobWork

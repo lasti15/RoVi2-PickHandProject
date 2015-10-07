@@ -1,7 +1,8 @@
 #include <caros/pose_sensor_service_interface.h>
 #include <caros_sensor_msgs/PoseSensorState.h>
-
 #include <caros/common_robwork.h>
+
+#include <vector>
 
 using namespace rw::common;
 using namespace caros;
@@ -25,8 +26,9 @@ bool PoseSensorServiceInterface::configureInterface()
         "then this should be considered a bug!");
   }
 
-  pose_publisher_ = nodehandle_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
-  ROS_ERROR_STREAM_COND(not pose_publisher_, "The PoseSensor poses publisher is empty!");
+  pose_publisher_ =
+      nodehandle_.advertise<caros_sensor_msgs::PoseSensorState>("poses", POSE_SENSOR_POSE_PUBLISHER_QUEUE_SIZE);
+  ROS_ERROR_STREAM_COND(!pose_publisher_, "The PoseSensor poses publisher is empty!");
 
   /* Verify that the various ROS services have actually been created properly */
   if (pose_publisher_)

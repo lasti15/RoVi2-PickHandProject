@@ -1,10 +1,12 @@
 #include <caros/ft_sensor_service_interface.h>
-
 #include <caros/common.h>
+
 #include <geometry_msgs/WrenchStamped.h>
 
-using namespace caros;
+#include <string>
+
 using namespace rw::common;
+using namespace caros;
 
 FTSensorServiceInterface::FTSensorServiceInterface(ros::NodeHandle nodehandle)
     : nodehandle_(nodehandle, FT_SENSOR_SERVICE_INTERFACE_SUB_NAMESPACE)
@@ -28,7 +30,7 @@ bool FTSensorServiceInterface::configureInterface()
 
   wrench_data_publisher_ =
       nodehandle_.advertise<geometry_msgs::WrenchStamped>("wrench", FT_SENSOR_WRENCH_PUBLISHER_QUEUE_SIZE);
-  ROS_ERROR_STREAM_COND(not wrench_data_publisher_, "The FTSensor wrench publisher is empty!");
+  ROS_ERROR_STREAM_COND(!wrench_data_publisher_, "The FTSensor wrench publisher is empty!");
 
   /* Verify that the various ROS services have actually been created properly */
   if (wrench_data_publisher_)

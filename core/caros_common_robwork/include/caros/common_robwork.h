@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_ROBWORK_COMMON_H
-#define CAROS_COMMON_ROBWORK_COMMON_H
+#ifndef CAROS_COMMON_ROBWORK_H
+#define CAROS_COMMON_ROBWORK_H
 
 #include <rw/math.hpp>
 #include <rw/models/WorkCell.hpp>
@@ -14,6 +14,7 @@
 #include <geometry_msgs/Pose.h>
 
 #include <stdexcept>
+#include <string>
 
 /**
  * \brief CAROS specific functionality
@@ -130,6 +131,6 @@ rw::common::Ptr<rw::kinematics::State> getState();
 /**
  * @}
  */
-}  // namespace
+}  // namespace caros
 
-#endif /* include guard */
+#endif  // CAROS_COMMON_ROBWORK_H

@@ -20,7 +20,7 @@ CarosNodeServiceInterface::CarosNodeServiceInterface(const ros::NodeHandle& node
       loop_rate_frequency_(loop_rate_frequency),
       loop_rate_(loop_rate_frequency_)
 {
-  if (not initCarosNode())
+  if (!initCarosNode())
   {
     throw std::runtime_error("Could not properly initialise the required basic services and/or publishers.");
   }

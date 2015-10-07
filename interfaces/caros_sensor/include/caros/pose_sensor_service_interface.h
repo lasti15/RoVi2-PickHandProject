@@ -1,6 +1,5 @@
-/**/
-#ifndef CAROS_POSESENSORSERVICEINTERFACE_HPP
-#define CAROS_POSESENSORSERVICEINTERFACE_HPP
+#ifndef CAROS_POSE_SENSOR_SERVICE_INTERFACE_H
+#define CAROS_POSE_SENSOR_SERVICE_INTERFACE_H
 
 #include <rw/math/Transform3D.hpp>
 
@@ -25,7 +24,7 @@ class PoseSensorServiceInterface
   typedef std::shared_ptr<PoseSensorServiceInterface> Ptr;
 
   //! constructor
-  PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);
+  explicit PoseSensorServiceInterface(const ros::NodeHandle& nodehandle);
 
   //! destructor
   virtual ~PoseSensorServiceInterface();
@@ -39,11 +38,14 @@ class PoseSensorServiceInterface
                     const std::vector<float>& qualities);
 
  private:
-  PoseSensorServiceInterface(){};
+  PoseSensorServiceInterface()
+  {
+    /* Empty */
+  }
 
   ros::NodeHandle nodehandle_;
   ros::Publisher pose_publisher_;
 };
-}
+}  // namespace caros
 
-#endif
+#endif  // CAROS_POSE_SENSOR_SERVICE_INTERFACE_H

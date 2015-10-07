@@ -32,22 +32,22 @@ bool URServiceInterface::configureInterface()
   }
 
   srv_ur_servo_t_ = nodehandle_.advertiseService("servo_t", &URServiceInterface::urServoTHandle, this);
-  ROS_ERROR_STREAM_COND(not srv_ur_servo_t_, "The servo_t service is empty!");
+  ROS_ERROR_STREAM_COND(!srv_ur_servo_t_, "The servo_t service is empty!");
 
   srv_ur_servo_q_ = nodehandle_.advertiseService("servo_q", &URServiceInterface::urServoQHandle, this);
-  ROS_ERROR_STREAM_COND(not srv_ur_servo_q_, "The servo_q service is empty!");
+  ROS_ERROR_STREAM_COND(!srv_ur_servo_q_, "The servo_q service is empty!");
 
   srv_ur_force_mode_start_ =
       nodehandle_.advertiseService("force_mode_start", &URServiceInterface::urForceModeStartHandle, this);
-  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_start_, "The force_mode_start service is empty!");
+  ROS_ERROR_STREAM_COND(!srv_ur_force_mode_start_, "The force_mode_start service is empty!");
 
   srv_ur_force_mode_update_ =
       nodehandle_.advertiseService("force_mode_update", &URServiceInterface::urForceModeUpdateHandle, this);
-  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_update_, "The force_mode_update service is empty!");
+  ROS_ERROR_STREAM_COND(!srv_ur_force_mode_update_, "The force_mode_update service is empty!");
 
   srv_ur_force_mode_stop_ =
       nodehandle_.advertiseService("force_mode_stop", &URServiceInterface::urForceModeStopHandle, this);
-  ROS_ERROR_STREAM_COND(not srv_ur_force_mode_stop_, "The force_mode_stop service is empty!");
+  ROS_ERROR_STREAM_COND(!srv_ur_force_mode_stop_, "The force_mode_stop service is empty!");
 
   if (srv_ur_servo_t_ && srv_ur_servo_q_ && srv_ur_force_mode_start_ && srv_ur_force_mode_update_ &&
       srv_ur_force_mode_stop_)

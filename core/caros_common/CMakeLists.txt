@@ -18,11 +18,18 @@ include("cmake/use-c++11.cmake")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
+  roslint
   message_generation
   std_msgs
   roscpp
   caros_common_msgs
 )
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references,-whitespace/braces")
+roslint_cpp()
 
 ########################################################################
 #### Declare ROS Messages, Services and Actions

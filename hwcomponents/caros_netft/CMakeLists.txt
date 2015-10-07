@@ -4,7 +4,18 @@ project(caros_netft)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs caros_common)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  std_msgs
+  caros_common
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
 
 ################################################
 ## Declare ROS messages, services and actions ##

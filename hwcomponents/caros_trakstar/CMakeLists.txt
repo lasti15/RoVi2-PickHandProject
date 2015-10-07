@@ -9,7 +9,20 @@ set(node_name "${PROJECT_NAME}_node")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs caros_common caros_sensor nodelet)
+find_package(catkin REQUIRED COMPONENTS
+  roslint
+  message_generation
+  std_msgs
+  caros_common
+  caros_sensor
+  nodelet
+)
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
 
 ########################################################################
 #### RobWork and RobWorkHardware

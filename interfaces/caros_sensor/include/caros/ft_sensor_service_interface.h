@@ -1,5 +1,5 @@
-#ifndef CAROS_FTSENSORSERVICEINTERFACE_HPP
-#define CAROS_FTSENSORSERVICEINTERFACE_HPP
+#ifndef CAROS_FT_SENSOR_SERVICE_INTERFACE_H
+#define CAROS_FT_SENSOR_SERVICE_INTERFACE_H
 
 #include <rw/math/Wrench6D.hpp>
 
@@ -23,7 +23,7 @@ class FTSensorServiceInterface
   typedef std::shared_ptr<FTSensorServiceInterface> Ptr;
 
   //! constructor
-  FTSensorServiceInterface(ros::NodeHandle nodehandle);
+  explicit FTSensorServiceInterface(ros::NodeHandle nodehandle);
 
   //! destructor
   virtual ~FTSensorServiceInterface();
@@ -36,11 +36,14 @@ class FTSensorServiceInterface
   void publish(const rw::math::Wrench6D<>& wrench, const std::string& refframe);
 
  private:
-  FTSensorServiceInterface(){};
+  FTSensorServiceInterface()
+  {
+    /* Empty */
+  }
 
   ros::NodeHandle nodehandle_;
   ros::Publisher wrench_data_publisher_;
 };
-}
+}  // namespace caros
 
-#endif
+#endif  // CAROS_FT_SENSOR_SERVICE_INTERFACE_H

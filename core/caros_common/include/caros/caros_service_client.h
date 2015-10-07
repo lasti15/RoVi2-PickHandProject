@@ -1,5 +1,5 @@
-#ifndef CAROS_COMMON_CAROS_SERVICE_CLIENT_H
-#define CAROS_COMMON_CAROS_SERVICE_CLIENT_H
+#ifndef CAROS_CAROS_SERVICE_CLIENT_H
+#define CAROS_CAROS_SERVICE_CLIENT_H
 
 #include <caros/exceptions.h>
 
@@ -71,13 +71,13 @@ class CarosServiceClient
 
     bool srv_call_success = false;
 
-    if (not service_client_.exists())
+    if (!service_client_.exists())
     {
       THROW_CAROS_UNAVAILABLE_SERVICE("The service " << service_client_.getService() << " does not exist.");
     }
 
     srv_call_success = service_client_.call(srv);
-    if (not srv_call_success)
+    if (!srv_call_success)
     {
       THROW_CAROS_BAD_SERVICE_CALL("An error happened while calling the service " << service_client_.getService());
     }
@@ -128,7 +128,7 @@ class CarosServiceClient
     /* The ordering is important to make sure that the switch between persistent and non-persistent connection is
      * happening */
     /* Switch from persistent to non-persistent connection */
-    if (service_client_.isPersistent() && not use_persistent_connection_)
+    if (service_client_.isPersistent() && !use_persistent_connection_)
     {
       ROS_DEBUG_STREAM("Switching from persistent to non-persistent connection (id: " << connection_identifier_ << ")");
       if (service_client_.isValid())
@@ -141,19 +141,19 @@ class CarosServiceClient
     /* Switch from non-persistent to persistent connection */
     /* the .isValid() test is to make sure that this case is not wrongly chosen when a new persistent connection should
      * be created */
-    else if (not service_client_.isPersistent() && service_client_.isValid() && use_persistent_connection_)
+    else if (!service_client_.isPersistent() && service_client_.isValid() && use_persistent_connection_)
     {
       ROS_DEBUG_STREAM("Switching from non-persistent to persistent connection (id: " << connection_identifier_ << ")");
       create_new_connection = true;
     }
     /* Reestablish the persistent connection */
-    else if (service_client_.isPersistent() && not service_client_.isValid())
+    else if (service_client_.isPersistent() && !service_client_.isValid())
     {
       ROS_DEBUG_STREAM("Reconnecting the persistent connection with (id: " << connection_identifier_ << ")");
       create_new_connection = true;
     }
     /* No previous connection setup */
-    else if (not service_client_.isValid())
+    else if (!service_client_.isValid())
     {
       ROS_DEBUG_STREAM("Setting up new connection (id: " << connection_identifier_ << ")");
       create_new_connection = true;
@@ -175,6 +175,6 @@ class CarosServiceClient
   bool use_persistent_connection_;
 };
 
-}  // end namespace
+}  // namespace caros
 
-#endif  // include guard
+#endif  // CAROS_CAROS_SERVICE_CLIENT_H

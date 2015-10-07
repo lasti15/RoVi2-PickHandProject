@@ -1,6 +1,7 @@
 #include <caros/ft_sensor_si_proxy.h>
-
 #include <caros/common_robwork.h>
+
+#include <string>
 
 using namespace caros;
 

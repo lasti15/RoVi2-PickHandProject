@@ -1,12 +1,14 @@
-#ifndef CAROS_BUTTONSESORSIPROXY_H
-#define CAROS_BUTTONSESORSIPROXY_H
+#ifndef CAROS_BUTTON_SENSOR_SI_PROXY_H
+#define CAROS_BUTTON_SENSOR_SI_PROXY_H
 
 #include <caros_sensor_msgs/ButtonSensorState.h>
 
+#include <ros/ros.h>
+
 #include <memory>
 #include <mutex>
-
-#include <ros/ros.h>
+#include <string>
+#include <vector>
 
 namespace caros
 {
@@ -52,10 +54,12 @@ class ButtonSensorSIProxy
   void handleButtonSensorState(const caros_sensor_msgs::ButtonSensorState& state);
 
   ros::NodeHandle nodehandle_;
+
   // states
   ros::Subscriber button_sensor_state_sub_;
 
   std::mutex mutex_;
+
   // state variables
   /* Notes:
    * std::vector could potentially, depending on the number of elements, be an ineffective container for looking up
@@ -64,5 +68,6 @@ class ButtonSensorSIProxy
   std::vector<ButtonData> buttons_;
   ros::Time stamp_;
 };
-}
-#endif  // end include guard
+}  // namespace caros
+
+#endif  // CAROS_BUTTON_SENSOR_SI_PROXY_H
