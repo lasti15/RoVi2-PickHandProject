@@ -9,9 +9,9 @@ project(caros_common_robwork_msgs)
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
   message_generation
   std_msgs
-  geometry_msgs
 )
 
 ########################################################################
@@ -19,8 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
 ########################################################################
 add_message_files(
   FILES
-  RwStateData.msg
   RwState.msg
+  RwStateData.msg
 )
 
 add_service_files(
@@ -30,13 +30,13 @@ add_service_files(
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
   geometry_msgs
+  std_msgs
 )
 
 ########################################################################
 #### Catkin Specific Configuration
 ########################################################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs
+  CATKIN_DEPENDS geometry_msgs message_runtime std_msgs
 )

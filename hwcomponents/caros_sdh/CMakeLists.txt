@@ -11,11 +11,11 @@ set(SHOULD_BUILD_CAROS_SDH 1)
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  roscpp
-  rosconsole
   caros_common
   caros_control
+  rosconsole
+  roscpp
+  roslint
 )
 
 ########################################################################
@@ -82,7 +82,7 @@ if (SHOULD_BUILD_CAROS_SDH)
     INCLUDE_DIRS include
     # CATKIN_DEPENDS:
     # - rosconsole is not used in the header files, so should not be added to the list here.
-    CATKIN_DEPENDS roscpp caros_common caros_control
+    CATKIN_DEPENDS caros_common caros_control roscpp
     DEPENDS RobWork RobWorkHardware
     )
 
@@ -103,8 +103,6 @@ if (SHOULD_BUILD_CAROS_SDH)
     ${ROBWORKHARDWARE_LIBRARIES}
     ${SDH_LIBRARY}
     ${PEAKCAN_LIBRARIES}
-    ${caros_common_LIBRARIES}
-    ${caros_control_LIBRARIES}
     ${catkin_LIBRARIES}
     )
   # Add dependencies on the caros_common and caros_control targets (those are the make-targets for producing the libraries that are being linked with)

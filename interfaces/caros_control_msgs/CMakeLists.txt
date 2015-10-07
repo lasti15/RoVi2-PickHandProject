@@ -8,47 +8,52 @@ project(caros_control_msgs)
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs caros_common_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  caros_common_msgs
+  geometry_msgs
+  message_generation
+  std_msgs
+)
 
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
 add_service_files(
   FILES
+  GripperGripQ.srv
+  GripperMoveQ.srv
+  GripperSetForceQ.srv
+  GripperSetVelocityQ.srv
+  GripperStopMovement.srv
   SerialDeviceForceControlStart.srv
   SerialDeviceForceControlStop.srv
   SerialDeviceForceControlUpdate.srv
   SerialDeviceMoveLin.srv
   SerialDeviceMoveLinFc.srv
-  SerialDeviceMovePtpT.srv
   SerialDeviceMovePtp.srv
-  SerialDeviceMoveVelQ.srv
-  SerialDeviceMoveVelT.srv
+  SerialDeviceMovePtpT.srv
   SerialDeviceMoveServoQ.srv
   SerialDeviceMoveServoT.srv
-  GripperMoveQ.srv
-  GripperGripQ.srv
-  GripperSetForceQ.srv
-  GripperSetVelocityQ.srv
-  GripperStopMovement.srv
+  SerialDeviceMoveVelQ.srv
+  SerialDeviceMoveVelT.srv
 )
 
 add_message_files(
   FILES
-  RobotState.msg
   GripperState.msg
+  RobotState.msg
 )
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
-  geometry_msgs
   caros_common_msgs
+  geometry_msgs
+  std_msgs
 )
 
 ###################################
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs caros_common_msgs
+  CATKIN_DEPENDS caros_common_msgs geometry_msgs message_runtime std_msgs
 )

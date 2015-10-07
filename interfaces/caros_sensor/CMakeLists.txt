@@ -10,14 +10,14 @@ set(library_name "${PROJECT_NAME}")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  std_msgs
-  geometry_msgs
-  caros_common_msgs
   caros_common
+  caros_common_msgs
   caros_common_robwork
   caros_sensor_msgs
+  geometry_msgs
+  message_generation
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -54,7 +54,7 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_sensor_msgs
+  CATKIN_DEPENDS caros_common caros_common_msgs caros_common_robwork caros_sensor_msgs geometry_msgs message_runtime std_msgs
   DEPENDS RobWork
 )
 
@@ -68,18 +68,18 @@ include_directories(
 )
 
 add_library(${library_name} 
-  src/pose_sensor_service_interface.cpp
-  src/pose_sensor_si_proxy.cpp
   src/button_sensor_service_interface.cpp
   src/button_sensor_si_proxy.cpp
   src/ft_sensor_service_interface.cpp
   src/ft_sensor_si_proxy.cpp
+  src/pose_sensor_service_interface.cpp
+  src/pose_sensor_si_proxy.cpp
 )
 
 add_dependencies(${library_name}
-  caros_sensor_msgs_generate_messages_cpp
   caros_common
   caros_common_robwork
+  caros_sensor_msgs_generate_messages_cpp
 )
 
 target_link_libraries(${library_name}

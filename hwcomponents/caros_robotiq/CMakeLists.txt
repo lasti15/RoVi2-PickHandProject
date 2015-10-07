@@ -11,12 +11,12 @@ set(robotiq3_node_name "${PROJECT_NAME}3_node")
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  roscpp
-  std_msgs
   caros_common
   caros_control
+  message_generation
+  roscpp
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -42,7 +42,7 @@ roslint_cpp()
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime roscpp std_msgs caros_common caros_control
+  CATKIN_DEPENDS caros_common caros_control message_runtime roscpp std_msgs
 )
 include_directories(${catkin_INCLUDE_DIRS})
 
@@ -52,7 +52,7 @@ include_directories(${catkin_INCLUDE_DIRS})
 set(RW_ROOT "$ENV{RW_ROOT}")
 #Include default settings for constructing a robwork dependent project
 find_package(RobWork PATHS "${RW_ROOT};${RW_ROOT}/cmake")
-include_directories(include ${ROBWORK_INCLUDE_DIR} ${caros_control_INCLUDE_DIRS})
+include_directories(include ${ROBWORK_INCLUDE_DIR})
 
 ########################################################################
 #### RobWorkHardware

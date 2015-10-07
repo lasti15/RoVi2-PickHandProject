@@ -18,17 +18,17 @@ include("cmake/use-c++11.cmake")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  std_msgs
-  geometry_msgs
-  roscpp
-  rosconsole
-  caros_common_msgs
   caros_common
+  caros_common_msgs
   caros_common_robwork
   caros_control
   caros_control_msgs
+  geometry_msgs
+  message_generation
+  rosconsole
+  roscpp
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -53,19 +53,19 @@ else()
   ################################################
   add_service_files(
     FILES
-    UrServiceServoQ.srv
-    UrServiceServoT.srv
     UrServiceEmpty.srv
     UrServiceForceModeStart.srv
-    UrServiceForceModeUpdate.srv
     UrServiceForceModeStop.srv
+    UrServiceForceModeUpdate.srv
+    UrServiceServoQ.srv
+    UrServiceServoT.srv
     )
 
   generate_messages(
     DEPENDENCIES
-    std_msgs
-    geometry_msgs
     caros_common_msgs
+    geometry_msgs
+    std_msgs
     )
 
   ###################################
@@ -73,7 +73,7 @@ else()
   ###################################
   catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS message_runtime std_msgs geometry_msgs roscpp caros_common_msgs caros_common caros_common_robwork caros_control caros_control_msgs
+    CATKIN_DEPENDS caros_common caros_common_msgs caros_common_robwork caros_control caros_control_msgs geometry_msgs message_runtime roscpp std_msgs
     DEPENDS RobWork RobWorkHardware
     CFG_EXTRAS "use-c++11.cmake"
     )
@@ -85,17 +85,17 @@ else()
     include
     ${ROBWORK_INCLUDE_DIR}
     ${ROBWORKHARDWARE_INCLUDE_DIRS}
-    ${caros_control_INCLUDE_DIRS}
-    ${caros_common_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
     )
 
-  add_executable(${node_name} src/ur_main.cpp src/universal_robots.cpp src/ur_service_interface.cpp)
+  add_executable(${node_name}
+    src/universal_robots.cpp
+    src/ur_main.cpp
+    src/ur_service_interface.cpp
+)
   target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
-    ${caros_control_LIBRARIES}
-    ${caros_common_LIBRARIES}
     ${catkin_LIBRARIES}
     )
 
