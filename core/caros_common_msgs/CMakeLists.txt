@@ -9,9 +9,9 @@ project(caros_common_msgs)
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
   message_generation
   std_msgs
-  geometry_msgs
 )
 
 ########################################################################
@@ -19,30 +19,30 @@ find_package(catkin REQUIRED COMPONENTS
 ########################################################################
 add_message_files(
   FILES
-  Q.msg
   CarosNodeState.msg
+  Q.msg
   WrenchData.msg
 )
 
 add_service_files(
   FILES
-  Start.srv
-  Stop.srv
-  Pause.srv
   ConfigBool.srv
   ConfigInt.srv
   EmptySrv.srv
+  Pause.srv
+  Start.srv
+  Stop.srv
 )
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
   geometry_msgs
+  std_msgs
 )
 
 ########################################################################
 #### Catkin Specific Configuration
 ########################################################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs
+  CATKIN_DEPENDS geometry_msgs message_runtime std_msgs
 )

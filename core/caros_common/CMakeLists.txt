@@ -18,11 +18,11 @@ include("cmake/use-c++11.cmake")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  std_msgs
-  roscpp
   caros_common_msgs
+  message_generation
+  roscpp
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -52,7 +52,7 @@ roslint_cpp()
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs roscpp caros_common_msgs
+  CATKIN_DEPENDS caros_common_msgs message_runtime roscpp std_msgs
   CFG_EXTRAS "use-c++11.cmake"
 )
 
@@ -62,8 +62,8 @@ include_directories(
 )
 
 add_library(${library_name}
-  src/common.cpp
   src/caros_node_service_interface.cpp
+  src/common.cpp
 )
 
 target_link_libraries(${library_name}

@@ -17,15 +17,15 @@ include("cmake/use-c++11.cmake")
 #### Catkin Packages
 ########################################################################
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  std_msgs
-  roscpp
-  geometry_msgs
-  caros_common_msgs
   caros_common
+  caros_common_msgs
   caros_common_robwork
   caros_control_msgs
+  geometry_msgs
+  message_generation
+  roscpp
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -61,7 +61,7 @@ find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${library_name}
-  CATKIN_DEPENDS message_runtime std_msgs roscpp geometry_msgs caros_common_msgs caros_common caros_common_robwork caros_control_msgs
+  CATKIN_DEPENDS caros_common caros_common_msgs caros_common_robwork caros_control_msgs geometry_msgs message_runtime roscpp std_msgs
   DEPENDS RobWork
   CFG_EXTRAS "use-c++11.cmake"
 )
@@ -78,8 +78,8 @@ include_directories(
 # Create one library for the whole package (don't split it into gripper, serialDevice, etc. - if this is wanted then this package should rather be split into gripper, serialDevice and similar packages) 
 add_library(${library_name}
   src/gripper_service_interface.cpp
-  src/serial_device_service_interface.cpp
   src/gripper_si_proxy.cpp
+  src/serial_device_service_interface.cpp
   src/serial_device_si_proxy.cpp
 )
 

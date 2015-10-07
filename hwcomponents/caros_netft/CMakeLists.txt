@@ -5,10 +5,10 @@ project(caros_netft)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roslint
-  message_generation
-  std_msgs
   caros_common
+  message_generation
+  roslint
+  std_msgs
 )
 
 ########################################################################
@@ -26,15 +26,15 @@ roslint_cpp()
 
 #generate_messages(
 #  DEPENDENCIES
-#  std_msgs
 #  caros_common
+#  std_msgs
 #)
 
 ###################################
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs caros_common
+  CATKIN_DEPENDS caros_common message_runtime std_msgs
 )
 
 ########################################################################
