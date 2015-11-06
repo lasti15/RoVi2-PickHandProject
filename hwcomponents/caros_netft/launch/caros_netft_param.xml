@@ -1,9 +1,9 @@
-<!-- Parameters for the caros_robotiq3 node -->
+<!-- Parameters for the caros_netft node -->
 <launch>
   <!-- Define the parameterisation of the ROS parameters -->
   <arg name="ip" default="192.168.100.2" />
   <arg name="port" default="49152" />
-  <arg name="rate" default="400" />
+  <arg name="rate" default="40" />
 
   <!-- Set the ROS parameters -->
   <param name="ip" type="str" value="$(arg ip)" />

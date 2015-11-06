@@ -27,19 +27,28 @@ NetFTNode::~NetFTNode() {
 
 bool NetFTNode::activateHook()
 {
+  ROS_DEBUG("Activate Hook");
 
-
-  node_handle_.param("ip", ip_, std::string("192.168.1.1"));
+  node_handle_.param("ip", ip_, std::string("192.168.100.2"));
   node_handle_.param("port", port_, 49152);
-  node_handle_.param("rate", publishRate_, 400);
+  node_handle_.param("rate", publishRate_, 50);
+  setLoopRateFrequency(publishRate_);
   netft_ = ownedPtr(new NetFTLogging(ip_, port_));
-
+  
   try {
     netft_->start();
   } catch (const std::exception& exp) {
     CAROS_FATALERROR("Unable to start communication with the NetFT sensor", NETFT_UNABLE_TO_START_COMMUNICATION);
     return false;
   }
+
+  if (not FTSensorServiceInterface::configureInterface())
+  {
+    CAROS_FATALERROR("The CAROS FTSensorServiceInterface could not be configured correctly.",
+                     NETFT_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
+    return false;
+  }
+
   return true;
 }
 
@@ -63,9 +72,11 @@ void NetFTNode::runLoopHook()
       return;
     }
 
-
-    NetFTLogging::NetFTData data = netft_->getAllData();
-    publish(rw::math::Wrench6D<>(data.data.first, data.data.second), "");
+    
+    NetFTLogging::NetFTData data = netft_->getAllData();       
+    publish(rw::math::Wrench6D<>(data.data.first, data.data.second), "FT");
+    std::cout<<"data = "<<data.data.first<<" "<<std::setprecision(16)<<data.timestamp<<std::endl;
+    //publish(rw::math::Wrench6D<>(Vector3D<>(1,2,3), Vector3D<>(4,5,6)), "FT");
   }
   catch (const rw::common::Exception& exp)
   {

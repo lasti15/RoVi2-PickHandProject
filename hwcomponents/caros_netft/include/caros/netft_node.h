@@ -27,7 +27,8 @@ class NetFTNode : public caros::CarosNodeServiceInterface, public caros::FTSenso
 
   enum NETFTNODE_ERRORCODE {
     NETFT_UNABLE_TO_START_COMMUNICATION,
-    NETFT_INTERNAL_ERROR
+    NETFT_INTERNAL_ERROR,
+    NETFT_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL
   };
 
   
