@@ -16,7 +16,25 @@ include("cmake/use-c++11.cmake")
 ########################################################################
 #### Catkin Packages
 ########################################################################
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs geometry_msgs roscpp rosconsole caros_common_msgs caros_common caros_common_robwork caros_sensor caros_sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS 
+  caros_common 
+  caros_common_msgs 
+  caros_common_robwork 
+  caros_sensor 
+  caros_sensor_msgs  
+  geometry_msgs     
+  message_generation 
+  roscpp 
+  roslint
+  std_msgs 
+)
+
+
+########################################################################
+#### Roslint
+########################################################################
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -60,9 +78,18 @@ else()
 ###################################
 ## catkin specific configuration ##
 ###################################
-catkin_package(
-  INCLUDE_DIRS include
-  CATKIN_DEPENDS message_runtime roscpp std_msgs caros_common_msgs caros_common caros_common_robwork caros_sensor caros_sensor_msgs
+  catkin_package(
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS 
+      caros_common 
+      caros_common_msgs 
+      caros_common_robwork 
+      caros_sensor 
+      caros_sensor_msgs
+      geometry_msgs 
+      message_runtime 
+      roscpp 
+      std_msgs 
 )
 
 
@@ -74,8 +101,6 @@ catkin_package(
     include
     ${ROBWORK_INCLUDE_DIR}
     ${ROBWORKHARDWARE_INCLUDE_DIRS}
-    ${caros_sensor_INCLUDE_DIRS}
-    ${caros_common_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
     )
 
