@@ -1,6 +1,6 @@
 #include <caros/netft_node.h>
-
 #include <rw/rw.hpp>
+#include <string>
 
 USE_ROBWORK_NAMESPACE
 
@@ -9,17 +9,17 @@ using namespace robwork;
 using namespace rwhw;
 
 
-  //! constructor
-NetFTNode::NetFTNode(const ros::NodeHandle& node_handle): 
-	caros::CarosNodeServiceInterface(node_handle),
+// constructor
+NetFTNode::NetFTNode(const ros::NodeHandle& node_handle):
+  caros::CarosNodeServiceInterface(node_handle),
   caros::FTSensorServiceInterface(node_handle),
-  node_handle_(node_handle) 
+  node_handle_(node_handle)
 {
-  
 }
 
-  //! destructor
-NetFTNode::~NetFTNode() {
+// destructor
+NetFTNode::~NetFTNode()
+{
   netft_->stop();
 }
 
@@ -34,15 +34,18 @@ bool NetFTNode::activateHook()
   node_handle_.param("rate", publishRate_, 50);
   setLoopRateFrequency(publishRate_);
   netft_ = ownedPtr(new NetFTLogging(ip_, port_));
-  
-  try {
+
+  try
+  {
     netft_->start();
-  } catch (const std::exception& exp) {
+  }
+  catch (const std::exception& exp)
+  {
     CAROS_FATALERROR("Unable to start communication with the NetFT sensor", NETFT_UNABLE_TO_START_COMMUNICATION);
     return false;
   }
 
-  if (not FTSensorServiceInterface::configureInterface())
+  if (!FTSensorServiceInterface::configureInterface())
   {
     CAROS_FATALERROR("The CAROS FTSensorServiceInterface could not be configured correctly.",
                      NETFT_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL);
@@ -72,11 +75,10 @@ void NetFTNode::runLoopHook()
       return;
     }
 
-    
-    NetFTLogging::NetFTData data = netft_->getAllData();       
+    NetFTLogging::NetFTData data = netft_->getAllData();
     publish(rw::math::Wrench6D<>(data.data.first, data.data.second), "FT");
-    std::cout<<"data = "<<data.data.first<<" "<<std::setprecision(16)<<data.timestamp<<std::endl;
-    //publish(rw::math::Wrench6D<>(Vector3D<>(1,2,3), Vector3D<>(4,5,6)), "FT");
+    std::cout << "data = " << data.data.first << " " << std::setprecision(16) << data.timestamp << std::endl;
+    // publish(rw::math::Wrench6D<>(Vector3D<>(1,2,3), Vector3D<>(4,5,6)), "FT");
   }
   catch (const rw::common::Exception& exp)
   {

@@ -1,3 +1,4 @@
+#include <string>
 #include <ros/ros.h>
 #include <caros/netft_node.h>
 

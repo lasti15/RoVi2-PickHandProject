@@ -10,6 +10,7 @@
 #include <rw/math/Q.hpp>
 
 #include <ros/ros.h>
+#include <string>
 
 namespace caros
 {
@@ -19,19 +20,19 @@ namespace caros
 class NetFTNode : public caros::CarosNodeServiceInterface, public caros::FTSensorServiceInterface
 {
  public:
-  //! constructor
-  NetFTNode(const ros::NodeHandle& node_handle);
+  // constructor
+  explicit NetFTNode(const ros::NodeHandle& node_handle);
 
-  //! destructor
+  // destructor
   virtual ~NetFTNode();
 
-  enum NETFTNODE_ERRORCODE {
+  enum NETFTNODE_ERRORCODE
+  {
     NETFT_UNABLE_TO_START_COMMUNICATION,
     NETFT_INTERNAL_ERROR,
     NETFT_CAROS_GRIPPER_SERVICE_CONFIGURE_FAIL
   };
 
-  
  protected:
   // hooks implemented from CarosNodeServiceInterface base class
   bool activateHook();
@@ -53,6 +54,6 @@ class NetFTNode : public caros::CarosNodeServiceInterface, public caros::FTSenso
   int publishRate_;
 };
 
-}  // end namespace
+}  // namespace caros
 
-#endif  //#ifndef CAROS_ROBOTIQ_ROBOTIQ3_NODE_H
+#endif  // CAROS_NETFT_NODE_H

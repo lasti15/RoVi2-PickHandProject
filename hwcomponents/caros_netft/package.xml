@@ -12,16 +12,16 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>message_generation</build_depend>
+  <build_depend>roslint</build_depend>
 
-  <depend>std_msgs</depend>
-  <depend>roscpp</depend>
-  <depend>rosconsole</depend>
-  <depend>geometry_msgs</depend>
-  <depend>caros_sensor_msgs</depend>
   <depend>caros_common_msgs</depend>
   <depend>caros_common</depend>
   <depend>caros_common_robwork</depend>
   <depend>caros_sensor</depend>
+  <depend>caros_sensor_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
 
   <exec_depend>message_runtime</exec_depend>
 
