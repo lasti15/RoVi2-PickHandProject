@@ -24,9 +24,7 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
 
   bool moveServoQ(const QAndSpeedContainer_t& targets);
   bool moveServoT(const TransformAndSpeedContainer_t& targets);
-  bool moveStart();
   bool moveStop();
-  bool movePause();
   bool moveSetSafeModeEnabled(const bool value);
 
  private:

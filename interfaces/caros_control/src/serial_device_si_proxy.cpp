@@ -3,9 +3,7 @@
 #include <caros/serial_device_service_interface.h>
 #include <caros/common.h>
 #include <caros/common_robwork.h>
-#include <caros_common_msgs/Stop.h>
-#include <caros_common_msgs/Pause.h>
-#include <caros_common_msgs/ConfigBool.h>
+#include <caros_common_msgs/EmptySrv.h>
 #include <caros_control_msgs/SerialDeviceMoveLin.h>
 #include <caros_control_msgs/SerialDeviceMovePtp.h>
 #include <caros_control_msgs/SerialDeviceMovePtpT.h>
@@ -33,8 +31,6 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
       srv_move_servo_t_(nodehandle_, "move_servo_t", ros_namespace_, use_persistent_connections_),
       srv_move_vel_q_(nodehandle_, "move_vel_q", ros_namespace_, use_persistent_connections_),
       srv_move_vel_t_(nodehandle_, "move_vel_t", ros_namespace_, use_persistent_connections_),
-      srv_pause_(nodehandle_, "move_pause", ros_namespace_, use_persistent_connections_),
-      srv_start_(nodehandle_, "move_start", ros_namespace_, use_persistent_connections_),
       srv_stop_(nodehandle_, "move_stop", ros_namespace_, use_persistent_connections_),
       srv_set_safe_mode_enabled_(nodehandle_, "set_safe_mode_enabled", ros_namespace_, use_persistent_connections_)
 {
@@ -151,18 +147,9 @@ bool SerialDeviceSIProxy::moveLinFc(const rw::math::Transform3D<>& pos_target, c
 
 bool SerialDeviceSIProxy::stop()
 {
-  caros_common_msgs::Stop srv;
+  caros_common_msgs::EmptySrv srv;
 
-  srv_stop_.call<caros_common_msgs::Stop>(srv);
-
-  return srv.response.success;
-}
-
-bool SerialDeviceSIProxy::pause()
-{
-  caros_common_msgs::Pause srv;
-
-  srv_pause_.call<caros_common_msgs::Pause>(srv);
+  srv_stop_.call<caros_common_msgs::EmptySrv>(srv);
 
   return srv.response.success;
 }
@@ -188,8 +175,6 @@ void SerialDeviceSIProxy::closePersistentConnections()
   srv_move_servo_t_.shutdown();
   srv_move_vel_q_.shutdown();
   srv_move_vel_t_.shutdown();
-  srv_pause_.shutdown();
-  srv_start_.shutdown();
   srv_stop_.shutdown();
   srv_set_safe_mode_enabled_.shutdown();
 }

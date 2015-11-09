@@ -150,16 +150,6 @@ class SerialDeviceSIProxy
   bool stop();
 
   /**
-   * @brief pause the robot, should be able to continue trajectory
-   *
-   * @returns a boolean indicating if the serial device accepted the command
-   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
-   *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws BadServiceCall when an error happened while communicating with the serial device.
-   */
-  bool pause();
-
-  /**
    * @brief enable safe mode, so that robot stops when collisions are detected
    * @param[in] enable a value of true enables safe mode, and false disables it
    *
@@ -231,8 +221,6 @@ class SerialDeviceSIProxy
   caros::CarosServiceClient srv_move_vel_q_;
   caros::CarosServiceClient srv_move_vel_t_;
 
-  caros::CarosServiceClient srv_pause_;
-  caros::CarosServiceClient srv_start_;
   caros::CarosServiceClient srv_stop_;
 
   caros::CarosServiceClient srv_set_safe_mode_enabled_;
