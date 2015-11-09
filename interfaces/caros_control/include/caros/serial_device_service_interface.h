@@ -47,28 +47,28 @@ class SerialDeviceServiceInterface
   typedef std::vector<std::tuple<const rw::math::Q, const float>> QAndSpeedContainer_t;
 
   /* TODO: Not supporting blends at the moment! */
-  //! @brief move robot in a linear Cartesian path
+  //! @brief move robot on a linear Cartesian path (in meters)
   virtual bool moveLin(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot from point to point
+  //! @brief move robot from c-space point to c-space point (in radians)
   virtual bool movePtp(const QAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot from point to point but using a pose as target (require invkin)
+  //! @brief move robot from Cartesian point to Cartesian point (in meters) using a pose as target (requires invkin)
   virtual bool movePtpT(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot in a servoing fashion specifying joint velocity targets
+  //! @brief move robot in a servoing fashion specifying joint velocity targets (in radians/sec)
   virtual bool moveVelQ(const rw::math::Q& q_vel) = 0;
-  //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates
+  //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates (in meters/sec and radians/sec)
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
-  //! @brief move robot with a hybrid position/force control
+  //! @brief move robot with a hybrid position/force control. Position in meters, Wrench in Newton and Newton meter.
   virtual bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
                          const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain) = 0;
 
   /**
-   * @brief move robot in a servoing fashion specifying a joint configuration
+   * @brief move robot in a servoing fashion specifying a joint configuration (in radians)
    * @note It is implementation specific whether the targets are being moved to individually, or just the last specified
    * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
   virtual bool moveServoQ(const QAndSpeedContainer_t& targets) = 0;
   /**
-   * @brief move robot in a servoing fashion specifying a pose
+   * @brief move robot in a servoing fashion specifying a pose (in meters)
    * @note It is implementation specific whether the targets are being moved to individually, or just the last specified
    * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
