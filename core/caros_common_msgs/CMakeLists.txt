@@ -29,9 +29,6 @@ add_service_files(
   ConfigBool.srv
   ConfigInt.srv
   EmptySrv.srv
-  Pause.srv
-  Start.srv
-  Stop.srv
 )
 
 generate_messages(

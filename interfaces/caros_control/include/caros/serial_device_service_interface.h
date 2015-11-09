@@ -73,14 +73,8 @@ class SerialDeviceServiceInterface
    * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */
   virtual bool moveServoT(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief start the robot
-  virtual bool moveStart() = 0;
   //! @brief hard stop the robot
   virtual bool moveStop() = 0;
-  /* movePause should just (temporarily) pause the movement, and allow for it to continue (i.e. the robot should still
-   * be able to perform the full trajectory) */
-  //! @brief pause the robot, should be able to continue trajectory
-  virtual bool movePause() = 0;
   //! @brief enable safe mode, so that robot stops when collisions are detected
   virtual bool moveSetSafeModeEnabled(const bool value) = 0;
 
@@ -128,11 +122,7 @@ class SerialDeviceServiceInterface
   bool moveLinFcHandle(caros_control_msgs::SerialDeviceMoveLinFc::Request& request,
                        caros_control_msgs::SerialDeviceMoveLinFc::Response& response);
 
-  bool moveStartHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
-
   bool moveStopHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
-
-  bool movePauseHandle(caros_common_msgs::EmptySrv::Request& request, caros_common_msgs::EmptySrv::Response& response);
 
   bool moveSetSafeModeEnabledHandle(caros_common_msgs::ConfigBool::Request& request,
                                     caros_common_msgs::ConfigBool::Response& response);
@@ -152,9 +142,7 @@ class SerialDeviceServiceInterface
   ros::ServiceServer srv_move_servo_q_;
   ros::ServiceServer srv_move_servo_t_;
 
-  ros::ServiceServer srv_move_start_;
   ros::ServiceServer srv_move_stop_;
-  ros::ServiceServer srv_move_pause_;
   ros::ServiceServer srv_set_safe_mode_enabled_;
 };
 }  // namespace caros

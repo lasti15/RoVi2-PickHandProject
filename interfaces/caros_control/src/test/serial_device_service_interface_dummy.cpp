@@ -109,27 +109,7 @@ bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContai
   return return_value_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::moveStart()
-{
-  most_recent_function_called_ = __PRETTY_FUNCTION__;
-  if (cause_error_)
-  {
-    throw std::runtime_error(causing_error_msg_);
-  }
-  return return_value_;
-}
-
 bool SerialDeviceServiceInterfaceDummy::moveStop()
-{
-  most_recent_function_called_ = __PRETTY_FUNCTION__;
-  if (cause_error_)
-  {
-    throw std::runtime_error(causing_error_msg_);
-  }
-  return return_value_;
-}
-
-bool SerialDeviceServiceInterfaceDummy::movePause()
 {
   most_recent_function_called_ = __PRETTY_FUNCTION__;
   if (cause_error_)

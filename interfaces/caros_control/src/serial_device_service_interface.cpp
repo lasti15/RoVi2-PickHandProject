@@ -66,8 +66,7 @@ bool SerialDeviceServiceInterface::configureInterface()
 bool SerialDeviceServiceInterface::initService()
 {
   if (srv_move_lin_ || srv_move_ptp_ || srv_move_ptp_t_ || srv_move_vel_q_ || srv_move_vel_t_ || srv_move_servo_q_ ||
-      srv_move_servo_t_ || srv_move_lin_fc_ || srv_move_start_ || srv_move_stop_ || srv_move_pause_ ||
-      srv_set_safe_mode_enabled_ || device_state_publisher_)
+      srv_move_servo_t_ || srv_move_lin_fc_ || srv_move_stop_ || srv_set_safe_mode_enabled_ || device_state_publisher_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more SerialDeviceServiceInterface services or publishers. If this is not fully intended "
@@ -104,22 +103,15 @@ bool SerialDeviceServiceInterface::initService()
   srv_move_lin_fc_ = nodehandle_.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFcHandle, this);
   ROS_ERROR_STREAM_COND(!srv_move_lin_fc_, "The move_lin_fc service is empty!");
 
-  srv_move_start_ = nodehandle_.advertiseService("move_start", &SerialDeviceServiceInterface::moveStartHandle, this);
-  ROS_ERROR_STREAM_COND(!srv_move_start_, "The move_start service is empty!");
-
   srv_move_stop_ = nodehandle_.advertiseService("move_stop", &SerialDeviceServiceInterface::moveStopHandle, this);
   ROS_ERROR_STREAM_COND(!srv_move_stop_, "The move_stop service is empty!");
-
-  srv_move_pause_ = nodehandle_.advertiseService("move_pause", &SerialDeviceServiceInterface::movePauseHandle, this);
-  ROS_ERROR_STREAM_COND(!srv_move_pause_, "The move_pause service is empty!");
 
   srv_set_safe_mode_enabled_ = nodehandle_.advertiseService(
       "set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
   ROS_ERROR_STREAM_COND(!srv_set_safe_mode_enabled_, "The set_safe_mode_enabled service is empty!");
 
   if (srv_move_lin_ && srv_move_ptp_ && srv_move_ptp_t_ && srv_move_vel_q_ && srv_move_vel_t_ && srv_move_servo_q_ &&
-      srv_move_servo_t_ && srv_move_lin_fc_ && srv_move_start_ && srv_move_stop_ && srv_move_pause_ &&
-      srv_set_safe_mode_enabled_ && device_state_publisher_)
+      srv_move_servo_t_ && srv_move_lin_fc_ && srv_move_stop_ && srv_set_safe_mode_enabled_ && device_state_publisher_)
   {
     /* Everything seems to be properly initialised */
     ROS_DEBUG_STREAM(
@@ -276,26 +268,10 @@ bool SerialDeviceServiceInterface::moveLinFcHandle(caros_control_msgs::SerialDev
   return true;
 }
 
-bool SerialDeviceServiceInterface::moveStartHandle(caros_common_msgs::EmptySrv::Request& request,
-                                                   caros_common_msgs::EmptySrv::Response& response)
-{
-  response.success = moveStart();
-
-  return true;
-}
-
 bool SerialDeviceServiceInterface::moveStopHandle(caros_common_msgs::EmptySrv::Request& request,
                                                   caros_common_msgs::EmptySrv::Response& response)
 {
   response.success = moveStop();
-
-  return true;
-}
-
-bool SerialDeviceServiceInterface::movePauseHandle(caros_common_msgs::EmptySrv::Request& request,
-                                                   caros_common_msgs::EmptySrv::Response& response)
-{
-  response.success = movePause();
 
   return true;
 }

@@ -690,18 +690,6 @@ bool UniversalRobots::moveServoT(const TransformAndSpeedContainer_t& targets)
   return res;
 }
 
-bool UniversalRobots::moveStart()
-{
-  if (!isInWorkingCondition())
-  {
-    return false;
-  }
-
-  ROS_ERROR_STREAM("Currently not implemented!");
-
-  return false;
-}
-
 bool UniversalRobots::moveStop()
 {
   if (!isInWorkingCondition())
@@ -712,17 +700,6 @@ bool UniversalRobots::moveStop()
   ur_.stopRobot();
 
   return true;
-}
-
-bool UniversalRobots::movePause()
-{
-  if (!isInWorkingCondition())
-  {
-    return false;
-  }
-
-  ROS_ERROR_STREAM("Currently not implemented!");
-  return false;
 }
 
 bool UniversalRobots::moveSetSafeModeEnabled(const bool value)
