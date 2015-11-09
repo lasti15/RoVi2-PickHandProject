@@ -83,12 +83,8 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   bool moveServoQ(const QAndSpeedContainer_t& targets);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoT
   bool moveServoT(const TransformAndSpeedContainer_t& targets);
-  //! @copydoc caros::SerialDeviceServiceInterface::moveStart
-  bool moveStart();
   //! @copydoc caros::SerialDeviceServiceInterface::moveStop
   bool moveStop();
-  //! @copydoc caros::SerialDeviceServiceInterface::movePause
-  bool movePause();
   //! @copydoc caros::SerialDeviceServiceInterface::moveSetSafeModeEnabled
   bool moveSetSafeModeEnabled(const bool value);
 

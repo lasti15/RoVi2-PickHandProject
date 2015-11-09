@@ -29,8 +29,6 @@ The @ref caros::SerialDeviceServiceInterface interface is supported to some exte
 | move_vel_q  | x |   |
 | move_vel_t  |   | x |
 | move_lin_fc | x |   |
-| move_start  |   | x |
-| move_pause  |   | x |
 | set_safe_mode_enabled |   | x |
 
 ## UR Service Interface ##

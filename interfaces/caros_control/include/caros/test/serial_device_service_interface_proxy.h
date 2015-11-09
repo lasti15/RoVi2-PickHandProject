@@ -43,8 +43,6 @@ const Services_t services_to_test = {
                      "const rw::math::Transform3D<double>&, const rw::math::Wrench6D<double>&, const rw::math::Q&)")},
     {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::stop, std::placeholders::_1),
                      "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()")},
-    {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::pause, std::placeholders::_1),
-                     "virtual bool SerialDeviceServiceInterfaceDummy::movePause()")},
     {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::setSafeModeEnabled, std::placeholders::_1, false),
                      "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(bool)")}};
 
