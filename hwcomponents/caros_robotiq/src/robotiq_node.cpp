@@ -20,10 +20,10 @@ RobotiqNode::RobotiqNode(const ros::NodeHandle& node_handle, const HandType hand
   switch (hand_type_)
   {
     case HandType::ROBOTIQ2:
-      last_Q_ = rw::math::Q(1, 0.0);
+      last_q_ = rw::math::Q(1, 0.0);
       break;
     case HandType::ROBOTIQ3:
-      last_Q_ = rw::math::Q(4, 0.0, 0.0, 0.0, 0.0);
+      last_q_ = rw::math::Q(4, 0.0, 0.0, 0.0, 0.0);
       break;
     default:
       /* No supported initialisation for the chosen HandType */
@@ -104,7 +104,7 @@ void RobotiqNode::runLoopHook()
      ************************************************************************/
     robotiq_->getAllStatusCMD();
     rw::math::Q q = robotiq_->getQ();
-    rw::math::Q dq_calc = (q - last_Q_) / diff.toSec();
+    rw::math::Q dq_calc = (q - last_q_) / diff.toSec();
     rw::math::Q force = robotiq_->getQCurrent();
     bool is_moving = robotiq_->isGripperMoving();
     bool is_blocked = robotiq_->isGripperBlocked();
@@ -122,7 +122,7 @@ void RobotiqNode::runLoopHook()
       first_invocation = false;
     }
 
-    last_Q_ = q;
+    last_q_ = q;
     last_loop_time_ = now;
   }
   catch (const rw::common::Exception& exp)
