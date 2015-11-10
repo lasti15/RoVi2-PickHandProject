@@ -76,6 +76,8 @@ bool RobotiqNode::recoverHook(const std::string& error_msg, const int64_t error_
 
 void RobotiqNode::runLoopHook()
 {
+  static bool first_invocation = true;
+
   try
   {
     if (robotiq_ == 0)
@@ -109,7 +111,16 @@ void RobotiqNode::runLoopHook()
     bool is_stopped = !robotiq_->isGripperMoving() && !robotiq_->isGripperBlocked();
     /* FIXME: hardcoded isEstop value */
     bool is_emergency_stopped = false;
-    publishState(q, dq_calc, force, is_moving, is_blocked, is_stopped, is_emergency_stopped);
+    /* Don't publish wrong information when first invoked, because the last_q_ and last_loop_time_ are initialised to 0
+     */
+    if (!first_invocation)
+    {
+      publishState(q, dq_calc, force, is_moving, is_blocked, is_stopped, is_emergency_stopped);
+    }
+    else
+    {
+      first_invocation = false;
+    }
 
     last_Q_ = q;
     last_loop_time_ = now;
