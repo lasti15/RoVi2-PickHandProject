@@ -86,7 +86,7 @@ class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::Gripp
 
  protected:
   ros::Time last_loop_time_;
-  rw::math::Q last_Q_;
+  rw::math::Q last_q_;
   std::string ip_;
   int port_;
 
