@@ -33,7 +33,11 @@ namespace caros
  * @brief This is the serial device interface. It defines the (minimum) interface that a joint based robotic device
  *needs to implement.
  *
- * In ROS the namespace of the node is used and it is important that not two GripperServiceInterfaces are running in the
+ * All interfaces use meters, radians, Newton and Newtonmeter as base units.
+ * (linear joints in meters, rotary joints in radians.)
+ * If a device does not support this please be very explicit in the documentation of your node about this.
+ *
+ * In ROS the namespace of the node is used and it is important that not two SerialDeviceServiceInterface are running in the
  *same namespace.
  */
 class SerialDeviceServiceInterface
@@ -49,11 +53,11 @@ class SerialDeviceServiceInterface
   /* TODO: Not supporting blends at the moment! */
   //! @brief move robot on a linear Cartesian path (in meters)
   virtual bool moveLin(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot from c-space point to c-space point (in radians)
+  //! @brief move robot from c-space point to c-space point (in radians for revolute joints / meters for linear)
   virtual bool movePtp(const QAndSpeedContainer_t& targets) = 0;
   //! @brief move robot from Cartesian point to Cartesian point (in meters) using a pose as target (requires invkin)
   virtual bool movePtpT(const TransformAndSpeedContainer_t& targets) = 0;
-  //! @brief move robot in a servoing fashion specifying joint velocity targets (in radians/sec)
+  //! @brief move robot in a servoing fashion specifying joint velocity targets (in radians/sec for revolute joints / meters/sec for linear)
   virtual bool moveVelQ(const rw::math::Q& q_vel) = 0;
   //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates (in meters/sec and radians/sec)
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
@@ -62,7 +66,7 @@ class SerialDeviceServiceInterface
                          const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain) = 0;
 
   /**
-   * @brief move robot in a servoing fashion specifying a joint configuration (in radians)
+   * @brief move robot in a servoing fashion specifying a joint configuration (in radians for revolute joints and meters for linear joints)
    * @note It is implementation specific whether the targets are being moved to individually, or just the last specified
    * target is chosen. Make sure to look at the specific implementation for the node you are using.
    */

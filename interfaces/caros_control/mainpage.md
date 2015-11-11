@@ -13,7 +13,11 @@ This component contains interfaces for controlling various types of devices. Exa
 All interfaces in here are abstract and parts need to be added by the user for the specific device. All proxies are useable directly
 
 ## Gripper Service Interface ##
-The @ref caros::GripperServiceInterface represents a simple gripper interface. It has one output topic:
+The @ref caros::GripperServiceInterface represents a simple gripper interface.
+
+All topics and services of @ref caros::GripperServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absoultely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
+
+The @ref caros::GripperServiceInterface has one output topic:
 | Topic | Type | Description |
 | ------- | :------: | :-------------: |
 | gripper_state  | @ref caros_control_msgs::GripperState | State of the gripper (joint pos, joint vel., ...)|
@@ -22,15 +26,19 @@ In addition the following services are provided.
 
 | Service | Type | Description |
 | ------- | :------: | :-------------: |
-| move_q  | @ref caros_control_msgs::GripperMoveQ | Move the gripper to the given target Q (and then switch off power if applicable)|
-| grip_q  | @ref caros_control_msgs::GripperGripQ | Move the gripper to the given target Q and keep powered (grip/hold the object in hand)|
-| set_force_q  | @ref caros_control_msgs::GripperSetForceQ | Set the max gripping force according to the given Q|
-| set_velocity_q  | @ref caros_control_msgs::GripperSetVelocityQ | Set the target velocity according to the given Q|
-| stop_movement  | @ref caros_control_msgs::GripperStopMovement | Stop the gripper movement (if the device supports this)|
+| move_q  | @ref caros_control_msgs::GripperMoveQ | See @ref caros::GripperServiceInterface::moveQ. |
+| grip_q  | @ref caros_control_msgs::GripperGripQ | See @ref caros::GripperServiceInterface::gripQ. |
+| set_force_q  | @ref caros_control_msgs::GripperSetForceQ | See @ref caros::GripperServiceInterface::setForceQ. |
+| set_velocity_q  | @ref caros_control_msgs::GripperSetVelocityQ | See @ref caros::GripperServiceInterface::setVelocityQ. |
+| stop_movement  | @ref caros_control_msgs::GripperStopMovement | See @ref caros::GripperServiceInterface::stopMovement. |
 
 
 ## Serial Device Service Interface ##
-The @ref caros::SerialDeviceServiceInterface represents a interface for a serial device (e.g., a articulated robot arm). It has one output topic:
+The @ref caros::SerialDeviceServiceInterface represents a interface for a serial device (e.g., a articulated robot arm).
+
+All topics and services of @ref caros::SerialDeviceServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absoultely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
+
+The @ref caros::SerialDeviceServiceInterface has one output topic:
 | Topic | Type | Description |
 | ------- | :------: | :-------------: |
 | robot_state  | @ref caros_control_msgs::RobotState | State of the robot (joint pos, joint velocity, ...)|
@@ -39,17 +47,14 @@ In addition the following services are provided.
 
 | Service | Type | Description |
 | ------- | :------: | :-------------: |
-| move_lin | @ref caros_control_msgs::SerialDeviceMoveLin |  |
-| move_ptp | @ref caros_control_msgs::SerialDeviceMovePtp |  |
-| move_ptp | @ref caros_control_msgs::SerialDeviceMovePtp |  |
-| move_ptp_t | @ref caros_control_msgs::SerialDeviceMovePtpT |  |
-| move_vel_q | @ref caros_control_msgs::SerialDeviceMoveVelQ |  |
-| move_vel_t | @ref caros_control_msgs::SerialDeviceMoveVelT |  |
-| move_servo_q | @ref caros_control_msgs::SerialDeviceMoveServoQ |  |
-| move_servo_t | @ref caros_control_msgs::SerialDeviceMoveServoT |  |
-| move_lin_fc | @ref caros_control_msgs::SerialDeviceMoveLinFc |  |
-| move_start | @ref caros_control_msgs::SerialDeviceForceControlStart |  |
-| move_stop | @ref caros_control_msgs::SerialDeviceForceControlStop |  |
-| move_pause | @ref caros_control_msgs:: |  |
-|  | @ref caros_control_msgs::SerialDeviceForceControlUpdate |  |
+| move_lin | @ref caros_control_msgs::SerialDeviceMoveLin | See @ref caros::SerialDeviceServiceInterface::moveLin. |
+| move_ptp | @ref caros_control_msgs::SerialDeviceMovePtp | See @ref caros::SerialDeviceServiceInterface::movePtp.  |
+| move_ptp_t | @ref caros_control_msgs::SerialDeviceMovePtpT | See @ref caros::SerialDeviceServiceInterface::movePtpT. |
+| move_vel_q | @ref caros_control_msgs::SerialDeviceMoveVelQ | See @ref caros::SerialDeviceServiceInterface::moveVelQ. |
+| move_vel_t | @ref caros_control_msgs::SerialDeviceMoveVelT | See @ref caros::SerialDeviceServiceInterface::moveVelT. |
+| move_servo_q | @ref caros_control_msgs::SerialDeviceMoveServoQ | See @ref caros::SerialDeviceServiceInterface::moveServoQ. |
+| move_servo_t | @ref caros_control_msgs::SerialDeviceMoveServoT | See @ref caros::SerialDeviceServiceInterface::moveServoT. |
+| move_lin_fc | @ref caros_control_msgs::SerialDeviceMoveLinFc | See @ref caros::SerialDeviceServiceInterface::moveLinFc. |
+| move_stop | @ref caros_common_msgs::EmptySrv | See @ref caros::SerialDeviceServiceInterface::moveStop. |
+| set_safe_mode_enabled | @ref caros_common_msgs::ConfigBool | See @ref caros::SerialDeviceServiceInterface::moveSetSafeModeEnabled. |
 
