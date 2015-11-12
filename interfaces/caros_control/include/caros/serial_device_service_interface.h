@@ -61,7 +61,7 @@ class SerialDeviceServiceInterface
   virtual bool moveVelQ(const rw::math::Q& q_vel) = 0;
   //! @brief move robot in a servoing fashion specifying a velocity screw in tool coordinates (in meters/sec and radians/sec)
   virtual bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel) = 0;
-  //! @brief move robot with a hybrid position/force control. Position in meters, Wrench in Newton and Newton meter.
+  //! @brief move robot with a hybrid position/force control. Position in meters, Wrench in Newton and Newtonmeter.
   virtual bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
                          const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain) = 0;
 

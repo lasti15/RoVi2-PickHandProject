@@ -1,8 +1,11 @@
 \mainpage
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
 - [caros_control](#caroscontrol)
+- [Interfaces](#interfaces)
+    - [Gripper Service Interface](#gripper-service-interface)
+    - [Serial Device Service Interface](#serial-device-service-interface)
 
 <!-- markdown-toc end -->
 
@@ -15,12 +18,12 @@ All interfaces in here are abstract and parts need to be added by the user for t
 ## Gripper Service Interface ##
 The @ref caros::GripperServiceInterface represents a simple gripper interface.
 
-All topics and services of @ref caros::GripperServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absoultely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
+All topics and services of @ref caros::GripperServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absolutely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
 
 The @ref caros::GripperServiceInterface has one output topic:
 | Topic | Type | Description |
 | ------- | :------: | :-------------: |
-| gripper_state  | @ref caros_control_msgs::GripperState | State of the gripper (joint pos, joint vel., ...)|
+| gripper_state  | @ref caros_control_msgs::GripperState | State of the gripper (joint pos, joint vel, ...)|
 
 In addition the following services are provided.
 
@@ -34,14 +37,14 @@ In addition the following services are provided.
 
 
 ## Serial Device Service Interface ##
-The @ref caros::SerialDeviceServiceInterface represents a interface for a serial device (e.g., a articulated robot arm).
+The @ref caros::SerialDeviceServiceInterface represents an interface for a serial device (e.g., an articulated robot arm).
 
-All topics and services of @ref caros::SerialDeviceServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absoultely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
+All topics and services of @ref caros::SerialDeviceServiceInterface are using the basic units meters, radian, Newton and Newtonmeter. If you implement a node using this interface please stick to this (if absolutely not possible please document extensively, e.g., do not copy apidoc but replace). When using the corresponding proxy to talk to a device please look at the device node's documentation first to make sure this is true.
 
 The @ref caros::SerialDeviceServiceInterface has one output topic:
 | Topic | Type | Description |
 | ------- | :------: | :-------------: |
-| robot_state  | @ref caros_control_msgs::RobotState | State of the robot (joint pos, joint velocity, ...)|
+| robot_state  | @ref caros_control_msgs::RobotState | State of the robot (joint pos, joint vel, ...)|
 
 In addition the following services are provided.
 
