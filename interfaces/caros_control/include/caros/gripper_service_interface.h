@@ -24,6 +24,11 @@ namespace caros
  * minimum interface that a configuration based robotic grasping device needs
  * to implement.
  *
+ * All interfaces use meters, radians, Newton and Newtonmeter as base units.
+ * (linear joints in meters, rotary joints in radians.)
+ * If a device does not support this please be very explicit in the documentation
+ * of your node about this.
+ *
  * In ROS the namespace of the node is used and it is important that
  * not two GripperServiceInterfaces are running in the same namespace.
  *
@@ -44,14 +49,16 @@ class GripperServiceInterface
 
   /**
    * @brief signal the gripper to move into a specific configuration Q.
+   * After moving to Q the gripper will potentially switch off the motor current.
    * @param q
    * @return
    */
   virtual bool moveQ(const rw::math::Q& q) = 0;
 
   /**
-   * @brief signal the gripper to move into a specific configuration Q. The gripper will not show an error in its state
-   * if the configuration Q can not be reached.
+   * @brief signal the gripper to move into a specific configuration Q.
+   * After moving to Q the gripper will not switch off the motor current.
+   * The gripper will not show an error in its state if the configuration Q can not be reached.
    * @param q
    * @return
    */
