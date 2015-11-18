@@ -18,6 +18,9 @@ namespace caros
 {
 /**
  * @brief Ros node for controlling Robotiq-3 and Robotiq-2 grippers.
+ * The node inherits from caros::GripperServiceInterface and therefore provides the corresponding
+ * topic and services. THIS NODE DOES NOT COMPLY TO THE UNITS SPECIFIED IN caros::GripperServiceInterface.
+ * Please see the service callbacks to get more information.
  */
 class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
@@ -39,16 +42,36 @@ class RobotiqNode : public caros::CarosNodeServiceInterface, public caros::Gripp
   //! destructor
   virtual ~RobotiqNode();
 
-  //! @copydoc caros::GripperServiceInterface::moveQ
+  /**
+   * @copydoc caros::GripperServiceInterface::moveQ
+   * In contrast to the method inherited from (caros::GripperServiceInterface::moveQ) the robotiq2 and robotiq3 device actually do not take
+   * joint angles in radians but rather use an integer between 0 and 255 for joint angle values.
+   * See the hand manuals for the meaning of the values. Otherwise see caros::GripperServiceInterface::moveQ.
+  **/
   bool moveQ(const rw::math::Q& q);
 
-  //! @copydoc caros::GripperServiceInterface::moveQ
+  /**
+   * @copydoc caros::GripperServiceInterface::gripQ
+   * In contrast to the method inherited from (caros::GripperServiceInterface::gripQ) the robotiq2 and robotiq3 device actually do not take
+   * joint angles in radians but rather use an integer between 0 and 255 for joint angle values.
+   * See the hand manuals for the meaning of the values. Otherwise see caros::GripperServiceInterface::gripQ.
+  **/
   bool gripQ(const rw::math::Q& q);
 
-  //! @copydoc caros::GripperServiceInterface::setForceQ
+  /**
+     * @copydoc caros::GripperServiceInterface::setForceQ
+     * In contrast to the method inherited from (caros::GripperServiceInterface::setForceQ) the robotiq2 and robotiq3 device actually do not take
+     * forces in Newton but rather use an integer between 0 and 255 for joint force/torque values.
+     * See the hand manuals for the meaning of the values. Otherwise see caros::GripperServiceInterface::setForceQ.
+    **/
   bool setForceQ(const rw::math::Q& q);
 
-  //! @copydoc caros::GripperServiceInterface::setVelocityQ
+  /**
+      * @copydoc caros::GripperServiceInterface::setVelocityQ
+      * In contrast to the method inherited from (caros::GripperServiceInterface::setVelocityQ) the robotiq2 and robotiq3 device actually do not take
+      * velocities in radians / sec but rather use an integer between 0 and 255 for joint angle speeds.
+      * See the hand manuals for the meaning of the values. Otherwise see caros::GripperServiceInterface::setVelocityQ.
+     **/
   bool setVelocityQ(const rw::math::Q& q);
 
   //! @copydoc caros::GripperServiceInterface::stopMovement

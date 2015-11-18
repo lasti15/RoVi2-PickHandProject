@@ -18,12 +18,12 @@
 # caros_robotiq2/3 #
 The caros_robotiq2 and caros_robotiq3 ROS nodes are for controlling a physical Robotiq2 or Robotiq3 hand.
 
-While we would not be suprised if these nodes work for other robotics hands we have only tested them with "2-Finger Adaptive Robot Gripper, C-Model, controller version 3.0" and "3-Finger Adaptive Robot Gripper, version S-6". 
+While we would not be surprised if these nodes work for other robotics hands we have only tested them with "2-Finger Adaptive Robot Gripper, C-Model, controller version 3.0" and "3-Finger Adaptive Robot Gripper, version S-6". 
 
 # Interfaces - how to use this node #
 
 ## Gripper Service Interface ##
-The @ref caros::GripperServiceInterface interface is fully supported by the nodes.
+The @ref caros::GripperServiceInterface interface is supported by the nodes but units are not. THIS NODE DOES NOT COMPLY TO THE UNITS SPECIFIED IN caros::GripperServiceInterface. See below for values used.
 
 The Robotiq2 hand has one joint, the Robotiq3 has four. Therefore all service calls expecting input of type Q need to be provided one or four dimensional Qs. All Q values should be between 0 and 255 both values inclusive (see Robotiq datasheets, SDU's robotiq2 controller version 3.0 - http://support.robotiq.com/download/attachments/1181172/2-FINGER-85-130206.pdf?version=1&modificationDate=1407264261000 robotiq3 version S-6 - http://support.robotiq.com/download/attachments/1181172/IMB-311012.pdf?version=1&modificationDate=1351707795000 ).
 
