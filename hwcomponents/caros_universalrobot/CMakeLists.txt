@@ -38,7 +38,7 @@ set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references")
 roslint_cpp()
 
 ########################################################################
-#### RobWork and RobWorkSim
+#### RobWork and RobWorkHardware
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
 set(RWHW_ROOT "$ENV{RWHW_ROOT}")
@@ -92,7 +92,8 @@ else()
     src/universal_robots.cpp
     src/ur_main.cpp
     src/ur_service_interface.cpp
-)
+    )
+
   target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}

@@ -38,7 +38,7 @@ roslint_cpp()
 #### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-find_package(RobWork REQUIRED PATHS "${RW_ROOT}" "${RW_ROOT}/cmake")
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 
 ########################################################################
 #### Declare ROS Messages, Services and Actions
