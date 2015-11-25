@@ -250,7 +250,8 @@ bool RobotiqNode::connectToRobotiqDevice()
   /* Connect according to configured parameters */
   if (!robotiq_->connect(ip_, port_))
   {
-    CAROS_FATALERROR("The Robotiq hand was not able to connect to " << ip_ << ":" << port_,
+    CAROS_FATALERROR("The Robotiq hand was not able to connect to " << ip_ << ":" << port_
+                     << " or the hand could not be activated (is it connected to the controller box?)",
                      ROBOTIQNODE_ROBOTIQ_DEVICE_CONNECT_FAILED);
     return false;
   }
