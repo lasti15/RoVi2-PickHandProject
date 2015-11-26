@@ -25,6 +25,9 @@ namespace caros
 {
 /**
  * @brief ROS node for controlling SDH.
+ *
+ * @note This node does not fully comply with the units specified in caros::GripperServiceInterface. Please see the
+ * individual service callbacks for more information.
  */
 class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperServiceInterface
 {
@@ -35,13 +38,29 @@ class SDHNode : public caros::CarosNodeServiceInterface, public caros::GripperSe
   //! destructor
   virtual ~SDHNode();
 
-  //! @copydoc caros::GripperServiceInterface::moveQ
+  /**
+   * @copydoc caros::GripperServiceInterface::moveQ
+   */
+  // Units: Radians
   bool moveQ(const rw::math::Q& q);
-  //! @copydoc caros::GripperServiceInterface::moveQ
+  /**
+   * @copydoc caros::GripperServiceInterface::moveQ
+   */
+  // Units: Radians
   bool gripQ(const rw::math::Q& q);
-  //! @copydoc caros::GripperServiceInterface::setForceQ
+  /**
+   * @copydoc caros::GripperServiceInterface::setForceQ
+   *
+   * @note In contrast to the method inherited from (caros::GripperServiceInterface::setForceQ) the force is understood
+   * as the electrical current, and (as of this writing) defaults to the unit Ampere.
+   *
+   * @note Units: Ampere
+   */
   bool setForceQ(const rw::math::Q& q);
-  //! @copydoc caros::GripperServiceInterface::setVelocityQ
+  /**
+   * @copydoc caros::GripperServiceInterface::setVelocityQ
+   */
+  // Units: Radians/sec
   bool setVelocityQ(const rw::math::Q& q);
   //! @copydoc caros::GripperServiceInterface::stopMovement
   bool stopMovement();
