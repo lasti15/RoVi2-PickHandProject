@@ -24,15 +24,13 @@ caros_universalrobot is a ROS node for controlling a physical UniversalRobot. A 
 A few interfaces (i.e. ways to control the robot through ROS services) are supported.
 ## Serial Device Service Interface ##
 The @ref caros::SerialDeviceServiceInterface interface is supported to some extent. The functionalities that have not been tested or verified are disabled (i.e. they will not respond with a proper acknowledgment and output a ROS ERROR message). The status of the missing services can be seen below:
-| Service | Disabled | Not Implemented |
-| ------- | :------: | :-------------: |
-| move_vel_q  | x |   |
-| move_vel_t  |   | x |
-| move_lin_fc | x |   |
-| set_safe_mode_enabled |   | x |
+| Service | Disabled / Not Implemented |
+| ------- | :------------------------: |
+| move_vel_q  | x |
+| move_vel_t  | x |
 
 ## UR Service Interface ##
-The @ref URServiceInterface interface is supported, but most of the functionalities, especially the force mode functions, have not been tested yet.
+The @ref URServiceInterface interface is supported, but most of the functionalities have not been tested yet.
 
 ## Warning ##
 The @ref caros::UniversalRobots::servoT (implementation of @ref caros::SerialDeviceServiceInterface::moveServoT) and @ref caros::UniversalRobots::movePtpT (implementation of @ref caros::SerialDeviceServiceInterface::movePtpT) are using inverse kinematics to find the joint positions from the supplied targets. Because of this, **the movement is not guaranteed to be collision free**, even though the *obvious* path between the supplied targets is collision free.
@@ -58,11 +56,9 @@ The following parameters are supported:
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | device_name | The name of the robot device within the scene | None |
-| ft_frame | The name of the force/torque frame in the scene | "WORLD" |
 | device_ip | IP of the robot to control | None |
 | callback_port | Port (on the computer/host) to be used for communicating with the robot | None |
 | callback_ip | The IP of the computer/host that should communicate with the robot | None |
-| Wrench_topic | Name of the topic to subscribe to for getting wrench data (to be used with force/torque mode) | "" |
 
 # Small demo(s) #
 To quickly and easily verify that the communication with the robot is working, then there are one or more simple demos that can be run. The expected behaviour should be both observed and verified by the user.

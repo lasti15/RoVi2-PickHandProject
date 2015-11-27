@@ -76,19 +76,6 @@ bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D
   return return_value_;
 }
 
-bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<>& pos_target,
-                                                  const rw::math::Transform3D<>& offset,
-                                                  const rw::math::Wrench6D<>& wrench_target,
-                                                  const rw::math::Q& control_gain)
-{
-  most_recent_function_called_ = __PRETTY_FUNCTION__;
-  if (cause_error_)
-  {
-    throw std::runtime_error(causing_error_msg_);
-  }
-  return return_value_;
-}
-
 bool SerialDeviceServiceInterfaceDummy::moveServoQ(const QAndSpeedContainer_t& targets)
 {
   most_recent_function_called_ = __PRETTY_FUNCTION__;
@@ -110,16 +97,6 @@ bool SerialDeviceServiceInterfaceDummy::moveServoT(const TransformAndSpeedContai
 }
 
 bool SerialDeviceServiceInterfaceDummy::moveStop()
-{
-  most_recent_function_called_ = __PRETTY_FUNCTION__;
-  if (cause_error_)
-  {
-    throw std::runtime_error(causing_error_msg_);
-  }
-  return return_value_;
-}
-
-bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(const bool value)
 {
   most_recent_function_called_ = __PRETTY_FUNCTION__;
   if (cause_error_)

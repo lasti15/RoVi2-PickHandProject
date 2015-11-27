@@ -6,8 +6,6 @@
 #include <caros/caros_node_service_interface.h>
 #include <caros/serial_device_service_interface.h>
 
-#include <caros_common_msgs/WrenchData.h>
-
 #include <rw/invkin/JacobianIKSolver.hpp>
 
 #include <rw/math/Transform3D.hpp>
@@ -40,7 +38,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
     URNODE_SERIALDEVICESERVICE_CONFIGURE_FAIL,
     URNODE_MISSING_WORKCELL,
     URNODE_NO_SUCH_DEVICE_IN_WORKCELL,
-    URNODE_FAULTY_SUBSCRIBER,
     URNODE_INVALID_CALLBACKPORT,
     URNODE_UNSUCCESSFUL_CONNECT_TO_URRT,
     URNODE_UNSUCCESSFUL_CONNECT_TO_UR,
@@ -76,17 +73,12 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   bool moveVelQ(const rw::math::Q& q_vel);
   //! @copydoc caros::SerialDeviceServiceInterface::moveVelT
   bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel);
-  //! @copydoc caros::SerialDeviceServiceInterface::moveLinFc
-  bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
-                 const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoQ
   bool moveServoQ(const QAndSpeedContainer_t& targets);
   //! @copydoc caros::SerialDeviceServiceInterface::moveServoT
   bool moveServoT(const TransformAndSpeedContainer_t& targets);
   //! @copydoc caros::SerialDeviceServiceInterface::moveStop
   bool moveStop();
-  //! @copydoc caros::SerialDeviceServiceInterface::moveSetSafeModeEnabled
-  bool moveSetSafeModeEnabled(const bool value);
 
  protected:
   /************************************************************************
@@ -100,9 +92,6 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   void fatalErrorLoopHook();
 
  private:
-  //! @brief Support function for capturing published wrench data
-  void addFTData(const caros_common_msgs::WrenchData::ConstPtr state);
-
   /* convenience functions */
   bool isInWorkingCondition();
   bool supportedQSize(const rw::math::Q& q);
@@ -113,20 +102,12 @@ class UniversalRobots : public caros::CarosNodeServiceInterface,
   rw::models::WorkCell::Ptr workcell_;
   rw::models::Device::Ptr device_;
   rw::math::Q qcurrent_; /* Updated in runLoopHook() */
-  rw::kinematics::Frame* ft_frame_;
 
   rwhw::URCallBackInterface ur_;
   rwhw::UniversalRobotsRTLogging urrt_;
 
-  // [ not being initialised ] rwhw::NetFTLogging::Ptr p_net_ft_;
-  //    rwhw::FTCompensation::Ptr p_ft_compensation_;
-  ros::Subscriber sub_ft_data_;
-  std::queue<rw::math::Wrench6D<>> wrench_data_queue_;
-
   rw::invkin::JacobianIKSolver::Ptr ik_solver_;
   rw::kinematics::State state_;
-
-  bool use_ft_collision_detection_;
 };
 }  // namespace caros
 #endif  // CAROS_UNIVERSAL_ROBOTS_H

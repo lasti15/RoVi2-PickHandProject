@@ -37,14 +37,8 @@ const Services_t services_to_test = {
     {std::make_tuple(
         std::bind(&caros::SerialDeviceSIProxy::moveVelT, std::placeholders::_1, rw::math::VelocityScrew6D<>()),
         "virtual bool SerialDeviceServiceInterfaceDummy::moveVelT(const rw::math::VelocityScrew6D<double>&)")},
-    {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::moveLinFc, std::placeholders::_1, rw::math::Transform3D<>(),
-                               rw::math::Transform3D<>(), rw::math::Wrench6D<>(), rw::math::Q(6)),
-                     "virtual bool SerialDeviceServiceInterfaceDummy::moveLinFc(const rw::math::Transform3D<double>&, "
-                     "const rw::math::Transform3D<double>&, const rw::math::Wrench6D<double>&, const rw::math::Q&)")},
     {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::stop, std::placeholders::_1),
-                     "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()")},
-    {std::make_tuple(std::bind(&caros::SerialDeviceSIProxy::setSafeModeEnabled, std::placeholders::_1, false),
-                     "virtual bool SerialDeviceServiceInterfaceDummy::moveSetSafeModeEnabled(bool)")}};
+                     "virtual bool SerialDeviceServiceInterfaceDummy::moveStop()")}};
 
 typedef SerialDeviceServiceInterfaceDummy D_t;
 typedef caros::SerialDeviceSIProxy P_t;

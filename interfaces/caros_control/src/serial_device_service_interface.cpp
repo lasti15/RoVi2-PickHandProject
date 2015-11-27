@@ -66,7 +66,7 @@ bool SerialDeviceServiceInterface::configureInterface()
 bool SerialDeviceServiceInterface::initService()
 {
   if (srv_move_lin_ || srv_move_ptp_ || srv_move_ptp_t_ || srv_move_vel_q_ || srv_move_vel_t_ || srv_move_servo_q_ ||
-      srv_move_servo_t_ || srv_move_lin_fc_ || srv_move_stop_ || srv_set_safe_mode_enabled_ || device_state_publisher_)
+      srv_move_servo_t_ || srv_move_stop_ || device_state_publisher_)
   {
     ROS_WARN_STREAM(
         "Reinitialising one or more SerialDeviceServiceInterface services or publishers. If this is not fully intended "
@@ -100,18 +100,11 @@ bool SerialDeviceServiceInterface::initService()
       nodehandle_.advertiseService("move_servo_t", &SerialDeviceServiceInterface::moveServoTHandle, this);
   ROS_ERROR_STREAM_COND(!srv_move_servo_t_, "The move_servo_t service is empty!");
 
-  srv_move_lin_fc_ = nodehandle_.advertiseService("move_lin_fc", &SerialDeviceServiceInterface::moveLinFcHandle, this);
-  ROS_ERROR_STREAM_COND(!srv_move_lin_fc_, "The move_lin_fc service is empty!");
-
   srv_move_stop_ = nodehandle_.advertiseService("move_stop", &SerialDeviceServiceInterface::moveStopHandle, this);
   ROS_ERROR_STREAM_COND(!srv_move_stop_, "The move_stop service is empty!");
 
-  srv_set_safe_mode_enabled_ = nodehandle_.advertiseService(
-      "set_safe_mode_enabled", &SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle, this);
-  ROS_ERROR_STREAM_COND(!srv_set_safe_mode_enabled_, "The set_safe_mode_enabled service is empty!");
-
   if (srv_move_lin_ && srv_move_ptp_ && srv_move_ptp_t_ && srv_move_vel_q_ && srv_move_vel_t_ && srv_move_servo_q_ &&
-      srv_move_servo_t_ && srv_move_lin_fc_ && srv_move_stop_ && srv_set_safe_mode_enabled_ && device_state_publisher_)
+      srv_move_servo_t_ && srv_move_stop_ && device_state_publisher_)
   {
     /* Everything seems to be properly initialised */
     ROS_DEBUG_STREAM(
@@ -243,44 +236,10 @@ bool SerialDeviceServiceInterface::moveServoTHandle(caros_control_msgs::SerialDe
   return true;
 }
 
-bool SerialDeviceServiceInterface::moveLinFcHandle(caros_control_msgs::SerialDeviceMoveLinFc::Request& request,
-                                                   caros_control_msgs::SerialDeviceMoveLinFc::Response& response)
-{
-  rw::math::Transform3D<> pos_target = caros::toRw(request.pos_target);
-  rw::math::Transform3D<> offset = caros::toRw(request.offset);
-
-  rw::math::Wrench6D<> wrench_target;
-  wrench_target(0) = request.wrench_target.force.x;
-  wrench_target(1) = request.wrench_target.force.y;
-  wrench_target(2) = request.wrench_target.force.z;
-
-  wrench_target(3) = request.wrench_target.torque.x;
-  wrench_target(4) = request.wrench_target.torque.y;
-  wrench_target(5) = request.wrench_target.torque.z;
-
-  ROS_ASSERT(request.ctrl_gains.size() == 6);
-  rw::math::Q selection(request.ctrl_gains.size(), request.ctrl_gains.at(0), request.ctrl_gains.at(1),
-                        request.ctrl_gains.at(2), request.ctrl_gains.at(3), request.ctrl_gains.at(4),
-                        request.ctrl_gains.at(5));
-
-  response.success = moveLinFc(pos_target, offset, wrench_target, selection);
-
-  return true;
-}
-
 bool SerialDeviceServiceInterface::moveStopHandle(caros_common_msgs::EmptySrv::Request& request,
                                                   caros_common_msgs::EmptySrv::Response& response)
 {
   response.success = moveStop();
-
-  return true;
-}
-
-bool SerialDeviceServiceInterface::moveSetSafeModeEnabledHandle(caros_common_msgs::ConfigBool::Request& request,
-                                                                caros_common_msgs::ConfigBool::Response& response)
-{
-  bool value = request.value;
-  response.success = moveSetSafeModeEnabled(value);
 
   return true;
 }

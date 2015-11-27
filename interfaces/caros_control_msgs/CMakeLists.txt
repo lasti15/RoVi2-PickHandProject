@@ -29,7 +29,6 @@ add_service_files(
   SerialDeviceForceControlStop.srv
   SerialDeviceForceControlUpdate.srv
   SerialDeviceMoveLin.srv
-  SerialDeviceMoveLinFc.srv
   SerialDeviceMovePtp.srv
   SerialDeviceMovePtpT.srv
   SerialDeviceMoveServoQ.srv
