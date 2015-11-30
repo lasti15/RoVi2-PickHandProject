@@ -117,11 +117,5 @@ else()
     caros_control
   )
   
-  ########################################################################
-  #### Testing
-  ########################################################################
-  if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_caros_netft_demo test/simple_netft_demo.cpp)
-    target_link_libraries(simple_caros_netft_demo ${catkin_LIBRARIES})
-  endif()
+
 endif()
