@@ -30,7 +30,7 @@ The CAROS NetFT node can be launched by using the following:
 
     roslaunch caros_netft caros_netft.launch
 
-The launch script is using the default ip and port used in the marvin setup and by default transmits data at a rate of 100Hz. This can be changed in the hwcomponents/caros_netft/launch/caros_netft _param.xml file.
+The launch script is using the default ip and port used in the marvin setup and by default has a publishing rate of 100Hz. This can be changed in the hwcomponents/caros_netft/launch/caros_netft _param.xml file.
 
 ## Parameters ##
 The following parameters are supported:
@@ -38,7 +38,7 @@ The following parameters are supported:
 | --------- | ----------- | ------- |
 | ip | IP of the netft to read from | 168.192.100.2 |
 | port | The modbus communication port used | 49152 |
-| rate | Rate (Hz) with which data is transmitted | 100 |
+| rate | Rate (Hz) with which data is published | 100 |
 
 # Small demo(s) #
 To quickly and easily verify that the component start up the component using the launch script (see above) and use rqt to view the topic.
