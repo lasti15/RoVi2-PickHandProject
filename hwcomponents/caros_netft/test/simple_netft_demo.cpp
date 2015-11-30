@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
   while (ros::ok())
   {
     rw::math::Wrench6D<> wrench = ft_si_proxy.getWrench();
-    ROS_INFO_STREAM(info_prefix << "The hand is now at: " << wrench);
+    ROS_INFO_STREAM(info_prefix << "Current force/torque reading: " << wrench);
     ros::Duration(1).sleep();  // In seconds
     ros::spinOnce();
   }
