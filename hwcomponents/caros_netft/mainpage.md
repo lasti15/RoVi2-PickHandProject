@@ -41,6 +41,6 @@ The following parameters are supported:
 | rate | Rate (Hz) with which data is published | 100 |
 
 # Small demo(s) #
-To quickly and easily verify that the component start up the component using the launch script (see above) and use rqt to view the topic.
+To quickly and easily verify that the component start up the component using the launch script (see above) and use rqt to view the topic *wrench* and the *caros_node_state*. 
 
 
