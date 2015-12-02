@@ -124,22 +124,6 @@ class SerialDeviceSIProxy
   bool moveServoT(const rw::math::Transform3D<>& target, const float speed = 100.0f);
 
   /**
-   * @brief move robot with a hybrid position/force control
-   * @param[in] pos_target the target pose configuration
-   * @param[in] offset offset
-   * @param[in] wrench_target wrench
-   * @param[in] control_gain Control gains for the force control. 0 means 100% position control, while values != 0 means
-   *force control with the numerical value.
-   *
-   * @returns a boolean indicating if the serial device accepted the command
-   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
-   *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws BadServiceCall when an error happened while communicating with the serial device.
-   */
-  bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
-                 const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain);
-
-  /**
    * @brief hard stop the robot
    *
    * @returns a boolean indicating if the serial device accepted the command
@@ -148,17 +132,6 @@ class SerialDeviceSIProxy
    * @throws BadServiceCall when an error happened while communicating with the serial device.
    */
   bool stop();
-
-  /**
-   * @brief enable safe mode, so that robot stops when collisions are detected
-   * @param[in] enable a value of true enables safe mode, and false disables it
-   *
-   * @returns a boolean indicating if the serial device accepted the command
-   * @throws UnavailableService when the command is currently unavailable. This indicates that the connection to the
-   *serial device is not fully working, or the serial device has not announced this service yet.
-   * @throws BadServiceCall when an error happened while communicating with the serial device.
-   */
-  bool setSafeModeEnabled(const bool enable);
 
   /**
    * @brief Close established (persistent) connections.
@@ -212,7 +185,6 @@ class SerialDeviceSIProxy
   std::string ros_namespace_;
 
   // services
-  caros::CarosServiceClient srv_move_lin_fc_;
   caros::CarosServiceClient srv_move_lin_;
   caros::CarosServiceClient srv_move_ptp_;
   caros::CarosServiceClient srv_move_ptp_t_;
@@ -222,8 +194,6 @@ class SerialDeviceSIProxy
   caros::CarosServiceClient srv_move_vel_t_;
 
   caros::CarosServiceClient srv_stop_;
-
-  caros::CarosServiceClient srv_set_safe_mode_enabled_;
 
   // states
   ros::Subscriber sub_robot_state_;

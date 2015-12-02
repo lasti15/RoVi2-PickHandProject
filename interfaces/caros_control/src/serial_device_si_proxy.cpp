@@ -9,7 +9,6 @@
 #include <caros_control_msgs/SerialDeviceMovePtpT.h>
 #include <caros_control_msgs/SerialDeviceMoveVelQ.h>
 #include <caros_control_msgs/SerialDeviceMoveVelT.h>
-#include <caros_control_msgs/SerialDeviceMoveLinFc.h>
 #include <caros_control_msgs/SerialDeviceMoveServoQ.h>
 #include <caros_control_msgs/SerialDeviceMoveServoT.h>
 
@@ -23,7 +22,6 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
     : nodehandle_(nodehandle),
       use_persistent_connections_(use_persistent_connections),
       ros_namespace_("/" + devname + "/" + SERIAL_DEVICE_SERVICE_INTERFACE_SUB_NAMESPACE),
-      srv_move_lin_fc_(nodehandle_, "move_lin_fc", ros_namespace_, use_persistent_connections_),
       srv_move_lin_(nodehandle_, "move_lin", ros_namespace_, use_persistent_connections_),
       srv_move_ptp_(nodehandle_, "move_ptp", ros_namespace_, use_persistent_connections_),
       srv_move_ptp_t_(nodehandle_, "move_ptp_t", ros_namespace_, use_persistent_connections_),
@@ -31,8 +29,7 @@ SerialDeviceSIProxy::SerialDeviceSIProxy(ros::NodeHandle nodehandle, const std::
       srv_move_servo_t_(nodehandle_, "move_servo_t", ros_namespace_, use_persistent_connections_),
       srv_move_vel_q_(nodehandle_, "move_vel_q", ros_namespace_, use_persistent_connections_),
       srv_move_vel_t_(nodehandle_, "move_vel_t", ros_namespace_, use_persistent_connections_),
-      srv_stop_(nodehandle_, "move_stop", ros_namespace_, use_persistent_connections_),
-      srv_set_safe_mode_enabled_(nodehandle_, "set_safe_mode_enabled", ros_namespace_, use_persistent_connections_)
+      srv_stop_(nodehandle_, "move_stop", ros_namespace_, use_persistent_connections_)
 {
   // states
   sub_robot_state_ =
@@ -126,25 +123,6 @@ bool SerialDeviceSIProxy::moveVelT(const rw::math::VelocityScrew6D<>& target)
   return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
-                                    const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain)
-{
-  caros_control_msgs::SerialDeviceMoveLinFc srv;
-  srv.request.pos_target = caros::toRos(pos_target);
-  srv.request.offset = caros::toRos(offset);
-  srv.request.wrench_target = caros::toRos(wrench_target);
-
-  ROS_ASSERT(control_gain.size() == srv.request.ctrl_gains.size());
-  for (std::size_t index = 0; index < srv.request.ctrl_gains.size(); ++index)
-  {
-    srv.request.ctrl_gains[index] = caros::toRosFloat(control_gain[index]);
-  }
-
-  srv_move_lin_fc_.call<caros_control_msgs::SerialDeviceMoveLinFc>(srv);
-
-  return srv.response.success;
-}
-
 bool SerialDeviceSIProxy::stop()
 {
   caros_common_msgs::EmptySrv srv;
@@ -154,20 +132,9 @@ bool SerialDeviceSIProxy::stop()
   return srv.response.success;
 }
 
-bool SerialDeviceSIProxy::setSafeModeEnabled(bool enable)
-{
-  caros_common_msgs::ConfigBool srv;
-  srv.request.value = caros::toRos(enable);
-
-  srv_set_safe_mode_enabled_.call<caros_common_msgs::ConfigBool>(srv);
-
-  return srv.response.success;
-}
-
 /* Hardcoded since the connections are not added to a collection that can easily be iterated */
 void SerialDeviceSIProxy::closePersistentConnections()
 {
-  srv_move_lin_fc_.shutdown();
   srv_move_lin_.shutdown();
   srv_move_ptp_.shutdown();
   srv_move_ptp_t_.shutdown();
@@ -176,7 +143,6 @@ void SerialDeviceSIProxy::closePersistentConnections()
   srv_move_vel_q_.shutdown();
   srv_move_vel_t_.shutdown();
   srv_stop_.shutdown();
-  srv_set_safe_mode_enabled_.shutdown();
 }
 
 void SerialDeviceSIProxy::handleRobotState(const caros_control_msgs::RobotState& state)

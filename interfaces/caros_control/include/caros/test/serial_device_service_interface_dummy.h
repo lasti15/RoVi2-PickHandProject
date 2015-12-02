@@ -19,13 +19,9 @@ class SerialDeviceServiceInterfaceDummy : public caros::SerialDeviceServiceInter
   bool movePtpT(const TransformAndSpeedContainer_t& targets);
   bool moveVelQ(const rw::math::Q& q_vel);
   bool moveVelT(const rw::math::VelocityScrew6D<>& t_vel);
-  bool moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
-                 const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain);
-
   bool moveServoQ(const QAndSpeedContainer_t& targets);
   bool moveServoT(const TransformAndSpeedContainer_t& targets);
   bool moveStop();
-  bool moveSetSafeModeEnabled(const bool value);
 
  private:
   bool return_value_;

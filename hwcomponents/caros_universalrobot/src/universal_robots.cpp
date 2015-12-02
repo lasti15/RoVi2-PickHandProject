@@ -12,8 +12,6 @@
 
 #define URRT_PORT 30003
 #define UR_PORT 30001
-#define WRENCHTOPIC_QUEUE_SIZE 5
-#define WRENCH_DATA_QUEUE_MAX_ALLOWED_NUMBER_OF_ELEMENTS 3
 #define URRTDATA_QACTUAL_SIZE 6
 
 namespace caros
@@ -24,9 +22,7 @@ UniversalRobots::UniversalRobots(const ros::NodeHandle& nodehandle)
       URServiceInterface(nodehandle),
       nodehandle_(nodehandle),
       workcell_(NULL),
-      device_(NULL),
-      ft_frame_(NULL),
-      use_ft_collision_detection_(false)
+      device_(NULL)
 {
   /* Currently nothing specific should happen */
 }
@@ -58,9 +54,6 @@ bool UniversalRobots::activateHook()
 
     return false;
   }
-
-  std::string ft_frame_name;
-  nodehandle_.param("ft_frame", ft_frame_name, std::string("WORLD"));
 
   std::string device_ip;
   if (!nodehandle_.getParam("device_ip", device_ip))
@@ -94,19 +87,6 @@ bool UniversalRobots::activateHook()
     return false;
   }
 
-  std::string wrench_topic;
-  nodehandle_.param("wrench_topic", wrench_topic, std::string());
-  if (!wrench_topic.empty())
-  {
-    sub_ft_data_ = nodehandle_.subscribe(wrench_topic, WRENCHTOPIC_QUEUE_SIZE, &UniversalRobots::addFTData, this);
-    if (!sub_ft_data_)
-    {
-      CAROS_FATALERROR("The subscriber for the topic '" << wrench_topic << "' could not be properly created.",
-                       URNODE_FAULTY_SUBSCRIBER);
-      return false;
-    }
-  }
-
   workcell_ = caros::getWorkCell();
   if (workcell_ == NULL)
   {
@@ -121,17 +101,6 @@ bool UniversalRobots::activateHook()
   {
     CAROS_FATALERROR("Unable to find device " << device_name << " in the loaded workcell",
                      URNODE_NO_SUCH_DEVICE_IN_WORKCELL);
-    return false;
-  }
-
-  ROS_DEBUG_STREAM("Looking for the frame '" << ft_frame_name << "' in the workcell.");
-  ft_frame_ = workcell_->findFrame(ft_frame_name);
-  if (ft_frame_ == NULL)
-  {
-    /* Just a warning since only a single function makes use of the frame.
-     * However currently it requires a node restart to reinitialise the parameters, workcell and finding the ft_frame.
-     */
-    ROS_WARN_STREAM("Couldn't find the FT Frame '" << ft_frame_name << "' in the workcell!");
     return false;
   }
 
@@ -299,24 +268,6 @@ void UniversalRobots::fatalErrorLoopHook()
    * Consider what needs to be done when this node is in error - should any of the urrt_ or ur_ objects/connections be
    * stopped or just let them continue?
    */
-}
-
-void UniversalRobots::addFTData(const caros_common_msgs::WrenchData::ConstPtr state)
-{
-  rw::math::Wrench6D<> wrench;
-  wrench(0) = state->wrench.force.x;
-  wrench(1) = state->wrench.force.y;
-  wrench(2) = state->wrench.force.z;
-  wrench(3) = state->wrench.torque.x;
-  wrench(4) = state->wrench.torque.y;
-  wrench(5) = state->wrench.torque.z;
-
-  if (wrench_data_queue_.size() > WRENCH_DATA_QUEUE_MAX_ALLOWED_NUMBER_OF_ELEMENTS)
-  {
-    wrench_data_queue_.pop();
-  }
-
-  wrench_data_queue_.push(wrench);
 }
 
 /************************************************************************
@@ -557,89 +508,6 @@ bool UniversalRobots::moveVelT(const rw::math::VelocityScrew6D<>& t_vel)
 #endif
 }
 
-/* Forwarding the movement to the URServiceInterface function servoT */
-bool UniversalRobots::moveLinFc(const rw::math::Transform3D<>& pos_target, const rw::math::Transform3D<>& offset,
-                                const rw::math::Wrench6D<>& wrench_target, const rw::math::Q& control_gain)
-{
-  ROS_ERROR_STREAM(
-      "Current implementation has not been verified to follow the specification nor been tested in CAROS!");
-  return false;
-
-/******************************
- * Old Implementation
- ******************************/
-#if 0
-  if (!isInWorkingCondition())
-  {
-    return false;
-  }
-
-  if (ft_frame_ == NULL)
-  {
-    /* It is also possible to go into an error state due to the missing ft_frame, and have a recover scenario handle
-     * fetching a the ft_frame name from the parameter server and try to find it in the workcell again. */
-    ROS_WARN_STREAM("Unable to use force command without having defined a FT frame for the sensor.");
-    return false;
-  }
-
-  rw::kinematics::State state = workcell_->getDefaultState();
-  device_->setQ(qcurrent_, state);
-
-  rw::math::Transform3D<> baseTref = rw::math::Transform3D<>::identity();
-  rw::math::Transform3D<> baseTtarget = baseTref * pos_target;
-  rw::math::Transform3D<> baseToffset = baseTref * offset;
-  rw::math::Transform3D<> base2ft = device_->baseTframe(ft_frame_, state);
-  rw::math::Transform3D<> baseTend = device_->baseTend(state);
-  rw::math::Transform3D<> endTtarget = inverse(baseTend) * baseTtarget;
-  rw::math::Transform3D<> endToffset = inverse(baseTend) * baseToffset;
-  rw::math::Transform3D<> ftToffset = inverse(base2ft) * baseToffset;
-
-  /* TODO:
-   * If control_gain consist of elements that are all 0 then the wrench_data_queue_ element will not be used anyway and
-   *could be a case that should still work even when no or not enough wrench data is being published?
-   *
-   * FIXME: TODO:
-   * Should look at the timestamps of the wrench data that has been received and verify that the received wrench data is
-   *within the allowed timestamp difference - not too old (or newer - should be caught in a ROS_WARN / test <- should
-   *this actually be an error or fatal error - maybe even an assert? as something really bogus could be going on...)
-   * ^- Maybe it would make sense to function-locally(i.e. static) save the last used wrench timestamp to make sure that
-   *older samples in the queue are not being used (but then they will still remain there to be used for averaging/mean
-   *sampling.
-   */
-  if (wrench_data_queue_.empty())
-  {
-    ROS_WARN_STREAM("There have been no new wrench data coming from the ROS topic '" << sub_ft_data_.getTopic() << "'");
-    return false;
-  }
-  ROS_ASSERT(!wrench_data_queue_.empty());
-  /* Do not alter the wrench_data_queue_ - just make a copy of the newest element */
-  rw::math::Wrench6D<> wrench_current = wrench_data_queue_.back();
-
-  wrench_current.setForce(ftToffset.R() * wrench_current.force());
-  wrench_current.setTorque(ftToffset.R() * wrench_current.torque());
-
-  rw::math::Wrench6D<> wrench_diff(wrench_target.force() - wrench_current.force(),
-                                   wrench_target.torque() - wrench_current.torque());
-
-  rw::math::Vector3D<> pos_offset = endToffset.R() * endTtarget.P();
-  rw::math::EAA<> eaa_offset = endToffset.R() * rw::math::EAA<>(endTtarget.R());
-
-  /* Verify that the size of control_gain is 6 (i.e. the size of Wrench6D) */
-  ROS_ASSERT(control_gain.size() == 6);
-  for (unsigned int index = 0; index < 3; ++index)
-  {
-    pos_offset(index) = control_gain(index) * wrench_diff(index);
-    eaa_offset(index) = control_gain(index + 3) * wrench_diff(index + 3);
-  }
-
-  endToffset = rw::math::Transform3D<>(pos_offset, eaa_offset);
-
-  rw::math::Transform3D<> baseTtarget2 = baseTend * endToffset;
-
-  return urServoT(baseTtarget2);
-#endif
-}
-
 bool UniversalRobots::moveServoQ(const QAndSpeedContainer_t& targets)
 {
   if (!isInWorkingCondition())
@@ -700,17 +568,6 @@ bool UniversalRobots::moveStop()
   ur_.stopRobot();
 
   return true;
-}
-
-bool UniversalRobots::moveSetSafeModeEnabled(const bool value)
-{
-  if (!isInWorkingCondition())
-  {
-    return false;
-  }
-
-  ROS_ERROR_STREAM("Currently not implemented!");
-  return false;
 }
 
 /************************************************************************

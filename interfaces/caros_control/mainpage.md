@@ -57,7 +57,4 @@ In addition the following services are provided.
 | move_vel_t | @ref caros_control_msgs::SerialDeviceMoveVelT | See @ref caros::SerialDeviceServiceInterface::moveVelT. |
 | move_servo_q | @ref caros_control_msgs::SerialDeviceMoveServoQ | See @ref caros::SerialDeviceServiceInterface::moveServoQ. |
 | move_servo_t | @ref caros_control_msgs::SerialDeviceMoveServoT | See @ref caros::SerialDeviceServiceInterface::moveServoT. |
-| move_lin_fc | @ref caros_control_msgs::SerialDeviceMoveLinFc | See @ref caros::SerialDeviceServiceInterface::moveLinFc. |
 | move_stop | @ref caros_common_msgs::EmptySrv | See @ref caros::SerialDeviceServiceInterface::moveStop. |
-| set_safe_mode_enabled | @ref caros_common_msgs::ConfigBool | See @ref caros::SerialDeviceServiceInterface::moveSetSafeModeEnabled. |
-

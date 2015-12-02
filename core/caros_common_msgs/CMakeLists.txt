@@ -21,7 +21,6 @@ add_message_files(
   FILES
   CarosNodeState.msg
   Q.msg
-  WrenchData.msg
 )
 
 add_service_files(
