@@ -6,10 +6,11 @@ project(caros_robotiq)
 ########################################################################
 set(robotiq2_node_name "${PROJECT_NAME}2_node")
 set(robotiq3_node_name "${PROJECT_NAME}3_node")
+set(SHOULD_BUILD_CAROS_ROBOTIQ 1)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
+########################################################################
+#### Catkin Packages
+########################################################################
 find_package(catkin REQUIRED COMPONENTS
   caros_common
   caros_control
@@ -25,69 +26,91 @@ find_package(catkin REQUIRED COMPONENTS
 set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
 roslint_cpp()
 
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-#add_service_files(
-#  FILES
-#)
-
-#generate_messages(
-#  DEPENDENCIES
-#  std_msgs
-#  caros_common
-#)
-
-###################################
-## catkin specific configuration ##
-###################################
-catkin_package(
-  CATKIN_DEPENDS caros_common caros_control message_runtime roscpp std_msgs
-)
-include_directories(${catkin_INCLUDE_DIRS})
-
 ########################################################################
 #### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-#Include default settings for constructing a robwork dependent project
-find_package(RobWork PATHS "${RW_ROOT};${RW_ROOT}/cmake")
-include_directories(include ${ROBWORK_INCLUDE_DIR})
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 
 ########################################################################
 #### RobWorkHardware
 ########################################################################
 set(RWHW_ROOT "$ENV{RWHW_ROOT}")
-find_package(RobWorkHardware COMPONENTS robotiq PATHS "${RWHW_ROOT}/cmake")
-if ((NOT ROBWORK_FOUND) OR (NOT ROBWORKHARDWARE_FOUND))
-  message(WARNING "Skipping ${PROJECT_NAME}. Requires RobWork and the robotiq component of RobWorkHardware!!!")
-else()
-  include_directories(include ${ROBWORKHARDWARE_INCLUDE_DIRS})
+find_package(RobWorkHardware COMPONENTS robotiq PATHS "${RWHW_ROOT}")
+if (NOT ROBWORKHARDWARE_FOUND)
+  message(WARNING "Requires the robotiq component of RobWorkHardware!")
+  set(SHOULD_BUILD_CAROS_ROBOTIQ 0)
+endif()
 
 ########################################################################
-#### Executables
+#### Build process
 ########################################################################
-  add_executable(${robotiq3_node_name} src/main_robotiq3.cpp src/robotiq_node.cpp)
+if (SHOULD_BUILD_CAROS_ROBOTIQ)
+  ################################################
+  ## Declare ROS messages, services and actions ##
+  ################################################
+  #add_service_files(
+  #  FILES
+  #)
+
+  #generate_messages(
+  #  DEPENDENCIES
+  #)
+
+  ###################################
+  ## catkin specific configuration ##
+  ###################################
+  catkin_package(
+    CATKIN_DEPENDS caros_common caros_control message_runtime roscpp std_msgs
+    )
+
+  ########################################################################
+  #### Build
+  ########################################################################
+  include_directories(
+    include
+    ${ROBWORK_INCLUDE_DIR}
+    ${ROBWORKHARDWARE_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
+    )
+
+  ############
+  # Robotiq3
+  ############
+  add_executable(${robotiq3_node_name}
+    src/main_robotiq3.cpp
+    src/robotiq_node.cpp
+    )
+
   target_link_libraries(${robotiq3_node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
-  )
+    )
+
   add_dependencies(${robotiq3_node_name}
     caros_common
     caros_control
-  )
+    )
   
-  add_executable(${robotiq2_node_name} src/main_robotiq2.cpp src/robotiq_node.cpp)
+  ############
+  # Robotiq2
+  ############
+  add_executable(${robotiq2_node_name}
+    src/main_robotiq2.cpp
+    src/robotiq_node.cpp
+    )
+
   target_link_libraries(${robotiq2_node_name}
     ${ROBWORK_LIBRARIES}
     ${ROBWORKHARDWARE_LIBRARIES}
     ${catkin_LIBRARIES}
-  )
+    )
+
   add_dependencies(${robotiq2_node_name}
     caros_common
     caros_control
-  )
+    )
   
   ########################################################################
   #### Testing
@@ -99,4 +122,6 @@ else()
     add_executable(simple_caros_robotiq2_demo src/test/simple_robotiq2_demo.cpp)
     target_link_libraries(simple_caros_robotiq2_demo ${catkin_LIBRARIES})
   endif()
+else()
+  message(WARNING "Skipping ${PROJECT_NAME} due to missing libraries - see earlier warnings.")
 endif()

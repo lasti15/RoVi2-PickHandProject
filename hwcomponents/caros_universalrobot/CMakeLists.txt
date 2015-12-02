@@ -5,6 +5,7 @@ project(caros_universalrobot)
 #### Local Variables
 ########################################################################
 set(node_name "${PROJECT_NAME}_node")
+set(SHOULD_BUILD_CAROS_UNIVERSALROBOT 1)
 
 ########################################################################
 #### Make use of c++11
@@ -38,16 +39,25 @@ set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-runtime/references")
 roslint_cpp()
 
 ########################################################################
-#### RobWork and RobWorkHardware
+#### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-set(RWHW_ROOT "$ENV{RWHW_ROOT}")
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
-find_package(RobWorkHardware COMPONENTS universalrobots PATHS "${RWHW_ROOT}")
 
+########################################################################
+#### RobWorkHardware
+########################################################################
+set(RWHW_ROOT "$ENV{RWHW_ROOT}")
+find_package(RobWorkHardware COMPONENTS universalrobots PATHS "${RWHW_ROOT}")
 if (NOT ROBWORKHARDWARE_FOUND)
-  message(WARNING "Skipping ${PROJECT_NAME}. Requires the universalrobots component of RobWorkHardware!")
-else()
+  message(WARNING "Requires the universalrobots component of RobWorkHardware!")
+  set(SHOULD_BUILD_CAROS_UNIVERSALROBOT 0)
+endif()
+
+########################################################################
+#### Build process
+########################################################################
+if (SHOULD_BUILD_CAROS_UNIVERSALROBOT)
   ################################################
   ## Declare ROS messages, services and actions ##
   ################################################
@@ -116,5 +126,6 @@ else()
     add_executable(simple_${PROJECT_NAME}_demo_using_move_ptp src/test/simple_demo_using_move_ptp.cpp)
     target_link_libraries(simple_${PROJECT_NAME}_demo_using_move_ptp ${catkin_LIBRARIES})
   endif()
-
+else()
+  message(WARNING "Skipping ${PROJECT_NAME} due to missing libraries - see earlier warnings.")
 endif()
