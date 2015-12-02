@@ -41,11 +41,7 @@ roslint_cpp()
 #### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-find_package(RobWork PATHS "${RW_ROOT}")
-if (NOT ROBWORK_FOUND)
-  message(WARNING "Requires RobWork to be available!")
-  set(SHOULD_BUILD_CAROS_NETFT 0)
-endif()
+find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
 
 ########################################################################
 #### RobWorkHardware
@@ -111,10 +107,6 @@ if (SHOULD_BUILD_CAROS_NETFT)
   ########################################################################
   #### Testing
   ########################################################################
-  if(CATKIN_ENABLE_TESTING)
-    add_executable(simple_${PROJECT_NAME}_demo src/test/simple_netft_demo.cpp)
-    target_link_libraries(simple_${PROJECT_NAME}_demo ${catkin_LIBRARIES})
-  endif()
 
 else()
   message(WARNING "Skipping ${PROJECT_NAME} due to missing libraries - see earlier warnings.")
