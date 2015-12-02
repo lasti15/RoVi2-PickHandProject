@@ -25,13 +25,16 @@ set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
 roslint_cpp()
 
 ########################################################################
-#### RobWork and RobWorkHardware
+#### RobWork
 ########################################################################
 set(RW_ROOT "$ENV{RW_ROOT}")
-set(RWHW_ROOT "$ENV{RWHW_ROOT}")
 find_package(RobWork REQUIRED PATHS "${RW_ROOT}")
-find_package(RobWorkHardware COMPONENTS sdh serialport PATHS "${RWHW_ROOT}")
 
+########################################################################
+#### RobWorkHardware
+########################################################################
+set(RWHW_ROOT "$ENV{RWHW_ROOT}")
+find_package(RobWorkHardware COMPONENTS sdh serialport PATHS "${RWHW_ROOT}")
 if (NOT ROBWORKHARDWARE_FOUND)
   message(WARNING "Requires both SDH and Serialport components of RobWorkHardware!")
   set(SHOULD_BUILD_CAROS_SDH 0)
@@ -96,7 +99,10 @@ if (SHOULD_BUILD_CAROS_SDH)
     ${catkin_INCLUDE_DIRS}
     )
 
-  add_executable(${node_name} src/sdh_main.cpp src/sdh_node.cpp)
+  add_executable(${node_name}
+    src/sdh_main.cpp
+    src/sdh_node.cpp
+    )
 
   target_link_libraries(${node_name}
     ${ROBWORK_LIBRARIES}
@@ -105,7 +111,7 @@ if (SHOULD_BUILD_CAROS_SDH)
     ${PEAKCAN_LIBRARIES}
     ${catkin_LIBRARIES}
     )
-  # Add dependencies on the caros_common and caros_control targets (those are the make-targets for producing the libraries that are being linked with)
+
   add_dependencies(${node_name}
     caros_common
     caros_control
