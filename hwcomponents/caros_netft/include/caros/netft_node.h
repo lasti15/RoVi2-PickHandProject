@@ -44,6 +44,7 @@ class NetFTNode : public caros::CarosNodeServiceInterface, public caros::FTSenso
 
   // convenience functions
   bool isInWorkingCondition();
+  void lookupParamWithDefaultDebugMsg(const std::string& param);
 
  private:
   rwhw::NetFTLogging::Ptr netft_;

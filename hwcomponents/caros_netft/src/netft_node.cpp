@@ -24,9 +24,21 @@ NetFTNode::~NetFTNode()
 
 bool NetFTNode::activateHook()
 {
-  node_handle_.param("ip", ip_, std::string("192.168.100.2"));
-  node_handle_.param("port", port_, 49152);
-  node_handle_.param("rate", publish_rate_, 50);
+  /* Fetch parameters (if any) or use the defaults */
+
+  std::string param;
+  param = "ip";
+  lookupParamWithDefaultDebugMsg(param);
+  node_handle_.param(param, ip_, std::string("192.168.100.2"));
+
+  param = "port";
+  lookupParamWithDefaultDebugMsg(param);
+  node_handle_.param(param, port_, 49152);
+
+  param = "rate";
+  lookupParamWithDefaultDebugMsg(param);
+  node_handle_.param(param, publish_rate_, 50);
+
   setLoopRateFrequency(publish_rate_);
   netft_ = rw::common::ownedPtr(new NetFTLogging(ip_, port_));
 
@@ -109,4 +121,10 @@ void NetFTNode::fatalErrorLoopHook()
   {
     netft_->stop();
   }
+}
+
+void NetFTNode::lookupParamWithDefaultDebugMsg(const std::string& param)
+{
+  ROS_DEBUG_STREAM_COND(!node_handle_.hasParam(param), "Parameter " << param
+                                                                    << " not found from param server. Using default.");
 }

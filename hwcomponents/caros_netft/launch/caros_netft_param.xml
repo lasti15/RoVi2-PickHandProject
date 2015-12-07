@@ -7,6 +7,6 @@
 
   <!-- Set the ROS parameters -->
   <param name="ip" type="str" value="$(arg ip)" />
-  <param name="port" type="str" value="$(arg port)"/>
-  <param name="rate" type="str" value="$(arg rate)"/>
+  <param name="port" type="int" value="$(arg port)"/>
+  <param name="rate" type="int" value="$(arg rate)"/>
 </launch>
