@@ -18,6 +18,8 @@ caros_sdh is a ROS node for controlling the (physical) 3-finger SCHUNK dexterous
 # Interfaces - how to use this node #
 The node can be controlled through the @ref caros::GripperServiceInterface (**However please notice that not all the service callbacks comply with the units specified in that interface**).
 
+Clients can make use of the @ref caros::GripperSIProxy to communicate with this node.
+
 # Requirements #
 - RobWorkHardware with the *sdh* component enabled, is required and can be obtained from http://www.robwork.dk
 - The SDH library. Currently this library doesn't appear to be officially publicly available.

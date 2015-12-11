@@ -19,7 +19,7 @@
 namespace caros
 {
 /**
- * @brief this class implements a c++ proxy to control and read data from a SerialDeviceServiceInterface.
+ * @brief This class implements a C++ proxy to control and read data from a SerialDeviceServiceInterface.
  */
 class SerialDeviceSIProxy
 {

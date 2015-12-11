@@ -27,6 +27,8 @@ The @ref caros::GripperServiceInterface interface is supported by the nodes but 
 
 The Robotiq2 hand has one joint, the Robotiq3 has four. Therefore all service calls expecting input of type Q need to be provided one or four dimensional Qs. All Q values should be between 0 and 255 both values inclusive (see Robotiq datasheets, SDU's robotiq2 controller version 3.0 - http://support.robotiq.com/download/attachments/1181172/2-FINGER-85-130206.pdf?version=1&modificationDate=1407264261000 robotiq3 version S-6 - http://support.robotiq.com/download/attachments/1181172/IMB-311012.pdf?version=1&modificationDate=1351707795000 ).
 
+Clients can make use of the @ref caros::GripperSIProxy to communicate with this node.
+
 # Requirements #
 RobWorkHardware with the *robotiq* component enabled, is required and can be obtained from http://www.robwork.dk
 

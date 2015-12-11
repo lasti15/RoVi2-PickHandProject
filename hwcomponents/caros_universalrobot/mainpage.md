@@ -26,8 +26,10 @@ A few interfaces (i.e. ways to control the robot through ROS services) are suppo
 The @ref caros::SerialDeviceServiceInterface interface is supported to some extent. The functionalities that have not been tested or verified are disabled (i.e. they will not respond with a proper acknowledgment and output a ROS ERROR message). The status of the missing services can be seen below:
 | Service | Disabled / Not Implemented |
 | ------- | :------------------------: |
-| move_vel_q  | x |
-| move_vel_t  | x |
+| move_vel_q | x |
+| move_vel_t | x |
+
+Clients can make use of the @ref caros::SerialDeviceSIProxy to communicate with this node.
 
 ## UR Service Interface ##
 The @ref URServiceInterface interface is supported, but most of the functionalities have not been tested yet.

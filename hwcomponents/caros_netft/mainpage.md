@@ -23,6 +23,8 @@ Units are Newton and Newton Meter, respectively.
 # Interfaces - how to use this node #
 This node publishes sensor readings using the @ref caros::FTSensorServiceInterface interface.
 
+Clients can make use of the @ref caros::FTSensorSIProxy to communicate with this node.
+
 # Requirements #
 RobWorkHardware with the *netft* component enabled, is required and can be obtained from http://www.robwork.dk
 

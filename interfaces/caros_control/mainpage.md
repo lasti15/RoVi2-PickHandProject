@@ -35,6 +35,7 @@ In addition the following services are provided.
 | set_velocity_q  | @ref caros_control_msgs::GripperSetVelocityQ | See @ref caros::GripperServiceInterface::setVelocityQ. |
 | stop_movement  | @ref caros_control_msgs::GripperStopMovement | See @ref caros::GripperServiceInterface::stopMovement. |
 
+Clients can make use of the @ref caros::GripperSIProxy to communicate with nodes implementing this service interface.
 
 ## Serial Device Service Interface ##
 The @ref caros::SerialDeviceServiceInterface represents an interface for a serial device (e.g., an articulated robot arm).
@@ -58,3 +59,5 @@ In addition the following services are provided.
 | move_servo_q | @ref caros_control_msgs::SerialDeviceMoveServoQ | See @ref caros::SerialDeviceServiceInterface::moveServoQ. |
 | move_servo_t | @ref caros_control_msgs::SerialDeviceMoveServoT | See @ref caros::SerialDeviceServiceInterface::moveServoT. |
 | move_stop | @ref caros_common_msgs::EmptySrv | See @ref caros::SerialDeviceServiceInterface::moveStop. |
+
+Clients can make use of the @ref caros::SerialDeviceSIProxy to communicate with nodes implementing this service interface.

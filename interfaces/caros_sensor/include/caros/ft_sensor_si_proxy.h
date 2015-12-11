@@ -14,7 +14,7 @@
 namespace caros
 {
 /**
- * @brief this class implements a cpp proxy to control and read data from
+ * @brief This class implements a C++ proxy to control and read data from
  * a FTSensorServiceInterface.
  *
  */
