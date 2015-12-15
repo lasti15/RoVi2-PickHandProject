@@ -83,6 +83,8 @@ For example to launch the simple_demo_using_move_ptp:
 
     roslaunch caros_universalrobot simple_demo_using_move_ptp.test
 
+The test launch scripts are making use of the environment variable ```RW_ROOT``` to find the default basic scene that is located within a compatible RobWork version.
+
 ### Using debug verbosity ###
 To enable debug verbosity and thus hopefully make it easier to diagnose issues, then a rosconsole debug configuration file has to be present (see https://gitlab.com/caro-sdu/caros/wikis/Tests#example-rosconsole_debug-conf):
 
