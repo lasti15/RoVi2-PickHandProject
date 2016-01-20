@@ -1,9 +1,8 @@
 <launch>
-  <!-- Hackish solution to let the user easily spawn a "standalone" caros_universalrobot node -->
-  <!-- use something like set_workcell:=0 or workcell_path:=/path/to/the/workcell on the roslaunch commandline -->
+  <!-- use something like set_workcell:=0 (to disable setting a workcell using this launch script), or specify a specific workcell using workcell_path:=/path/to/the/workcell on the roslaunch commandline -->
   <arg name="set_workcell" default="1" />
   <group if="$(arg set_workcell)">
-    <arg name="workcell_path" />
+    <arg name="workcell_path" default="$(env RW_ROOT)/example/ModelData/XMLScenes/RobotOnTable/Scene.xml" />
     <param name="/caros/workcell" value="$(arg workcell_path)" />
   </group>
 

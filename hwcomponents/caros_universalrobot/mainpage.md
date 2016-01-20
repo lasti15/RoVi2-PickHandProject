@@ -45,13 +45,15 @@ The CAROS UniversalRobot node can be launched by using the following:
 
     roslaunch caros_universalrobot caros_universalrobot.launch
 
-Currently the launch script is complaining if no scene (workcell) is provided. The scene should be specified on the parameter server according to @ref caros::getWorkCell. To use the scene specified through the parameter server, then use:
+Currently the launch script is trying to set a default workcell from RobWork, which requires the environment variable ```RW_ROOT``` to be set. If this however is not wanted, the default launch script can also be told to not specify any workcell using:
 
     roslaunch caros_universalrobot caros_universalrobot.launch set_workcell:=0
 
-Or specify the scene to use, when launching the node:
+Or a specific workcell could be used instead, and just has to be specified with:
 
     roslaunch caros_universalrobot caros_universalrobot.launch workcell_path:=/path/to/the/scene_or_workcell.xml
+
+Also see @ref caros::getWorkCell for more information regarding workcells and the parameter server.
 
 ## Parameters ##
 The following parameters are supported:
