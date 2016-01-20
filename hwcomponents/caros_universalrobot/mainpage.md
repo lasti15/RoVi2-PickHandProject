@@ -70,7 +70,7 @@ To quickly and easily verify that the communication with the robot is working, t
 | Demo | Expected behaviour | Notes |
 | ---- | ------------------ | ----- |
 | simple_demo_using_move_ptp | Moving the robot arm forth and back linearly in the joint-configuration space. | None |
-| simple_demo_using_move_servo_q | Moving the robot arm forth and back linearly in the joint-configuration space. | The faster the servoing targets are supplied to the node, the more continous the movement will be. For the default setup, the movement should appear to be continous. |
+| simple_demo_using_move_servo_q | Moving the robot arm forth and back linearly in the joint-configuration space. | The faster the servoing targets are supplied to the node, the more continuous the movement will be. For the default setup, the movement should appear to be continuous. |
 
 ## Launching the demo(s) ##
 In order to make ROS properly find the demos, then the <your_catkin_workspace>/devel/setup.bash file should be sourced. If standing in your catkin workspace then it's as simple as (if you are using BASH or similar shell - default on Ubuntu):
