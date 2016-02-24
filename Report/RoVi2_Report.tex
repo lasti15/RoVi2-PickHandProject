@@ -1,6 +1,6 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[english, activeacute]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -31,8 +31,8 @@
 \usepackage{fancyhdr}
 \pagestyle{fancyplain}
 \fancyhf{}
-\lhead{ \fancyplain{}{Laurence Still, Manuel Antuña, Francisco Perez \& Aitor Miguel } }
-\rhead{ \fancyplain{}{EMB1 - 1. Semester MSc Robot Systems} }
+\lhead{ \fancyplain{}{L. Still, M. Antu\~na, F. J. Perez \& A. Miguel } }
+\rhead{ \fancyplain{}{ROVI2 - MSc Robot Systems} }
 \cfoot{ \fancyplain{}{\thepage} }
 
 % make tables prettyer
@@ -61,7 +61,6 @@
 	DATE
 \end{titlepage}
 
-
 \pagebreak
 \tableofcontents
 
@@ -71,10 +70,12 @@
 
 \pagebreak
 \input{sections/intro}
+\cite{hargrove_lj_intuitive_2015}
 
 
 \pagebreak
-\appendix
+\bibliography{sections/ref.bib}
+\bibliographystyle{IEEEtran}
 
 
 
