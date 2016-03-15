@@ -1,3 +1,8 @@
+
+RoboLab_ws/build/
+RoboLab_ws/devel/
+
+
 *.aux
 *.lof
 *.log
