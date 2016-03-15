@@ -2,7 +2,7 @@
 RoboLab_ws/build/
 RoboLab_ws/devel/
 
-
+*.catkin_workspace
 *.aux
 *.lof
 *.log
