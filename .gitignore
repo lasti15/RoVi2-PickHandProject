@@ -1,6 +1,6 @@
-
-build/
-devel/
+/RoboLab_ws/build/
+/RoboLab_ws/devel/
+/RoboLab_ws/src/caros/
 
 *.catkin_workspace
 *.aux
