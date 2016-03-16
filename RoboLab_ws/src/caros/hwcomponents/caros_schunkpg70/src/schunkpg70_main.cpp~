@@ -1,0 +1,25 @@
+#include <caros/schunkpg70_node.h>
+
+#include <ros/ros.h>
+#include <rwhw/schunkpg70/SchunkPG70.hpp>
+
+int main(int argc, char *argv[])
+{
+  ros::init(argc, argv, "caros_schunkpg70");
+
+  ros::NodeHandle nh("~");
+
+
+    rwhw::SchunkPG70 pg70;
+    std::cout<<"Calls connect"<<std::endl;
+    pg70.connectSerial("/dev/ttyUSB0");
+    std::cout<<"Connect finished"<<std::endl;
+    pg70.home();
+
+return 0;
+  caros::SchunkPG70Node schunkpg70_node(nh);
+
+  schunkpg70_node.start();
+
+  return 0;
+}
