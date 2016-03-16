@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "opencv2/opencv.hpp"
 #include "cv_bridge/cv_bridge.h"
+#include <image_transport/image_transport.h>
 #include "std_msgs/String.h"
 #include <iostream>
 #include <string>
@@ -11,8 +12,8 @@ std::stringstream Numss;
 void color_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   try{
     cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+        std::cout << "reading image" << std::endl;
     imwrite( "/home/aitormig/workspace/RoVi/sample_images/Color_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    std::cout << "reading image" << std::endl;
     cv::waitKey();
 
   }
@@ -22,10 +23,10 @@ void color_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   }
 }
 void depth_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
+  std::cout << "reading image" << std::endl;
   try{
     //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
     imwrite( "/home/aitormig/workspace/RoVi/sample_images/Depth_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    //cout << "reading image" << endl;
     cv::waitKey(30);
 
   }
@@ -35,6 +36,7 @@ void depth_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   }
 }
 void left_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
+  std::cout << "reading image" << std::endl;
   try{
     //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
     imwrite( "/home/aitormig/workspace/RoVi/sample_images/Left_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
@@ -48,6 +50,7 @@ void left_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   }
 }
 void right_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
+  std::cout << "reading image" << std::endl;
   try{
     //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
     imwrite( "/home/aitormig/workspace/RoVi/sample_images/Right_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
@@ -66,6 +69,8 @@ int main(int argc, char **argv)
 
   ros::init(argc, argv, "image_saver");
   ros::NodeHandle n;
+  image_transport::ImageTransport it(n);
+
 
   cv::namedWindow("view");
   cv::startWindowThread();
@@ -76,17 +81,15 @@ int main(int argc, char **argv)
 
   std::cout << "waiting" << std::endl;
   
-  ros::Subscriber sub = n.subscribe("/camera/rgb/image_raw", 1, color_image_rawCallback);
-  ros::Subscriber sub2 =n.subscribe("/camera/depth/image", 1, depth_image_rawCallback);
-  ros::Subscriber sub3 =n.subscribe("/stereo_camera/left/image_raw", 1, left_image_rawCallback);
-  ros::Subscriber sub4 =n.subscribe("/stereo_camera/right/image_raw", 1, right_image_rawCallback);
+  image_transport::Subscriber sub = it.subscribe("camera/rgb/image_raw", 1, color_image_rawCallback);
+  //image_transport::Subscriber sub2 =it.subscribe("camera/depth/image", 1, depth_image_rawCallback);
+  //image_transport::Subscriber sub3 =it.subscribe("stereo_camera/left/image_raw", 1, left_image_rawCallback);
+  //image_transport::Subscriber sub4 =it.subscribe("stereo_camera/right/image_raw", 1, right_image_rawCallback);
   
-
-
-  cv::destroyWindow("view");
-  
+  std::cout << "waitingkey" << std::endl;  
 
   ros::spin();
+  cv::destroyWindow("view");
 
   return 0;
 }
