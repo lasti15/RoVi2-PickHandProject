@@ -3,15 +3,16 @@
 #include "cv_bridge/cv_bridge.h"
 #include "std_msgs/String.h"
 #include <iostream>
-using namespace std;
+#include <string>
 
 int ImageNumber = 0;
+std::stringstream Numss;
 
 void color_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   try{
     cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
-    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Color_Image" << ImageNumber <<".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    cout << "reading image" << endl;
+    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Color_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
+    std::cout << "reading image" << std::endl;
     cv::waitKey();
 
   }
@@ -22,10 +23,10 @@ void color_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
 }
 void depth_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   try{
-    cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
-    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Depth_Image" << ImageNumber <<".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    cout << "reading image" << endl;
-    cv::waitKey();
+    //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Depth_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
+    //cout << "reading image" << endl;
+    cv::waitKey(30);
 
   }
   catch (cv_bridge::Exception& e)
@@ -35,10 +36,10 @@ void depth_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
 }
 void left_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   try{
-    cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
-    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Left_Image" << ImageNumber <<".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    cout << "reading image" << endl;
-    cv::waitKey();
+    //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Left_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
+    //cout << "reading image" << endl;
+    cv::waitKey(30);
 
   }
   catch (cv_bridge::Exception& e)
@@ -48,10 +49,10 @@ void left_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
 }
 void right_image_rawCallback(const sensor_msgs::ImageConstPtr& msg){
   try{
-    cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
-    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Right_Image" << ImageNumber <<".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
-    cout << "reading image" << endl;
-    cv::waitKey();
+    //cv::imshow ("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+    imwrite( "/home/aitormig/workspace/RoVi/sample_images/Right_Image" + Numss.str() + ".jpg", cv_bridge::toCvShare(msg, "bgr8")->image );
+    //cout << "reading image" << endl;
+    cv::waitKey(30);
 
   }
   catch (cv_bridge::Exception& e)
@@ -68,11 +69,19 @@ int main(int argc, char **argv)
 
   cv::namedWindow("view");
   cv::startWindowThread();
-  cout << "waiting" << endl;
+
+  Numss.str(std::string());
+  Numss << ImageNumber;
+  ImageNumber++;
+
+  std::cout << "waiting" << std::endl;
+  
   ros::Subscriber sub = n.subscribe("/camera/rgb/image_raw", 1, color_image_rawCallback);
-  ros::Subscriber sub2 =n.subscribe("/camera/rgb/image_raw", 1, depth_image_rawCallback);
-  ros::Subscriber sub3 =n.subscribe("/camera/rgb/image_raw", 1, left_image_rawCallback);
-  ros::Subscriber sub4 =n.subscribe("/camera/rgb/image_raw", 1, right_image_rawCallback);
+  ros::Subscriber sub2 =n.subscribe("/camera/depth/image", 1, depth_image_rawCallback);
+  ros::Subscriber sub3 =n.subscribe("/stereo_camera/left/image_raw", 1, left_image_rawCallback);
+  ros::Subscriber sub4 =n.subscribe("/stereo_camera/right/image_raw", 1, right_image_rawCallback);
+  
+
 
   cv::destroyWindow("view");
   
