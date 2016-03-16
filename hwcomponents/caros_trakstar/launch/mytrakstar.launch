@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="nodelet" type="nodelet" name="trakstar"  args="manager" output="screen"> </node>
-  <node pkg="nodelet" type="nodelet" name="TrakstarNode" args="load caros::TrakstarNode trakstar" output="screen"></node>   
-</launch>
