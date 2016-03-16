@@ -1,6 +1,7 @@
-<<<<<<< HEAD
 /RoboLab_ws/build/
 /RoboLab_ws/devel/
+/RoboLab_ws/src/caros/
+
 
 *.catkin_workspace
 *.aux
@@ -10,6 +11,3 @@
 *.out
 *.synctex.gz
 *.toc
-=======
-*~
->>>>>>> other/master
